@@ -1,22 +1,19 @@
 package de.hs_mannheim.informatik.hitori.gui;
 
-import javax.swing.JFrame;
-import javax.swing.JPanel;
+import javax.swing.*;
+import java.awt.*;
 import javax.swing.border.EmptyBorder;
-import javax.swing.JRadioButton;
 import javax.swing.border.LineBorder;
-import java.awt.Color;
-import javax.swing.JLabel;
-import java.awt.Font;
-import javax.swing.JButton;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
+
 
 public class Menu extends JFrame {
 
-	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
-
+	private JButton hitori4x4_leicht,
+					hitori5x5_leicht,
+					hitori8x8_leicht,
+					hitori8x8_medium,
+					hitori10x10_medium;
 	public Menu() {
 		setTitle("Menu");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -33,33 +30,55 @@ public class Menu extends JFrame {
 		contentPane.add(panel);
 		panel.setLayout(null);
 		
-		JLabel lblNewLabel = new JLabel("Willkommen in Hitori Game");
-		lblNewLabel.setFont(new Font("Tahoma", Font.BOLD, 14));
-		lblNewLabel.setBounds(56, 11, 217, 34);
-		panel.add(lblNewLabel);
+		JLabel willkommenNachricht = new JLabel("Willkommen in Hitori Game");
+		willkommenNachricht.setFont(new Font("Tahoma", Font.BOLD, 14));
+		willkommenNachricht.setBounds(56, 11, 217, 34);
+		panel.add(willkommenNachricht);
 		
-		JButton btnNewButton = new JButton("Hitori4x4_leicht");
-		btnNewButton.setBounds(29, 57, 223, 34);
-		panel.add(btnNewButton);
+		hitori4x4_leicht = new JButton("Hitori4x4_leicht");
+		hitori4x4_leicht.setBounds(29, 57, 223, 34);
+		panel.add(hitori4x4_leicht);
 		
-		JButton btnHitorixleicht = new JButton("Hitori5x5_leicht");
-		btnHitorixleicht.setBounds(29, 102, 223, 34);
-		panel.add(btnHitorixleicht);
+		hitori5x5_leicht = new JButton("Hitori5x5_leicht");
+		hitori5x5_leicht.setBounds(29, 102, 223, 34);
+		panel.add(hitori5x5_leicht);
 		
-		JButton btnHitorixleicht_1 = new JButton("Hitori8x8_leicht");
+		hitori8x8_leicht = new JButton("Hitori8x8_leicht");
+		hitori8x8_leicht.setBounds(29, 147, 223, 34);
+		panel.add(hitori8x8_leicht);
 		
-		btnHitorixleicht_1.setBounds(29, 147, 223, 34);
-		panel.add(btnHitorixleicht_1);
+		hitori8x8_medium = new JButton("Hitori8x8_medium");
+		hitori8x8_medium.setBounds(29, 192, 223, 34);
+		panel.add(hitori8x8_medium);
 		
-		JButton btnHitorixmedium = new JButton("Hitori8x8_medium");
-		btnHitorixmedium.setBounds(29, 192, 223, 34);
-		panel.add(btnHitorixmedium);
-		
-		JButton btnHitorixmedium_1 = new JButton("Hitori10x10_medium");
-		btnHitorixmedium_1.setBounds(29, 237, 223, 34);
-		panel.add(btnHitorixmedium_1);
-		
+		hitori10x10_medium = new JButton("Hitori10x10_medium");
+		hitori10x10_medium.setBounds(29, 237, 223, 34);
+		panel.add(hitori10x10_medium);
 		this.setVisible(true);
 
+	}
+	public JButton getHitori4x4_leicht() {
+		return hitori4x4_leicht;
+	}
+	public JButton getHitori5x5_leicht() {
+		return hitori5x5_leicht;
+	}
+	public JButton getHitori8x8_leicht() {
+		return hitori8x8_leicht;
+	}
+	public JButton getHitori8x8_medium() {
+		return hitori8x8_medium;
+	}
+	public JButton getHitori10x10_medium() {
+		return hitori10x10_medium;
+	}
+	
+	public void shwoWindow() {
+		this.setVisible(true);	
+	
+	}
+	
+	public void closeWindow() {
+		this.setVisible(false);
 	}
 }

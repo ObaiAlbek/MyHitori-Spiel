@@ -3,14 +3,17 @@ package de.hs_mannheim.informatik.hitori.gui;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
+import java.awt.event.*;
 import javax.swing.border.LineBorder;
 
 public class HitoriGame extends JFrame {
 
 	private JPanel contentPane;
-
+	private JButton saveButton,
+					undoButton,
+					redoButton,
+					resetButton;
+	
 	public HitoriGame() {
 		setResizable(false);
 		this.setVisible(true);
@@ -33,30 +36,26 @@ public class HitoriGame extends JFrame {
 
 		setContentPane(contentPane);
 		
-		JButton scoreButton = new JButton("save");
-		scoreButton.setBounds(68, 11, 75, 34);
-		scoreButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-			}
-		});
+		saveButton = new JButton("save");
+		saveButton.setBounds(68, 11, 75, 34);
 		contentPane.setLayout(null);
-		scoreButton.setFont(new Font("Tahoma", Font.PLAIN, 11));
-		contentPane.add(scoreButton);
+		saveButton.setFont(new Font("Tahoma", Font.PLAIN, 11));
+		contentPane.add(saveButton);
 		
-		JButton btnUndo = new JButton("undo");
-		btnUndo.setBounds(176, 11, 75, 34);
-		btnUndo.setFont(new Font("Tahoma", Font.PLAIN, 11));
-		contentPane.add(btnUndo);
+		undoButton = new JButton("undo");
+		undoButton.setBounds(176, 11, 75, 34);
+		undoButton.setFont(new Font("Tahoma", Font.PLAIN, 11));
+		contentPane.add(undoButton);
 		
-		JButton btnRedo = new JButton("redo");
-		btnRedo.setBounds(274, 11, 75, 34);
-		btnRedo.setFont(new Font("Tahoma", Font.PLAIN, 11));
-		contentPane.add(btnRedo);
+		redoButton = new JButton("redo");
+		redoButton.setBounds(274, 11, 75, 34);
+		redoButton.setFont(new Font("Tahoma", Font.PLAIN, 11));
+		contentPane.add(redoButton);
 		
-		JButton btnReset = new JButton("reset");
-		btnReset.setBounds(379, 11, 75, 34);
-		btnReset.setFont(new Font("Tahoma", Font.PLAIN, 11));
-		contentPane.add(btnReset);
+		resetButton = new JButton("reset");
+		resetButton.setBounds(379, 11, 75, 34);
+		resetButton.setFont(new Font("Tahoma", Font.PLAIN, 11));
+		contentPane.add(resetButton);
 		
 		JPanel panel = new JPanel();
 		panel.setBounds(68, 56, 386, 386);
@@ -68,4 +67,31 @@ public class HitoriGame extends JFrame {
 		zeit.setBounds(68, 453, 83, 34);
 		contentPane.add(zeit);
 	}
+	
+	public void shwoWindow() {
+		this.setVisible(true);	
+	
+	}
+	
+	public void closeWindow() {
+		this.setVisible(false);
+	}
+
+	public JButton getSaveButton() {
+		return saveButton;
+	}
+
+	public JButton getUndoButton() {
+		return undoButton;
+	}
+
+	public JButton getRedoButton() {
+		return redoButton;
+	}
+
+	public JButton getResetButton() {
+		return resetButton;
+	}
+	
+	
 }
