@@ -1,4 +1,4 @@
-package de.hs_mannheim.informatik.hitori.domain;
+package de.hs_mannheim.informatik.hitori.fassade;
 
 public class Fassade {
     
