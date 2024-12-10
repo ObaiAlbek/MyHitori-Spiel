@@ -97,4 +97,7 @@ public class CsvEinlesen {
 
 		return lines;
 	}
+	public static int getDimension(String spielfeld){
+		return spielfeld.split(",").length;
+	}
 }
