@@ -4,18 +4,20 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.Scanner;
 
 public class CsvEinlesen {
 
 	final private static String[] spielfelderNamen = {"Hitori4x4_leicht", "Hitori5x5leicht", "Hitori8x8leicht", "Hitori8x8medium", "Hitori10x10medium"};
 	
-	public static int[][] getSpielfeld(int auswahl) {	//sollte man es protected machen - sind arrays primitive Datentypen
+	public static String getSpielfeld(int auswahl) {	//sollte man es protected machen - sind arrays primitive Datentypen
 		String path = new File (CsvEinlesen.class.getClassLoader().getResource("database/" + spielfelderNamen[auswahl] + ".csv").getFile()).getAbsolutePath();
 		
 
 		
 		ArrayList<String> lines = null;
+		StringBuilder ergebnis = new StringBuilder();
 		
 		try {
 			lines = readFile(path);
@@ -36,14 +38,23 @@ public class CsvEinlesen {
 			}
 		}
 		
-		return spielfeld;
+		for (int i = 0; i < spielfeld.length; i++) {
+			for (int j = 0; j < spielfeld.length; j++) {
+				ergebnis.append(" "+ spielfeld[i][j]);
+			}
+			ergebnis.append(",");
+		}
+		
+		return ergebnis.toString();
 	}
 	
-	public static int[][] getLoesungen(int auswahl) {
+	public static String getLoesungen(int auswahl) {
 		
 		String path = new File (CsvEinlesen.class.getClassLoader().getResource("database/" + spielfelderNamen[auswahl] + ".csv").getFile()).getAbsolutePath();
 
 		ArrayList<String> lines = null;
+		
+		StringBuilder ergebnis = new StringBuilder();
 		
 		try {
 			lines = readFile(path);
@@ -63,7 +74,14 @@ public class CsvEinlesen {
 			loesungen[i][1] = Integer.parseInt(zwischenspeicher[1]);
 		}
 		
-		return loesungen;
+		for (int i = 0; i < loesungen.length; i++) {
+			for (int j = 0; j < loesungen.length; j++) {
+				ergebnis.append(" "+ loesungen[i][j]);
+			}
+			ergebnis.append(",");
+		}
+		
+		return ergebnis.toString();
 	}
 	
 	
