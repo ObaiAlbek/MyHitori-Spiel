@@ -41,7 +41,7 @@ public class CsvEinlesen {
 	
 	public static int[][] getLoesungen(int auswahl) {
 		
-		String path = new File(CsvEinlesen.class.getClassLoader().getResource("de\\hs_mannheim\\informatik\\hitori\\domain\\database\\" + spielfelderNamen[auswahl] +".csv").getFile()).getAbsolutePath();
+		String path = new File (CsvEinlesen.class.getClassLoader().getResource("database/" + spielfelderNamen[auswahl] + ".csv").getFile()).getAbsolutePath();
 
 		ArrayList<String> lines = null;
 		
