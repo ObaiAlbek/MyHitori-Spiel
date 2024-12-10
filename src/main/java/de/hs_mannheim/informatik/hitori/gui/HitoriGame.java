@@ -15,9 +15,9 @@ public class HitoriGame extends JFrame {
 	private int y_achse;
 	private JButton[][] spielfield;
 
-	public HitoriGame(int x_achse, int y_achse) {
-		this.x_achse = x_achse;
-		this.y_achse = y_achse;
+	public HitoriGame(int[][] spielfeldZahlen) {
+		this.x_achse = spielfeldZahlen[0].length;
+		this.y_achse = spielfeldZahlen.length;
 
 		setResizable(false);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -69,7 +69,7 @@ public class HitoriGame extends JFrame {
 		spielfield = new JButton[x_achse][y_achse];
 		for (int i = 0; i < x_achse; i++)
 			for (int j = 0; j < y_achse; j++) {
-				spielfield[i][j] = new JButton("-");
+				spielfield[i][j] = new JButton("" + spielfeldZahlen[i][j]);
 				panel.add(spielfield[i][j]);
 			}
 
