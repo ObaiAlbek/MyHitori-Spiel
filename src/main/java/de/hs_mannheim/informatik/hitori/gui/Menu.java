@@ -11,11 +11,6 @@ import javax.swing.border.LineBorder;
 public class Menu extends JFrame {
 
     private JPanel contentPane;
-    private JButton hitori4x4_leicht,
-        hitori5x5_leicht,
-        hitori8x8_leicht,
-        hitori8x8_medium,
-        hitori10x10_medium;
 
     private JButton[] schwierigkeitsButtons;
     final private static String[] spielfelderNamen = {"Hitori4x4_leicht", "Hitori5x5leicht", "Hitori8x8leicht", "Hitori8x8medium", "Hitori10x10medium", "Hitori15x15_medium"};
@@ -23,7 +18,7 @@ public class Menu extends JFrame {
     public Menu() {
         setTitle("Menu");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setBounds(100, 100, 452, 504);
+        setBounds(100, 100, 400, 500);
         contentPane = new JPanel();
         contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
         setContentPane(contentPane);
@@ -58,26 +53,6 @@ public class Menu extends JFrame {
         }
 
         this.setVisible(true);
-    }
-
-    public JButton getHitori4x4_leicht() {
-        return hitori4x4_leicht;
-    }
-
-    public JButton getHitori5x5_leicht() {
-        return hitori5x5_leicht;
-    }
-
-    public JButton getHitori8x8_leicht() {
-        return hitori8x8_leicht;
-    }
-
-    public JButton getHitori8x8_medium() {
-        return hitori8x8_medium;
-    }
-
-    public JButton getHitori10x10_medium() {
-        return hitori10x10_medium;
     }
 
     public void showWindow() {
