@@ -30,9 +30,9 @@ public class Menu extends JFrame {
         contentPane.add(panel);
         panel.setLayout(null);
 
-        JLabel willkommenNachricht = new JLabel("Willkommen in Hitori Game");
-        willkommenNachricht.setFont(new Font("Tahoma", Font.BOLD, 14));
-        willkommenNachricht.setBounds(50, 15, 200, 25);
+        JLabel willkommenNachricht = new JLabel("Willkommen!");
+        willkommenNachricht.setFont(new Font("Tahoma", Font.BOLD, 18));
+        willkommenNachricht.setBounds(90, 15, 200, 25);
         panel.add(willkommenNachricht);
 
         schwierigkeitsButtons = new JButton[6];
