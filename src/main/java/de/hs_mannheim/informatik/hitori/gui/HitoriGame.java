@@ -15,8 +15,10 @@ public class HitoriGame extends JFrame {
     private final JButton redoButton;
     private final JButton resetButton;
     private final Fassade fassade = new Fassade();
+    private final Menu menu;
 
-    public HitoriGame(int x_achse, int y_achse) {
+    public HitoriGame(int auswahl, Menu menu) {
+        this.menu = menu;
         fassade.startTimer();
         setResizable(false);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -31,7 +33,12 @@ public class HitoriGame extends JFrame {
 
         JMenuItem exit = new JMenuItem("Exit");
         mnNewMenu.add(exit);
-        JMenuItem zurück = new JMenuItem("Zurück");
+        JMenuItem zurück = new JMenuItem("Back to Menu");
+        zurück.addActionListener(e -> {
+            menu.showWindow();
+            closeWindow();
+        });
+
         mnNewMenu.add(zurück);
         JPanel contentPane = new JPanel();
         contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -60,16 +67,16 @@ public class HitoriGame extends JFrame {
         contentPane.add(resetButton);
 
         JPanel panel = new JPanel();
-        //panel.add(timeLabel);
         panel.setBorder(new LineBorder(new Color(0, 0, 0), 2));
         panel.setBounds(68, 63, 386, 386);
         contentPane.add(panel);
-        panel.setLayout(new GridLayout(x_achse, y_achse));
+        int dimension = fassade.getDimension(auswahl);
+        panel.setLayout(new GridLayout(dimension, dimension));
 
-        JButton[][] spielfield = new JButton[x_achse][y_achse];
-        for (int i = 0; i < x_achse; i++)
-            for (int j = 0; j < y_achse; j++) {
-                spielfield[i][j] = new JButton("-");
+        JButton[][] spielfield = new JButton[dimension][dimension];
+        for (int i = 0; i < dimension; i++)
+            for (int j = 0; j < dimension; j++) {
+                spielfield[i][j] = new JButton(String.valueOf(Fassade.getSpielfeldFeld(j, i, auswahl)));
                 panel.add(spielfield[i][j]);
             }
 
@@ -83,7 +90,7 @@ public class HitoriGame extends JFrame {
         this.setVisible(true);
     }
 
-    public void shwoWindow() {
+    public void showWindow() {
         this.setVisible(true);
     }
 
@@ -108,6 +115,6 @@ public class HitoriGame extends JFrame {
     }
 
     public static void main(String[] args) {
-        new HitoriGame(4, 4);
+        new HitoriGame(0, new Menu());
     }
 }
