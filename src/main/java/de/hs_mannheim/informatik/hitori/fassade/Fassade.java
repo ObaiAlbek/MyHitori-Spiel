@@ -28,4 +28,7 @@ public class Fassade {
     public int getDimension(int auswahl) {
     	return CsvEinlesen.getDimension(getSpielfeld(auswahl));
     }
+    public static int getSpielfeldFeld(int x, int y){
+        return CsvEinlesen.getFeld(x,y);
+    }
 }
