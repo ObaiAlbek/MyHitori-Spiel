@@ -6,6 +6,9 @@ import de.hs_mannheim.informatik.hitori.fassade.Fassade;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+
 import javax.swing.border.LineBorder;
 
 public class HitoriGame extends JFrame {
@@ -15,14 +18,18 @@ public class HitoriGame extends JFrame {
 	private Fassade fassade = new Fassade();
 	private Menu menu;
 	private int auswahl;
+	private Timer timer;
 	
 	public HitoriGame(int auswahl, Menu menu) {
 		this.menu = menu;
 		this.auswahl = auswahl;
 		fassade.startTimer();
 		
+		
+		
 		WindowProperties();
 		addButtonsToWindow();
+		pauseTime();
 		addTimeToWindow();
 		gameField();
 		showWindow();
@@ -69,7 +76,7 @@ public class HitoriGame extends JFrame {
 		timeLabel.setBounds(68, 74, 83, 34);
 		contentPane.add(timeLabel);
 
-		Timer timer = new Timer(10, e -> timeLabel.setText(fassade.getTime()));
+		timer = new Timer(10, e -> timeLabel.setText(fassade.getTime()));
 		timer.start();
 	}
 	
@@ -131,10 +138,22 @@ public class HitoriGame extends JFrame {
 		this.setResizable(false);
 	}
 	
-	
+	public void pauseTime() {
+		this.addWindowListener(new WindowAdapter() {
+			@Override
+			public void windowIconified(WindowEvent e) {
+				timer.stop();
+			}
+
+			@Override
+			public void windowDeiconified(WindowEvent e) {
+				timer.start();
+			}
+		});
+	}
 	
 	// Getter Methoden
-	public JButton getSaveButton() {
+ 	public JButton getSaveButton() {
 		return saveButton;
 	}
 
