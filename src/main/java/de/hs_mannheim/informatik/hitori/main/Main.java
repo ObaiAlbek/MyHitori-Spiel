@@ -5,7 +5,7 @@ import de.hs_mannheim.informatik.hitori.gui.Menu;
 import de.hs_mannheim.informatik.hitori.domain.*;
 
 public class Main {
-	
+	//main methode
 	public static void main(String[] args) {
 		new Menu();
 	}
