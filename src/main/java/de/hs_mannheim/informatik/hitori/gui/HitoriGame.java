@@ -9,112 +9,144 @@ import java.awt.*;
 import javax.swing.border.LineBorder;
 
 public class HitoriGame extends JFrame {
-    private final JLabel timeLabel;
-    private final JButton saveButton;
-    private final JButton undoButton;
-    private final JButton redoButton;
-    private final JButton resetButton;
-    private final Fassade fassade = new Fassade();
-    private final Menu menu;
+	private JButton saveButton, undoButton, redoButton, resetButton;
+	private JButton[][] spielfield;
+	private JPanel contentPane;
+	private Fassade fassade = new Fassade();
+	private Menu menu;
+	private int auswahl;
+	
+	public HitoriGame(int auswahl, Menu menu) {
+		this.menu = menu;
+		this.auswahl = auswahl;
+		fassade.startTimer();
+		
+		WindowProperties();
+		addButtonsToWindow();
+		addTimeToWindow();
+		gameField();
+		showWindow();
+	}
+	
+	
+	
+	// Elemente des Gemawindow
+	public void gameField() {
+		int dimension = fassade.getDimension(auswahl);
+		JPanel panel = new JPanel();
+		panel.setBorder(new LineBorder(new Color(0, 0, 0), 2));
+		panel.setBounds(68, 119, 900, 500);
+		contentPane.add(panel);
+		panel.setLayout(new GridBagLayout());
+		GridBagConstraints gbc = new GridBagConstraints();
+		gbc.fill = GridBagConstraints.BOTH;
+		gbc.insets = new Insets(3, 3, 3, 3); 
+		spielfield = new JButton[dimension][dimension];
+		for (int i = 0; i < dimension; i++) {
+			for (int j = 0; j < dimension; j++) {
+				final int zeile = i;
+				final int spalte = j;
+				
+				spielfield[i][j] = new JButton(String.valueOf(Fassade.getSpielfeldFeld(j, i, auswahl)));
+				spielfield[i][j].setForeground(Color.GREEN);
+				spielfield[i][j].setBackground(Color.GRAY);
 
-    public HitoriGame(int auswahl, Menu menu) {
-        this.menu = menu;
-        fassade.startTimer();
-        setResizable(false);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setBounds(100, 100, 539, 647);
+				spielfield[i][j].setPreferredSize(new Dimension(50, 50));
 
-        JMenuBar menuBar = new JMenuBar();
-        menuBar.setToolTipText("Menu");
-        setJMenuBar(menuBar);
+				spielfield[i][j].addActionListener(e -> fassade.buttonFarbeÄndern(spielfield[zeile][spalte]));
 
-        JMenu mnNewMenu = new JMenu("Menu");
-        menuBar.add(mnNewMenu);
+				gbc.gridx = j;
+				gbc.gridy = i;
+				panel.add(spielfield[i][j], gbc);
+			}
+		}
 
-        JMenuItem exit = new JMenuItem("Exit");
-        mnNewMenu.add(exit);
-        JMenuItem zurück = new JMenuItem("Back to Menu");
-        zurück.addActionListener(e -> {
-            menu.showWindow();
-            closeWindow();
-        });
+	}
+	
+ 	public void addTimeToWindow() {
+ 		JLabel timeLabel = new JLabel(fassade.getTime());
+		timeLabel.setFont(new Font("Tahoma", Font.BOLD, 14));
+		timeLabel.setBounds(68, 74, 83, 34);
+		contentPane.add(timeLabel);
 
-        mnNewMenu.add(zurück);
-        JPanel contentPane = new JPanel();
-        contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+		Timer timer = new Timer(10, e -> timeLabel.setText(fassade.getTime()));
+		timer.start();
+	}
+	
+	public void addButtonsToWindow() {
+		JMenuBar menuBar = new JMenuBar();
+		menuBar.setToolTipText("Menu");
+		setJMenuBar(menuBar);
 
-        setContentPane(contentPane);
+		JMenu mnNewMenu = new JMenu("Menu");
+		menuBar.add(mnNewMenu);
 
-        saveButton = new JButton("save");
-        saveButton.setBounds(68, 11, 75, 34);
-        contentPane.setLayout(null);
-        saveButton.setFont(new Font("Tahoma", Font.PLAIN, 11));
-        contentPane.add(saveButton);
+		JMenuItem exit = new JMenuItem("Exit");
+		mnNewMenu.add(exit);
+		JMenuItem zurück = new JMenuItem("Back to Menu");
+		zurück.addActionListener(e -> {
+			menu.showWindow();
+			closeWindow();
+		});
 
-        undoButton = new JButton("undo");
-        undoButton.setBounds(176, 11, 75, 34);
-        undoButton.setFont(new Font("Tahoma", Font.PLAIN, 11));
-        contentPane.add(undoButton);
+		mnNewMenu.add(zurück);
+		contentPane = new JPanel();
+		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 
-        redoButton = new JButton("redo");
-        redoButton.setBounds(274, 11, 75, 34);
-        redoButton.setFont(new Font("Tahoma", Font.PLAIN, 11));
-        contentPane.add(redoButton);
+		setContentPane(contentPane);
 
-        resetButton = new JButton("reset");
-        resetButton.setBounds(379, 11, 75, 34);
-        resetButton.setFont(new Font("Tahoma", Font.PLAIN, 11));
-        contentPane.add(resetButton);
+		saveButton = new JButton("save");
+		saveButton.setBounds(68, 11, 75, 34);
+		contentPane.setLayout(null);
+		saveButton.setFont(new Font("Tahoma", Font.PLAIN, 11));
+		contentPane.add(saveButton);
 
-        JPanel panel = new JPanel();
-        panel.setBorder(new LineBorder(new Color(0, 0, 0), 2));
-        panel.setBounds(68, 63, 386, 386);
-        contentPane.add(panel);
-        int dimension = fassade.getDimension(auswahl);
-        panel.setLayout(new GridLayout(dimension, dimension));
+		undoButton = new JButton("undo");
+		undoButton.setBounds(176, 11, 75, 34);
+		undoButton.setFont(new Font("Tahoma", Font.PLAIN, 11));
+		contentPane.add(undoButton);
 
-        JButton[][] spielfield = new JButton[dimension][dimension];
-        for (int i = 0; i < dimension; i++)
-            for (int j = 0; j < dimension; j++) {
-                spielfield[i][j] = new JButton(String.valueOf(Fassade.getSpielfeldFeld(j, i, auswahl)));
-                panel.add(spielfield[i][j]);
-            }
+		redoButton = new JButton("redo");
+		redoButton.setBounds(274, 11, 75, 34);
+		redoButton.setFont(new Font("Tahoma", Font.PLAIN, 11));
+		contentPane.add(redoButton);
 
-        timeLabel = new JLabel(fassade.getTime());
-        timeLabel.setBounds(68, 452, 83, 34);
-        contentPane.add(timeLabel);
+		resetButton = new JButton("reset");
+		resetButton.setBounds(379, 11, 75, 34);
+		resetButton.setFont(new Font("Tahoma", Font.PLAIN, 11));
+		contentPane.add(resetButton);
+	}
 
-        Timer timer = new Timer(10, e -> timeLabel.setText(fassade.getTime()));
-        timer.start();
+	public void showWindow() {
+		this.setVisible(true);
+	}
 
-        this.setVisible(true);
-    }
+	public void closeWindow() {
+		this.setVisible(false);
+	}
+	
+	public void WindowProperties() {
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setBounds(100, 100, 1000, 700);
+		this.setResizable(false);
+	}
+	
+	
+	
+	// Getter Methoden
+	public JButton getSaveButton() {
+		return saveButton;
+	}
 
-    public void showWindow() {
-        this.setVisible(true);
-    }
+	public JButton getUndoButton() {
+		return undoButton;
+	}
 
-    public void closeWindow() {
-        this.setVisible(false);
-    }
+	public JButton getRedoButton() {
+		return redoButton;
+	}
 
-    public JButton getSaveButton() {
-        return saveButton;
-    }
-
-    public JButton getUndoButton() {
-        return undoButton;
-    }
-
-    public JButton getRedoButton() {
-        return redoButton;
-    }
-
-    public JButton getResetButton() {
-        return resetButton;
-    }
-
-    public static void main(String[] args) {
-        new HitoriGame(0, new Menu());
-    }
+	public JButton getResetButton() {
+		return resetButton;
+	}
 }

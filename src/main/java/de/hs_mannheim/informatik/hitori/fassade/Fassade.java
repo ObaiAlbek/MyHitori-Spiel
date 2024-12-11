@@ -1,6 +1,10 @@
 // Fassade.java
 package de.hs_mannheim.informatik.hitori.fassade;
 
+import java.awt.Color;
+
+import javax.swing.JButton;
+
 import de.hs_mannheim.informatik.hitori.domain.*;
 
 public class Fassade {
@@ -13,7 +17,19 @@ public class Fassade {
     public void startTimer() {
         stoppUhr.startStoppUhr();
     }
-
+    
+    public void buttonFarbeÄndern(JButton spielfield) {
+    	 if (spielfield.getBackground().equals(Color.gray)) 
+             spielfield.setBackground(Color.black); 
+    	 
+    	 else if (spielfield.getBackground().equals(Color.black)) 
+    		 spielfield.setBackground(Color.white); 
+         else 
+             spielfield.setBackground(Color.gray);
+         
+    }
+    
+   
 
     public String getTime() {
         return stoppUhr.getFormattedTime();

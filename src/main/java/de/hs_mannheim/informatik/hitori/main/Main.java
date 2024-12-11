@@ -1,11 +1,8 @@
 package de.hs_mannheim.informatik.hitori.main;
 
-import de.hs_mannheim.informatik.hitori.gui.HitoriGame;
-import de.hs_mannheim.informatik.hitori.gui.Menu;
-import de.hs_mannheim.informatik.hitori.domain.*;
+import de.hs_mannheim.informatik.hitori.gui.*;
 
 public class Main {
-	//main methode
 	public static void main(String[] args) {
 		new Menu();
 	}
