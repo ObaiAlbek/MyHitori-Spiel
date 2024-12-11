@@ -19,10 +19,12 @@ public class HitoriGame extends JFrame {
 
     public HitoriGame(int auswahl, Menu menu) {
         this.menu = menu;
+        int dimension = fassade.getDimension(auswahl);
+        int buttonGroesse = 40;
         fassade.startTimer();
         setResizable(false);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setBounds(100, 100, 539, 647);
+        setBounds(100, 100, buttonGroesse*dimension+100, buttonGroesse*dimension+200);
 
         JMenuBar menuBar = new JMenuBar();
         menuBar.setToolTipText("Menu");
@@ -67,21 +69,26 @@ public class HitoriGame extends JFrame {
         contentPane.add(resetButton);
 
         JPanel panel = new JPanel();
-        panel.setBorder(new LineBorder(new Color(0, 0, 0), 2));
-        panel.setBounds(68, 63, 386, 386);
+        panel.setLayout(null);
+        //panel.setBorder(new LineBorder(new Color(0, 0, 0), 2));
+        panel.setBounds(50, 75, (buttonGroesse*dimension), (buttonGroesse*dimension));
         contentPane.add(panel);
-        int dimension = fassade.getDimension(auswahl);
-        panel.setLayout(new GridLayout(dimension, dimension));
+        //panel.setLayout(new GridLayout(dimension, dimension));
 
         JButton[][] spielfield = new JButton[dimension][dimension];
         for (int i = 0; i < dimension; i++)
             for (int j = 0; j < dimension; j++) {
-                spielfield[i][j] = new JButton(String.valueOf(Fassade.getSpielfeldFeld(j, i, auswahl)));
+                //spielfield[i][j] = new JButton(String.valueOf(Fassade.getSpielfeldFeld(j, i, auswahl)));
+                spielfield[i][j] = new JButton("10");
+
+                spielfield[i][j].setBounds((buttonGroesse*i), (buttonGroesse*j), buttonGroesse, buttonGroesse);
+                spielfield[i][j].setFont(new Font("Tahoma", Font.PLAIN, 6));
                 panel.add(spielfield[i][j]);
             }
 
         timeLabel = new JLabel(fassade.getTime());
-        timeLabel.setBounds(68, 452, 83, 34);
+        timeLabel.setFont(new Font("Tahoma", Font.BOLD, 12));
+        timeLabel.setBounds(50, 50+buttonGroesse*dimension, 150, 75);
         contentPane.add(timeLabel);
 
         Timer timer = new Timer(10, e -> timeLabel.setText(fassade.getTime()));
