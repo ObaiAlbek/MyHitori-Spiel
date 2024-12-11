@@ -72,6 +72,7 @@ public class HitoriGame extends JFrame {
             for (int j = 0; j < dimension; j++) {
                 spielfield[i][j] = new JButton(String.valueOf(Fassade.getSpielfeldFeld(j,i, auswahl)));
                 panel.add(spielfield[i][j]);
+                //spielfield[i][j].setFont(new Font("Tahoma", Font.PLAIN, 8));
             }
 
         timeLabel = new JLabel(fassade.getTime());

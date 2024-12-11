@@ -15,6 +15,9 @@ public class Menu extends JFrame {
         hitori8x8_leicht,
         hitori8x8_medium,
         hitori10x10_medium;
+    
+    private JButton[] schwierigkeitsButtons;
+	final private static String[] spielfelderNamen = {"Hitori4x4_leicht", "Hitori5x5leicht", "Hitori8x8leicht", "Hitori8x8medium", "Hitori10x10medium", "Hitori15x15_medium"};
 
     public Menu() {
         setTitle("Menu");
@@ -33,9 +36,26 @@ public class Menu extends JFrame {
 
         JLabel willkommenNachricht = new JLabel("Willkommen in Hitori Game");
         willkommenNachricht.setFont(new Font("Tahoma", Font.BOLD, 14));
-        willkommenNachricht.setBounds(56, 11, 217, 34);
+        willkommenNachricht.setBounds(50, 15, 200, 25);
         panel.add(willkommenNachricht);
 
+        schwierigkeitsButtons = new JButton[6];
+        
+        for (int i = 0; i < schwierigkeitsButtons.length; i++) {
+        	schwierigkeitsButtons[i] = new JButton(spielfelderNamen[i]);
+        	schwierigkeitsButtons[i].setBounds(50, 50+(50*i), 200, 40);
+        	schwierigkeitsButtons[i].setActionCommand(i+"");
+        	schwierigkeitsButtons[i].addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                	System.out.println(e.getActionCommand());
+                	new HitoriGame(Integer.parseInt(e.getActionCommand()));
+    				closeWindow();
+                }
+            });
+            panel.add(schwierigkeitsButtons[i]);
+		}
+        /**
         hitori4x4_leicht = new JButton("Hitori4x4_leicht");
         hitori4x4_leicht.setBounds(29, 57, 223, 34);
         hitori4x4_leicht.addActionListener(new ActionListener() {
@@ -62,6 +82,7 @@ public class Menu extends JFrame {
         hitori10x10_medium = new JButton("Hitori10x10_medium");
         hitori10x10_medium.setBounds(29, 237, 223, 34);
         panel.add(hitori10x10_medium);
+        **/
 
         this.setVisible(true);
     }
