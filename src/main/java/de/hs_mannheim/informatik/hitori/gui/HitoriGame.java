@@ -70,7 +70,7 @@ public class HitoriGame extends JFrame {
         JButton[][] spielfield = new JButton[dimension][dimension];
         for (int i = 0; i < dimension; i++)
             for (int j = 0; j < dimension; j++) {
-                spielfield[i][j] = new JButton(String.valueOf(Fassade.getSpielfeldFeld(j,i)));
+                spielfield[i][j] = new JButton(String.valueOf(Fassade.getSpielfeldFeld(j,i, auswahl)));
                 panel.add(spielfield[i][j]);
             }
 

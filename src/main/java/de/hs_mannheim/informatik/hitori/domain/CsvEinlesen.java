@@ -100,8 +100,8 @@ public class CsvEinlesen {
 	public static int getDimension(String spielfeld){
 		return spielfeld.split(",").length;
 	}
-	public static int getFeld(int x, int y) {
-    String spielfeld = getSpielfeld(0);
+	public static int getFeld(int x, int y, int auswahl) {
+    String spielfeld = getSpielfeld(auswahl);
 		String[] zeilen = spielfeld.trim().split(",");
 		String[] spalten = zeilen[y].trim().split(" ");
 
