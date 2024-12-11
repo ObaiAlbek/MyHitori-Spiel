@@ -8,14 +8,12 @@ import java.util.Iterator;
 import java.util.Scanner;
 
 public class CsvEinlesen {
-
-	final private static String[] spielfelderNamen = {"Hitori4x4_leicht", "Hitori5x5leicht", "Hitori8x8leicht", "Hitori8x8medium", "Hitori10x10medium"};
-	
+		
+	final private static String[] spielfelderNamen = {"Hitori4x4_leicht", "Hitori5x5leicht", "Hitori8x8leicht", "Hitori8x8medium", "Hitori10x10medium", "Hitori15x15_medium.csv"};
+	// auswahl des Spielfeldes
 	public static String getSpielfeld(int auswahl) {	//sollte man es protected machen - sind arrays primitive Datentypen
 		String path = new File (CsvEinlesen.class.getClassLoader().getResource("database/" + spielfelderNamen[auswahl] + ".csv").getFile()).getAbsolutePath();
-		
 
-		
 		ArrayList<String> lines = null;
 		StringBuilder ergebnis = new StringBuilder();
 		
@@ -97,4 +95,14 @@ public class CsvEinlesen {
 
 		return lines;
 	}
+	public static int getDimension(String spielfeld){
+		return spielfeld.split(",").length;
+	}
+	public static int getFeld(int x, int y, int auswahl) {
+    String spielfeld = getSpielfeld(auswahl);
+		String[] zeilen = spielfeld.trim().split(",");
+		String[] spalten = zeilen[y].trim().split(" ");
+
+    return Integer.parseInt(spalten[x]);
+}
 }
