@@ -20,11 +20,10 @@ public class HitoriGame extends JFrame {
     public HitoriGame(int auswahl, Menu menu) {
         this.menu = menu;
         int dimension = fassade.getDimension(auswahl);
-        int buttonGroesse = 40;
         fassade.startTimer();
         setResizable(false);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setBounds(100, 100, buttonGroesse*dimension+100, buttonGroesse*dimension+200);
+        setBounds(100, 100, 539, 647);
 
         JMenuBar menuBar = new JMenuBar();
         menuBar.setToolTipText("Menu");
@@ -70,8 +69,8 @@ public class HitoriGame extends JFrame {
 
         JPanel panel = new JPanel();
         panel.setLayout(null);
-        //panel.setBorder(new LineBorder(new Color(0, 0, 0), 2));
-        panel.setBounds(50, 75, (buttonGroesse*dimension), (buttonGroesse*dimension));
+        panel.setBorder(new LineBorder(new Color(0, 0, 0), 2));
+        panel.setBounds(60, 60, (25*dimension), (25*dimension));
         contentPane.add(panel);
         //panel.setLayout(new GridLayout(dimension, dimension));
 
@@ -81,14 +80,13 @@ public class HitoriGame extends JFrame {
                 //spielfield[i][j] = new JButton(String.valueOf(Fassade.getSpielfeldFeld(j, i, auswahl)));
                 spielfield[i][j] = new JButton("10");
 
-                spielfield[i][j].setBounds((buttonGroesse*i), (buttonGroesse*j), buttonGroesse, buttonGroesse);
+                spielfield[i][j].setBounds((25*i), (25*j), 30, 30);
                 spielfield[i][j].setFont(new Font("Tahoma", Font.PLAIN, 6));
                 panel.add(spielfield[i][j]);
             }
 
         timeLabel = new JLabel(fassade.getTime());
-        timeLabel.setFont(new Font("Tahoma", Font.BOLD, 12));
-        timeLabel.setBounds(50, 50+buttonGroesse*dimension, 150, 75);
+        timeLabel.setBounds(68, 452, 83, 34);
         contentPane.add(timeLabel);
 
         Timer timer = new Timer(10, e -> timeLabel.setText(fassade.getTime()));
