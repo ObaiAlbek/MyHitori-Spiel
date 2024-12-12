@@ -68,11 +68,11 @@ public class HitoriGame extends JFrame {
         contentPane.add(resetButton);
 
         JPanel panel = new JPanel();
-        panel.setLayout(null);
+        //panel.setLayout(null);
         panel.setBorder(new LineBorder(new Color(0, 0, 0), 2));
-        panel.setBounds(60, 60, (25*dimension), (25*dimension));
+        panel.setBounds(60, 60, (30*dimension), (30*dimension));
         contentPane.add(panel);
-        //panel.setLayout(new GridLayout(dimension, dimension));
+        panel.setLayout(new GridLayout(dimension, dimension));
 
         JButton[][] spielfield = new JButton[dimension][dimension];
         for (int i = 0; i < dimension; i++)
