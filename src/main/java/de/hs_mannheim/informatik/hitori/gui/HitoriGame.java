@@ -8,38 +8,71 @@ import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.IOException;
 
 import javax.swing.border.LineBorder;
 
 public class HitoriGame extends JFrame {
 	private JButton saveButton, undoButton, redoButton, resetButton;
 	private JButton[][] spielfield;
+	private int dimension;
 	private JPanel contentPane;
 	private Fassade fassade = new Fassade();
 	private Menu menu;
 	private int auswahl;
 	private Timer timer;
+	private String hitoriGameName;
 	
-	public HitoriGame(int auswahl, Menu menu) {
+	public HitoriGame(int auswahl, Menu menu, String hitoriGameName) {
 		this.menu = menu;
 		this.auswahl = auswahl;
+		this.hitoriGameName = hitoriGameName;
 		fassade.startTimer();
-		
-		
-		
+	
 		WindowProperties();
 		addButtonsToWindow();
 		pauseTime();
 		addTimeToWindow();
 		gameField();
+		
+		saveButton.addActionListener(e -> saveGame());
+		
 		showWindow();
 	}
 	
+	public void saveGame() {
+		int[][] staten = new int[dimension][dimension];
+		int schwarz = 0;
+		int grau = 1;
+		int weiss = 2;
+		for (int i = 0; i < dimension; i++) {
+			for (int j = 0; j < dimension; j++) {
+				JButton tempButton = spielfield[i][j];
+				
+				if (tempButton.getBackground().equals(Color.black))
+					staten[i][j] = schwarz;
+				
+				else if(tempButton.getBackground().equals(Color.gray))
+					staten[i][j] = grau;
+				
+				else
+					staten[i][j] = weiss;
+			}
+		}
+		try {
+			if (fassade.saveGame(staten ,hitoriGameName))
+				 
+				JOptionPane.showMessageDialog(null,"Das Spiel wurde erfolgreich abgespeichert", "Information" ,JOptionPane.INFORMATION_MESSAGE);
+			
+		} catch (HeadlessException | IOException e) {
+			JOptionPane.showMessageDialog(null,"Das Spiel konnte nicht abgespeichert werden", "Fehler",JOptionPane.ERROR_MESSAGE);
+		}
+	}
 	
 	
 	// Elemente des Gemawindow
 	public void gameField() {
-		int dimension = fassade.getDimension(auswahl);
+		dimension = fassade.getDimension(auswahl);
 		JPanel panel = new JPanel();
 		panel.setBorder(new LineBorder(new Color(0, 0, 0), 2));
 		panel.setBounds(68, 119, 900, 500);
@@ -49,6 +82,7 @@ public class HitoriGame extends JFrame {
 		gbc.fill = GridBagConstraints.BOTH;
 		gbc.insets = new Insets(3, 3, 3, 3); 
 		spielfield = new JButton[dimension][dimension];
+		
 		for (int i = 0; i < dimension; i++) {
 			for (int j = 0; j < dimension; j++) {
 				final int zeile = i;

@@ -2,6 +2,7 @@
 package de.hs_mannheim.informatik.hitori.fassade;
 
 import java.awt.Color;
+import java.io.IOException;
 
 import javax.swing.JButton;
 
@@ -13,9 +14,14 @@ public class Fassade {
     public Fassade() {
         stoppUhr = new StoppUhr();
     }
+    
 
     public void startTimer() {
         stoppUhr.startStoppUhr();
+    }
+    
+    public boolean saveGame(int[][] staten ,String fileName) throws IOException {
+    	return FileAnlegen.createFile(staten,fileName);
     }
     
     public void buttonFarbeÄndern(JButton spielfield) {

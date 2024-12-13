@@ -27,11 +27,11 @@ public class Menu extends JFrame {
 			schwierigkeitsButtons[i] = new JButton(spielfelderNamen[i]);
 			schwierigkeitsButtons[i].setBounds(50, 50 + (50 * i), 200, 40);
 			schwierigkeitsButtons[i].setActionCommand(i + "");
+			final String auswahlName = spielfelderNamen[i];
 			schwierigkeitsButtons[i].addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					System.out.println(e.getActionCommand());
-					new HitoriGame(Integer.parseInt(e.getActionCommand()), Menu.this);
+					new HitoriGame(Integer.parseInt(e.getActionCommand()), Menu.this,auswahlName);
 					closeWindow();
 				}
 			});
