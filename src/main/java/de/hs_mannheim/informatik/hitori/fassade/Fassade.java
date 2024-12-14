@@ -21,7 +21,26 @@ public class Fassade {
         stoppUhr.startStoppUhr();
     }
     
-    public boolean saveGame(int[][] staten ,String fileName) throws IOException {
+    public boolean saveGame(JButton[][] spielfield, String fileName,int dimension) throws IOException {
+    	int[][] staten = new int[dimension][dimension];
+		int schwarz = 0;
+		int grau = 1;
+		int weiss = 2;	
+		for (int i = 0; i < dimension; i++) {
+			for (int j = 0; j < dimension; j++) {
+				JButton tempButton = spielfield[i][j];
+				
+				if (tempButton.getBackground().equals(Color.black))
+					staten[i][j] = schwarz;
+				
+				else if(tempButton.getBackground().equals(Color.gray))
+					staten[i][j] = grau;
+				
+				else
+					staten[i][j] = weiss;
+			}
+		}
+    	
     	return spielSpeichern.spielSpeichern(fileName, staten);
     }
     

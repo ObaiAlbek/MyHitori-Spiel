@@ -32,7 +32,11 @@ public class SpeicherSystem {
 		}
 		return true;
 	}
-
+	
+	
+	public void spielWiederherstellen() {
+		
+	}
 	public boolean removeFile() {
 		// TODO
 		return true;

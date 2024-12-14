@@ -41,26 +41,9 @@ public class HitoriGame extends JFrame {
 	}
 	
 	public void saveGame() {
-		int[][] staten = new int[dimension][dimension];
-		int schwarz = 0;
-		int grau = 1;
-		int weiss = 2;
-		for (int i = 0; i < dimension; i++) {
-			for (int j = 0; j < dimension; j++) {
-				JButton tempButton = spielfield[i][j];
-				
-				if (tempButton.getBackground().equals(Color.black))
-					staten[i][j] = schwarz;
-				
-				else if(tempButton.getBackground().equals(Color.gray))
-					staten[i][j] = grau;
-				
-				else
-					staten[i][j] = weiss;
-			}
-		}
+		
 		try {
-			if (fassade.saveGame(staten ,hitoriGameName)) 
+			if (fassade.saveGame(spielfield,hitoriGameName,dimension)) 
 				JOptionPane.showMessageDialog(null,"Das Spiel wurde erfolgreich abgespeichert", "Information" ,JOptionPane.INFORMATION_MESSAGE);
 			else
 				JOptionPane.showMessageDialog(null,"Das Spiel ist bereits gespeichert", "Fehler",JOptionPane.ERROR_MESSAGE);
