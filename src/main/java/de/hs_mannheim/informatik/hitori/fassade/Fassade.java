@@ -10,9 +10,10 @@ import de.hs_mannheim.informatik.hitori.domain.*;
 
 public class Fassade {
     private final StoppUhr stoppUhr;
-
+    private SpeicherSystem spielSpeichern;
     public Fassade() {
-        stoppUhr = new StoppUhr();
+        this.stoppUhr = new StoppUhr();
+        this.spielSpeichern = new SpeicherSystem();
     }
     
 
@@ -21,7 +22,7 @@ public class Fassade {
     }
     
     public boolean saveGame(int[][] staten ,String fileName) throws IOException {
-    	return SaveGame.createFile(staten,fileName);
+    	return spielSpeichern.spielSpeichern(fileName, staten);
     }
     
     public void buttonFarbeÄndern(JButton spielfield) {

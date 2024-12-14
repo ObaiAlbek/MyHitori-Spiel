@@ -60,10 +60,11 @@ public class HitoriGame extends JFrame {
 			}
 		}
 		try {
-			if (fassade.saveGame(staten ,hitoriGameName))
-				 
+			if (fassade.saveGame(staten ,hitoriGameName)) 
 				JOptionPane.showMessageDialog(null,"Das Spiel wurde erfolgreich abgespeichert", "Information" ,JOptionPane.INFORMATION_MESSAGE);
-			
+			else
+				JOptionPane.showMessageDialog(null,"Das Spiel ist bereits gespeichert", "Fehler",JOptionPane.ERROR_MESSAGE);
+				
 		} catch (HeadlessException | IOException e) {
 			JOptionPane.showMessageDialog(null,"Das Spiel konnte nicht abgespeichert werden", "Fehler",JOptionPane.ERROR_MESSAGE);
 		}
