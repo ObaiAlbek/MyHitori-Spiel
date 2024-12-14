@@ -5,33 +5,43 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
+
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
+
+import de.hs_mannheim.informatik.hitori.fassade.Fassade;
 
 public class Menu extends JFrame {
 
     private JPanel contentPane,panel;
     private JButton[] schwierigkeitsButtons;
+	private Fassade fassade;
     final private static String[] spielfelderNamen = {"Hitori4x4_leicht", "Hitori5x5leicht", "Hitori8x8leicht", "Hitori8x8medium", "Hitori10x10medium", "Hitori15x15_medium"};
-
-    public Menu() {
+    private String auswahlName;
+  
+    public Menu() throws IOException {
+    	this.fassade = new Fassade();
     	WindowProperties();
     	difficultyButtons();
         showWindow();
     }
 
-	public void difficultyButtons() {
+	public void difficultyButtons() throws IOException {
 		schwierigkeitsButtons = new JButton[6];
 
 		for (int i = 0; i < schwierigkeitsButtons.length; i++) {
 			schwierigkeitsButtons[i] = new JButton(spielfelderNamen[i]);
 			schwierigkeitsButtons[i].setBounds(50, 50 + (50 * i), 200, 40);
 			schwierigkeitsButtons[i].setActionCommand(i + "");
-			final String auswahlName = spielfelderNamen[i];
+			auswahlName = spielfelderNamen[i];
+			if (spielWiederherstellen(auswahlName))
+				return;
 			schwierigkeitsButtons[i].addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					new HitoriGame(Integer.parseInt(e.getActionCommand()), Menu.this,auswahlName);
+					HitoriGame hitori = new HitoriGame(Integer.parseInt(e.getActionCommand()), Menu.this,auswahlName,fassade);
+					
 					closeWindow();
 				}
 			});
@@ -39,6 +49,15 @@ public class Menu extends JFrame {
 		}
 
      }
+	
+	public boolean spielWiederherstellen(String auswahlname) throws IOException {
+		if (fassade.spielWiederherstellen(auswahlName) != null) {
+			System.out.println("Test");
+			return true;
+		}
+		return false;
+			
+	}
     public void WindowProperties() {
     	 setTitle("Menu");
          setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

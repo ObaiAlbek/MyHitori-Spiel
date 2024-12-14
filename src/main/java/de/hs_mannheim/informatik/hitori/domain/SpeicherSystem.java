@@ -34,9 +34,24 @@ public class SpeicherSystem {
 	}
 	
 	
-	public void spielWiederherstellen() {
-		
+	public int[][] spielWiederherstellen(String fileName) throws IOException {
+	    String fullPath = filePfad + fileName + ".csv";
+	    List<int[]> lines = new ArrayList<>();
+
+	    try (BufferedReader reader = new BufferedReader(new FileReader(fullPath))) {
+	        String line;
+	        while ((line = reader.readLine()) != null) {
+	            String[] tokens = line.trim().split(" ");
+	            int[] row = Arrays.stream(tokens)
+	                              .mapToInt(Integer::parseInt)
+	                              .toArray();
+	            lines.add(row);
+	        }
+	    }
+
+	    return lines.toArray(new int[0][]);
 	}
+
 	public boolean removeFile() {
 		// TODO
 		return true;

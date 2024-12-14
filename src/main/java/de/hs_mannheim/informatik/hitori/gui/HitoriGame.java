@@ -17,16 +17,17 @@ public class HitoriGame extends JFrame {
 	private JButton[][] spielfield;
 	private int dimension;
 	private JPanel contentPane;
-	private Fassade fassade = new Fassade();
+	private Fassade fassade;
 	private Menu menu;
 	private int auswahl;
 	private Timer timer;
 	private String hitoriGameName;
 	
-	public HitoriGame(int auswahl, Menu menu, String hitoriGameName) {
+	public HitoriGame(int auswahl, Menu menu, String hitoriGameName, Fassade fassade) {
 		this.menu = menu;
 		this.auswahl = auswahl;
 		this.hitoriGameName = hitoriGameName;
+		this.fassade = fassade;
 		fassade.startTimer();
 	
 		WindowProperties();
@@ -39,6 +40,8 @@ public class HitoriGame extends JFrame {
 		
 		showWindow();
 	}
+	
+	
 	
 	public void saveGame() {
 		
