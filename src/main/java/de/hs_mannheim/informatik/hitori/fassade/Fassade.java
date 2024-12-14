@@ -21,36 +21,38 @@ public class Fassade {
         stoppUhr.startStoppUhr();
     }
     
-    public JButton[][] spielWiederherstellen(String fileName) throws IOException {
-        int[][] staten = spielSpeichern.spielWiederherstellen(fileName);
-       
-        JButton[][] spiel = new JButton[staten.length][staten[0].length];
-	
-        for (int i = 0; i < staten.length; i++) {
-            for (int j = 0; j < staten[i].length; j++) {
-                JButton button = new JButton(); 
-                spiel[i][j] = button; 
+	public JButton[][] spielWiederherstellen(String fileName) throws IOException {
+		int[][] staten = spielSpeichern.spielWiederherstellen(fileName);
+		
+		JButton[][] spiel = new JButton[staten.length][staten[0].length];
 
-                switch (staten[i][j]) {
-                    case 2: 
-                        button.setBackground(Color.WHITE);
-                        break;
-                    case 1: 
-                        button.setBackground(Color.GRAY);
-                        break;
-                    case 0: 
-                        button.setBackground(Color.BLACK);
-                        break;
-                    default:
-                        throw new IllegalArgumentException("Unbekannter Zustand: " + staten[i][j]);
-                }
+		for (int i = 0; i < staten.length; i++) {
+			for (int j = 0; j < staten[i].length; j++) {
+				JButton button = new JButton();
+				spiel[i][j] = button;
 
+				switch (staten[i][j]) {
+				case 2:
+					button.setBackground(Color.WHITE);
+					button.setText("" + staten[i][j]);
+					break;
+				case 1:
+					button.setBackground(Color.GRAY);
+					button.setText("" + staten[i][j]);
+					break;
+				case 0:
+					button.setBackground(Color.BLACK);
+					button.setText("" + staten[i][j]);
+					break;
+				default:
+					throw new IllegalArgumentException("Unbekannter Zustand: " + staten[i][j]);
+				}
 
-            }
-        }
+			}
+		}
 
-        return spiel; 
-    }
+		return spiel;
+	}
 
     
     public boolean saveGame(JButton[][] spielfield, String fileName,int dimension) throws IOException {

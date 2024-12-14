@@ -48,8 +48,11 @@ public class SpeicherSystem {
 	            lines.add(row);
 	        }
 	    }
-
-	    return lines.toArray(new int[0][]);
+	    if (lines != null)
+	    	return lines.toArray(new int[0][]);
+	    
+	    System.out.println("null");
+	    return null;
 	}
 
 	public boolean removeFile() {
