@@ -4,7 +4,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
-public class FileAnlegen {
+public class SaveGame {
 
 	private static String filePfad;
 

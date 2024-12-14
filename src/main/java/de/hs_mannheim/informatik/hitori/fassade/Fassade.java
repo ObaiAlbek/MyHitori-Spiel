@@ -21,7 +21,7 @@ public class Fassade {
     }
     
     public boolean saveGame(int[][] staten ,String fileName) throws IOException {
-    	return FileAnlegen.createFile(staten,fileName);
+    	return SaveGame.createFile(staten,fileName);
     }
     
     public void buttonFarbeÄndern(JButton spielfield) {

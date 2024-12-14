@@ -1,12 +1,9 @@
 package de.hs_mannheim.informatik.hitori.fassade;
 
 import static org.junit.jupiter.api.Assertions.*;
-
 import java.io.IOException;
-
 import org.junit.jupiter.api.Test;
-
-import de.hs_mannheim.informatik.hitori.domain.FileAnlegen;
+import de.hs_mannheim.informatik.hitori.domain.SaveGame;
 
 class FileAnlegenTest {
 
@@ -19,7 +16,7 @@ class FileAnlegenTest {
         };
         String fileName = "testFile.txt";
 		
-        assertTrue(FileAnlegen.createFile(teststaten,fileName));
+        assertTrue(SaveGame.createFile(teststaten,fileName));
         //assertTrue(FileAnlegen.createFile(null,null));
 		
 	}
