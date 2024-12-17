@@ -33,6 +33,7 @@ public class Fassade {
 
                 JButton button = new JButton();
                 spiel[i][j] = button;
+                button.addActionListener(e -> buttonFarbeÄndern(button));
 
                 switch (staten[i][j]) {
                     case 2:
@@ -51,8 +52,8 @@ public class Fassade {
                         throw new IllegalArgumentException("Unknown state: " + staten[i][j]);
                 }
             }
-        }
 
+        }
         return spiel;
     }
 
@@ -75,7 +76,7 @@ public class Fassade {
             }
         }
         System.out.println("Saving game to file: " + fileName);
-        boolean result = spielSpeichern.spielSpeichern(fileName, staten);
+        boolean result = spielSpeichern.spielSpeichern("Hitori4x4_leicht", staten);
         System.out.println("Save result: " + result);
         return result;
         //return spielSpeichern.spielSpeichern(fileName, staten);
