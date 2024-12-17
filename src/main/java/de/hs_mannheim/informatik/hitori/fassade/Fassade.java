@@ -30,21 +30,22 @@ public class Fassade {
 
         for (int i = 0; i < staten.length; i++) {
             for (int j = 0; j < staten[i].length; j++) {
+
                 JButton button = new JButton();
                 spiel[i][j] = button;
 
                 switch (staten[i][j]) {
                     case 2:
                         button.setBackground(Color.WHITE);
-                        button.setText("" + staten[i][j]);
+                        button.setText("" + getSpielfeldFeld(i, j, 0));
                         break;
                     case 1:
                         button.setBackground(Color.GRAY);
-                        button.setText("" + staten[i][j]);
+                        button.setText("" + getSpielfeldFeld(i, j, 0));
                         break;
                     case 0:
                         button.setBackground(Color.BLACK);
-                        button.setText("" + staten[i][j]);
+                        button.setText("" + getSpielfeldFeld(i, j, 0));
                         break;
                     default:
                         throw new IllegalArgumentException("Unknown state: " + staten[i][j]);
@@ -73,8 +74,11 @@ public class Fassade {
                     staten[i][j] = weiss;
             }
         }
-
-        return spielSpeichern.spielSpeichern(fileName, staten);
+        System.out.println("Saving game to file: " + fileName);
+        boolean result = spielSpeichern.spielSpeichern(fileName, staten);
+        System.out.println("Save result: " + result);
+        return result;
+        //return spielSpeichern.spielSpeichern(fileName, staten);
     }
 
     public void buttonFarbeÄndern(JButton spielfield) {

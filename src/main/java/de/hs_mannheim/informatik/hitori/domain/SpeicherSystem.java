@@ -42,10 +42,18 @@ public class SpeicherSystem {
 
     public int[][] spielWiederherstellen(String fileName) throws IOException {
         String fullPath = filePfad + fileName + ".csv";
-        File file = new File(fullPath);
+        File fileCheck = new File(fullPath);
 
-        if (!file.exists()) {
+        if (!fileCheck.exists()) {
+            int[][] defaultStaten = getDefaultHitoriState(fileName);
+            spielfelder.put(fileName, defaultStaten);
             createFile(fileName); // Create the file if it does not exist
+
+            // Ensure the file is created before proceeding
+            fileCheck = new File(fullPath);
+            if (!fileCheck.exists()) {
+                throw new IOException("File creation failed: " + fullPath);
+            }
         }
 
         List<int[]> lines = new ArrayList<>();
@@ -67,6 +75,18 @@ public class SpeicherSystem {
         }
 
         return lines.toArray(new int[0][]);
+    }
+
+    private int[][] getDefaultHitoriState(String fileName) {
+        if(fileName.equals("Hitori4x4_leicht")){
+            return new int[][] {
+                {1, 1, 1, 1},
+                {1, 1, 1, 1},
+                {1, 1, 1, 1},
+                {1, 1, 1, 2}
+            };
+        }
+        else return null;
     }
 
     public boolean removeFile() {
