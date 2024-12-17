@@ -60,6 +60,7 @@ public class HitoriGame extends JFrame {
 	
 	public void spielWiederherstellen(JButton[][] altesSpiel) {
 		this.spielfield = altesSpiel;
+		dimension = fassade.getDimension(auswahl);
 
 		JPanel panel = new JPanel();
 		panel.setBorder(new LineBorder(new Color(0, 0, 0), 2));
@@ -74,7 +75,7 @@ public class HitoriGame extends JFrame {
 			for (int j = 0; j < altesSpiel[i].length; j++) {
 				final int zeile = i;
 				final int spalte = j;
-				
+
 				spielfield[i][j].setPreferredSize(new Dimension(50, 50));
 
 				gbc.gridx = j;
