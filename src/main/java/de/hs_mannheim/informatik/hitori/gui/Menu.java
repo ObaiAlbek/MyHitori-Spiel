@@ -45,11 +45,11 @@ public class Menu extends JFrame {
 					spielAuswahl = Integer.parseInt(e.getActionCommand());
 					try {
 						if (spielWiederherstellen(spielAuswahl))
-							System.out.println("Ja");
-							//new HitoriGame(altesSpiel, Menu.this, spielNameAuswahl, fassade);
+							//System.out.println("Ja");
+							new HitoriGame(altesSpiel, Menu.this, spielNameAuswahl, fassade);
 						else
-							System.out.println("nein");
-							//new HitoriGame(spielAuswahl, Menu.this, spielNameAuswahl, fassade);
+							//System.out.println("nein");
+							new HitoriGame(spielAuswahl, Menu.this, spielNameAuswahl, fassade);
 					} catch (IOException e1) {
 						e1.printStackTrace();
 					}

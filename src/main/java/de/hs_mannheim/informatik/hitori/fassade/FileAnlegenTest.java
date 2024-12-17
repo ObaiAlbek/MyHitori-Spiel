@@ -1,8 +1,8 @@
 package de.hs_mannheim.informatik.hitori.fassade;
 
-import static org.junit.jupiter.api.Assertions.*;
-import java.io.IOException;
-import org.junit.jupiter.api.Test;
+//import static org.junit.jupiter.api.Assertions.*;
+//import java.io.IOException;
+//import org.junit.jupiter.api.Test;
 
 class FileAnlegenTest {
 //

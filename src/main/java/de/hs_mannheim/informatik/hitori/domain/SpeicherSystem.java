@@ -5,58 +5,72 @@ import java.util.*;
 
 public class SpeicherSystem {
 
-	private String filePfad;
+    private String filePfad;
     private Map<String, int[][]> spielfelder = new HashMap<>();
-    
+
     public SpeicherSystem() {
-    	this.filePfad = "src/main/resources/database/speicherDatein/";
-    	this.spielfelder = new HashMap<>();
+        this.filePfad = "src/main/resources/database/speicherDateien/";
+        this.spielfelder = new HashMap<>();
     }
+
     public boolean spielSpeichern(String name, int[][] feld) throws IOException {
         spielfelder.put(name, feld);
         return createFile(name);
     }
 
-	public boolean createFile(String fileName) throws IOException {
-		String fullPath = filePfad + fileName + ".csv";
+    public boolean createFile(String fileName) throws IOException {
+        String fullPath = filePfad + fileName + ".csv";
+        File file = new File(fullPath);
 
-		int[][] staten = spielfelder.get(fileName);
+        if (!file.exists()) {
+            file.getParentFile().mkdirs(); // Create directories if they do not exist
+            file.createNewFile(); // Create the file if it does not exist
+        }
 
-		try (FileWriter writer = new FileWriter(fullPath)) {
-			for (int[] zeilen : staten) {
-				for (int state : zeilen)
-					writer.write(state + " ");
+        int[][] staten = spielfelder.get(fileName);
 
-				writer.write("\n");
-			}
-		}
-		return true;
-	}
-	
-	
-	public int[][] spielWiederherstellen(String fileName) throws IOException {
-	    String fullPath = filePfad + fileName + ".csv";
-	    List<int[]> lines = new ArrayList<>();
+        try (FileWriter writer = new FileWriter(file)) {
+            for (int[] zeilen : staten) {
+                for (int state : zeilen) {
+                    writer.write(state + " ");
+                }
+                writer.write("\n");
+            }
+        }
+        return true;
+    }
 
-	    try (BufferedReader reader = new BufferedReader(new FileReader(fullPath))) {
-	        String line;
-	        while ((line = reader.readLine()) != null) {
-	            String[] tokens = line.trim().split(" ");
-	            int[] row = Arrays.stream(tokens)
-	                              .mapToInt(Integer::parseInt)
-	                              .toArray();
-	            lines.add(row);
-	        }
-	    }
-	    if (lines != null)
-	    	return lines.toArray(new int[0][]);
-	    
-	    System.out.println("null");
-	    return null;
-	}
+    public int[][] spielWiederherstellen(String fileName) throws IOException {
+        String fullPath = filePfad + fileName + ".csv";
+        File file = new File(fullPath);
 
-	public boolean removeFile() {
-		// TODO
-		return true;
-	}
+        if (!file.exists()) {
+            createFile(fileName); // Create the file if it does not exist
+        }
+
+        List<int[]> lines = new ArrayList<>();
+
+        try (BufferedReader reader = new BufferedReader(new FileReader(fullPath))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] tokens = line.trim().split(" ");
+                int[] row = Arrays.stream(tokens)
+                                  .mapToInt(Integer::parseInt)
+                                  .toArray();
+                lines.add(row);
+            }
+        }
+
+        if (lines.isEmpty()) {
+            System.err.println("The file is empty or invalid: " + fullPath);
+            return null;
+        }
+
+        return lines.toArray(new int[0][]);
+    }
+
+    public boolean removeFile() {
+        // TODO
+        return true;
+    }
 }
