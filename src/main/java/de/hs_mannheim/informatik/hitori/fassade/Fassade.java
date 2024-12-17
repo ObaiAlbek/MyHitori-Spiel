@@ -37,15 +37,15 @@ public class Fassade {
                 switch (staten[i][j]) {
                     case 2:
                         button.setBackground(Color.WHITE);
-                        button.setText("" + getSpielfeldFeld(i, j, 0));
+                        button.setText("" + getSpielfeldFeld(j, i, 0));
                         break;
                     case 1:
                         button.setBackground(Color.GRAY);
-                        button.setText("" + getSpielfeldFeld(i, j, 0));
+                        button.setText("" + getSpielfeldFeld(j, i, 0));
                         break;
                     case 0:
                         button.setBackground(Color.BLACK);
-                        button.setText("" + getSpielfeldFeld(i, j, 0));
+                        button.setText("" + getSpielfeldFeld(j, i, 0));
                         break;
                     default:
                         throw new IllegalArgumentException("Unknown state: " + staten[i][j]);

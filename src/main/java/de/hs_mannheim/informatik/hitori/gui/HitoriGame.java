@@ -114,8 +114,8 @@ public class HitoriGame extends JFrame {
 		
 		for (int i = 0; i < dimension; i++) {
 			for (int j = 0; j < dimension; j++) {
-				final int zeile = i;
-				final int spalte = j;
+				int zeile = i;
+				int spalte = j;
 				
 				spielfield[i][j] = new JButton(String.valueOf(Fassade.getSpielfeldFeld(j, i, auswahl)));
 				spielfield[i][j].setForeground(Color.GREEN);
