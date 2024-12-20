@@ -24,39 +24,34 @@ public class HitoriGame extends JFrame {
 	private String hitoriGameName;
 	
 	public HitoriGame(int auswahl, Menu menu, String hitoriGameName, Fassade fassade) {
-		this.menu = menu;
-		this.auswahl = auswahl;
-		this.hitoriGameName = hitoriGameName;
-		this.fassade = fassade;
-		fassade.startTimer();
-	
-		WindowProperties();
-		addButtonsToWindow();
-		pauseTime();
-		addTimeToWindow();
-		gameField();
-		
-		saveButton.addActionListener(e -> saveGame());
-		
-		showWindow();
+	   
+		this(null, menu, hitoriGameName, fassade); // Aufruf des anderen Konstruktors
+	    this.auswahl = auswahl; 
+	    gameField(); 
 	}
-	
+
 	public HitoriGame(JButton[][] altesSpiel, Menu menu, String hitoriGameName, Fassade fassade) {
+	    
 		this.menu = menu;
-		this.hitoriGameName = hitoriGameName;
-		this.fassade = fassade;
-		fassade.startTimer();
-	
-		WindowProperties();
-		addButtonsToWindow();
-		pauseTime();
-		addTimeToWindow();
-		spielWiederherstellen(altesSpiel);
-		
-		saveButton.addActionListener(e -> saveGame());
-		
-		showWindow();
+	    this.hitoriGameName = hitoriGameName;
+	    this.fassade = fassade;
+	    fassade.startTimer();
+
+	    WindowProperties();
+	    addButtonsToWindow();
+	    pauseTime();
+	    addTimeToWindow();
+
+	    if (altesSpiel == null) 
+	        gameField(); 
+	    else 
+	        spielWiederherstellen(altesSpiel);
+	    
+
+	    saveButton.addActionListener(e -> saveGame());
+	    showWindow();
 	}
+
 	
 	public void spielWiederherstellen(JButton[][] altesSpiel) {
 		this.spielfield = altesSpiel;
