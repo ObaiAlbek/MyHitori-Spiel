@@ -69,10 +69,9 @@ public class SpeicherSystem {
             }
         }
 
-        if (lines.isEmpty()) {
-            System.err.println("The file is empty or invalid: " + fullPath);
-            return null;
-        }
+        if (lines.isEmpty()) 
+        	throw new IOException("The file is empty or invalid: " + fullPath);
+        
 
         return lines.toArray(new int[0][]);
     }

@@ -17,6 +17,17 @@ public class Fassade {
     public void startTimer() {
         stoppUhr.startStoppUhr();
     }
+    
+	public void spielfieldZurücksetzen(JButton[][] spielfiled) {
+
+		for (int i = 0; i < spielfiled.length; i++)
+			for (int j = 0; j < spielfiled[i].length; j++) {
+				spielfiled[i][j].setBackground(Color.gray);
+				spielfiled[i][j].setForeground(Color.white);
+
+			}
+
+	}
 
     public JButton[][] spielWiederherstellen(String fileName) throws IOException {
         int[][] staten = spielSpeichern.spielWiederherstellen(fileName);
