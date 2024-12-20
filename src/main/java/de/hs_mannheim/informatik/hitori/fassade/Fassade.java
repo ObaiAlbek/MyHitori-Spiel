@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.io.IOException;
 import javax.swing.JButton;
 import de.hs_mannheim.informatik.hitori.domain.*;
+import de.hs_mannheim.informatik.hitori.gui.HitoriGame;
 
 public class Fassade {
     private final StoppUhr stoppUhr;
@@ -18,35 +19,33 @@ public class Fassade {
         stoppUhr.startStoppUhr();
     }
 
-    public JButton[][] spielWiederherstellen(String fileName) throws IOException {
+    public void spielWiederherstellen(String fileName, HitoriGame hitorigame) throws IOException {
         int[][] staten = spielSpeichern.spielWiederherstellen(fileName);
-
+        
         if (staten == null || staten.length == 0 || staten[0].length == 0) {
             //throw new IOException("The game state is empty or invalid.");
-            return null;
+            return;
         }
-
-        JButton[][] spiel = new JButton[staten.length][staten[0].length];
-
+        
         for (int i = 0; i < staten.length; i++) {
             for (int j = 0; j < staten[i].length; j++) {
 
-                JButton button = new JButton();
-                spiel[i][j] = button;
-                button.addActionListener(e -> buttonFarbeÄndern(button));
-
+            	
                 switch (staten[i][j]) {
                     case 2:
-                        button.setBackground(Color.WHITE);
-                        button.setText("" + getSpielfeldFeld(j, i, 0));
+                        hitorigame.getButton(i, j).setBackground(Color.WHITE);
+                        hitorigame.getButton(i, j).setForeground(Color.BLACK);
+                        hitorigame.getButton(i, j).setText("" + getSpielfeldFeld(j, i, 0));
                         break;
                     case 1:
-                        button.setBackground(Color.GRAY);
-                        button.setText("" + getSpielfeldFeld(j, i, 0));
+                    	hitorigame.getButton(i, j).setBackground(Color.GRAY);
+                    	hitorigame.getButton(i, j).setForeground(Color.WHITE);
+                    	hitorigame.getButton(i, j).setText("" + getSpielfeldFeld(j, i, 0));
                         break;
                     case 0:
-                        button.setBackground(Color.BLACK);
-                        button.setText("" + getSpielfeldFeld(j, i, 0));
+                    	hitorigame.getButton(i, j).setBackground(Color.BLACK);
+                    	hitorigame.getButton(i, j).setForeground(Color.WHITE);
+                    	hitorigame.getButton(i, j).setText("" + getSpielfeldFeld(j, i, 0));
                         break;
                     default:
                         throw new IllegalArgumentException("Unknown state: " + staten[i][j]);
@@ -54,7 +53,6 @@ public class Fassade {
             }
 
         }
-        return spiel;
     }
 
     public boolean saveGame(JButton[][] spielfield, String fileName, int dimension) throws IOException {

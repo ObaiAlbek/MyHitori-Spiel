@@ -41,50 +41,6 @@ public class HitoriGame extends JFrame {
 		showWindow();
 	}
 	
-	public HitoriGame(JButton[][] altesSpiel, Menu menu, String hitoriGameName, Fassade fassade) {
-		this.menu = menu;
-		this.hitoriGameName = hitoriGameName;
-		this.fassade = fassade;
-		fassade.startTimer();
-	
-		WindowProperties();
-		addButtonsToWindow();
-		pauseTime();
-		addTimeToWindow();
-		spielWiederherstellen(altesSpiel);
-		
-		saveButton.addActionListener(e -> saveGame());
-		
-		showWindow();
-	}
-	
-	public void spielWiederherstellen(JButton[][] altesSpiel) {
-		this.spielfield = altesSpiel;
-		dimension = fassade.getDimension(auswahl);
-
-		JPanel panel = new JPanel();
-		panel.setBorder(new LineBorder(new Color(0, 0, 0), 2));
-		panel.setBounds(68, 119, 900, 500);
-		contentPane.add(panel);
-		panel.setLayout(new GridBagLayout());
-		GridBagConstraints gbc = new GridBagConstraints();
-		gbc.fill = GridBagConstraints.BOTH;
-		gbc.insets = new Insets(3, 3, 3, 3);
-
-		for (int i = 0; i < altesSpiel.length; i++) {
-			for (int j = 0; j < altesSpiel[i].length; j++) {
-				final int zeile = i;
-				final int spalte = j;
-
-				spielfield[i][j].setPreferredSize(new Dimension(50, 50));
-
-				gbc.gridx = j;
-				gbc.gridy = i;
-				panel.add(spielfield[i][j], gbc);
-			}
-		}
-	}
-	
 	
 	public void saveGame() {
 		
@@ -214,6 +170,10 @@ public class HitoriGame extends JFrame {
 				timer.start();
 			}
 		});
+	}
+	
+	public JButton getButton(int x, int y) {
+		return spielfield[x][y];
 	}
 	
 	// Getter Methoden

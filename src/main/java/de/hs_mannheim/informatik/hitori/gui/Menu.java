@@ -20,7 +20,6 @@ public class Menu extends JFrame {
             "Hitori8x8medium", "Hitori10x10medium", "Hitori15x15_medium" };
     private String spielNameAuswahl;
     private int spielAuswahl;
-    private JButton[][] altesSpiel;
 
     public Menu() throws IOException {
         this.fassade = new Fassade();
@@ -43,14 +42,8 @@ public class Menu extends JFrame {
                 public void actionPerformed(ActionEvent e) {
                     spielAuswahl = Integer.parseInt(e.getActionCommand());
                     try {
-                        String fileName = spielfelderNamen[spielAuswahl] + ".save";
-                        File saveFile = new File(fileName);
-                        if (saveFile.exists()) {
-                            altesSpiel = fassade.spielWiederherstellen(fileName);
-                            new HitoriGame(altesSpiel, Menu.this, spielNameAuswahl, fassade);
-                        } else {
-                            new HitoriGame(spielAuswahl, Menu.this, spielNameAuswahl, fassade);
-                        }
+                        HitoriGame hitorigame = new HitoriGame(spielAuswahl, Menu.this, spielNameAuswahl, fassade);
+                        fassade.spielWiederherstellen(spielfelderNamen[spielAuswahl], hitorigame);
                     } catch (IOException e1) {
                         e1.printStackTrace();
                     }
