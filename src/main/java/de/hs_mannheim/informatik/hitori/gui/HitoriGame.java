@@ -8,38 +8,101 @@ import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.IOException;
 
 import javax.swing.border.LineBorder;
 
 public class HitoriGame extends JFrame {
 	private JButton saveButton, undoButton, redoButton, resetButton;
 	private JButton[][] spielfield;
+	private int dimension;
 	private JPanel contentPane;
-	private Fassade fassade = new Fassade();
+	private Fassade fassade;
 	private Menu menu;
 	private int auswahl;
 	private Timer timer;
+	private String hitoriGameName;
 	
-	public HitoriGame(int auswahl, Menu menu) {
+	public HitoriGame(int auswahl, Menu menu, String hitoriGameName, Fassade fassade) {
 		this.menu = menu;
 		this.auswahl = auswahl;
+		this.hitoriGameName = hitoriGameName;
+		this.fassade = fassade;
 		fassade.startTimer();
-		
-		
-		
+	
 		WindowProperties();
 		addButtonsToWindow();
 		pauseTime();
 		addTimeToWindow();
 		gameField();
+		
+		saveButton.addActionListener(e -> saveGame());
+		
 		showWindow();
 	}
 	
+	public HitoriGame(JButton[][] altesSpiel, Menu menu, String hitoriGameName, Fassade fassade) {
+		this.menu = menu;
+		this.hitoriGameName = hitoriGameName;
+		this.fassade = fassade;
+		fassade.startTimer();
+	
+		WindowProperties();
+		addButtonsToWindow();
+		pauseTime();
+		addTimeToWindow();
+		spielWiederherstellen(altesSpiel);
+		
+		saveButton.addActionListener(e -> saveGame());
+		
+		showWindow();
+	}
+	
+	public void spielWiederherstellen(JButton[][] altesSpiel) {
+		this.spielfield = altesSpiel;
+		dimension = fassade.getDimension(auswahl);
+
+		JPanel panel = new JPanel();
+		panel.setBorder(new LineBorder(new Color(0, 0, 0), 2));
+		panel.setBounds(68, 119, 900, 500);
+		contentPane.add(panel);
+		panel.setLayout(new GridBagLayout());
+		GridBagConstraints gbc = new GridBagConstraints();
+		gbc.fill = GridBagConstraints.BOTH;
+		gbc.insets = new Insets(3, 3, 3, 3);
+
+		for (int i = 0; i < altesSpiel.length; i++) {
+			for (int j = 0; j < altesSpiel[i].length; j++) {
+				final int zeile = i;
+				final int spalte = j;
+
+				spielfield[i][j].setPreferredSize(new Dimension(50, 50));
+
+				gbc.gridx = j;
+				gbc.gridy = i;
+				panel.add(spielfield[i][j], gbc);
+			}
+		}
+	}
+	
+	
+	public void saveGame() {
+		
+		try {
+			if (fassade.saveGame(spielfield,hitoriGameName,dimension)) 
+				JOptionPane.showMessageDialog(null,"Das Spiel wurde erfolgreich abgespeichert", "Information" ,JOptionPane.INFORMATION_MESSAGE);
+			else
+				JOptionPane.showMessageDialog(null,"Das Spiel ist bereits gespeichert", "Fehler",JOptionPane.ERROR_MESSAGE);
+				
+		} catch (HeadlessException | IOException e) {
+			JOptionPane.showMessageDialog(null,"Das Spiel konnte nicht abgespeichert werden", "Fehler",JOptionPane.ERROR_MESSAGE);
+		}
+	}
 	
 	
 	// Elemente des Gemawindow
 	public void gameField() {
-		int dimension = fassade.getDimension(auswahl);
+		dimension = fassade.getDimension(auswahl);
 		JPanel panel = new JPanel();
 		panel.setBorder(new LineBorder(new Color(0, 0, 0), 2));
 		panel.setBounds(68, 119, 900, 500);
@@ -49,13 +112,14 @@ public class HitoriGame extends JFrame {
 		gbc.fill = GridBagConstraints.BOTH;
 		gbc.insets = new Insets(3, 3, 3, 3); 
 		spielfield = new JButton[dimension][dimension];
+		
 		for (int i = 0; i < dimension; i++) {
 			for (int j = 0; j < dimension; j++) {
-				final int zeile = i;
-				final int spalte = j;
+				int zeile = i;
+				int spalte = j;
 				
 				spielfield[i][j] = new JButton(String.valueOf(Fassade.getSpielfeldFeld(j, i, auswahl)));
-				spielfield[i][j].setForeground(Color.GREEN);
+				spielfield[i][j].setForeground(Color.white);
 				spielfield[i][j].setBackground(Color.GRAY);
 
 				spielfield[i][j].setPreferredSize(new Dimension(50, 50));
