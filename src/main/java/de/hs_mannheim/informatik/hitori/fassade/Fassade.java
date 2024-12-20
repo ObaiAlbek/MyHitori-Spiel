@@ -83,12 +83,16 @@ public class Fassade {
     }
 
     public void buttonFarbeÄndern(JButton spielfield) {
-        if (spielfield.getBackground().equals(Color.gray))
+        if (spielfield.getBackground().equals(Color.gray)) {
             spielfield.setBackground(Color.black);
-        else if (spielfield.getBackground().equals(Color.black))
-            spielfield.setBackground(Color.white);
-        else
+        	spielfield.setForeground(Color.white);
+        } else if (spielfield.getBackground().equals(Color.black)) {
+        	spielfield.setForeground(Color.black);
+        	spielfield.setBackground(Color.white);
+        }  else {
             spielfield.setBackground(Color.gray);
+        	spielfield.setForeground(Color.white);
+        }
     }
 
     public String getTime() {
