@@ -44,6 +44,7 @@ public class Menu extends JFrame {
                     try {
                         HitoriGame hitorigame = new HitoriGame(spielAuswahl, Menu.this, spielNameAuswahl, fassade);
                         fassade.spielWiederherstellen(spielfelderNamen[spielAuswahl], hitorigame);
+                        closeWindow();
                     } catch (IOException e1) {
                         e1.printStackTrace();
                     }
