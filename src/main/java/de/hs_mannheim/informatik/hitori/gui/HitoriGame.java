@@ -80,7 +80,13 @@ public class HitoriGame extends JFrame {
 
 				spielfield[i][j].setPreferredSize(new Dimension(50, 50));
 
-				spielfield[i][j].addActionListener(e -> fassade.buttonFarbeÄndern(spielfield[zeile][spalte]));
+				spielfield[i][j].addActionListener(e -> {
+                    try {
+                        fassade.buttonFarbeÄndern(spielfield[zeile][spalte],spielfield,hitoriGameName,dimension);
+                    } catch (IOException ex) {
+                        throw new RuntimeException(ex);
+                    }
+                });
 
 				gbc.gridx = j;
 				gbc.gridy = i;

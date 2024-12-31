@@ -80,7 +80,8 @@ public class Fassade {
         //return spielSpeichern.spielSpeichern(fileName, staten);
     }
 
-    public void buttonFarbeÄndern(JButton spielfield) {
+    public void buttonFarbeÄndern(JButton spielfield, JButton[][] spielfeld, String fileName, int dimension) throws IOException {
+        saveGame(spielfeld, fileName, dimension);
         if (spielfield.getBackground().equals(Color.gray)) {
             spielfield.setBackground(Color.black);
         	spielfield.setForeground(Color.white);
