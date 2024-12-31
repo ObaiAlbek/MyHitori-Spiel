@@ -74,7 +74,7 @@ public class Fassade {
             }
         }
         System.out.println("Saving game to file: " + fileName);
-        boolean result = spielSpeichern.spielSpeichern("Hitori4x4_leicht", staten);
+        boolean result = spielSpeichern.spielSpeichern(fileName, staten);
         System.out.println("Save result: " + result);
         return result;
         //return spielSpeichern.spielSpeichern(fileName, staten);

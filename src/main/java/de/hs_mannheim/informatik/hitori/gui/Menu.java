@@ -35,13 +35,15 @@ public class Menu extends JFrame {
             schwierigkeitsButtons[i] = new JButton(spielfelderNamen[i]);
             schwierigkeitsButtons[i].setBounds(50, 50 + (50 * i), 200, 40);
             schwierigkeitsButtons[i].setActionCommand(i + "");
-            spielNameAuswahl = spielfelderNamen[i];
+
 
             schwierigkeitsButtons[i].addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     spielAuswahl = Integer.parseInt(e.getActionCommand());
+                    spielNameAuswahl = spielfelderNamen[spielAuswahl];
                     try {
+                        System.out.println("hitoriGameName: " + spielNameAuswahl);
                         HitoriGame hitorigame = new HitoriGame(spielAuswahl, Menu.this, spielNameAuswahl, fassade);
                         fassade.spielWiederherstellen(spielfelderNamen[spielAuswahl], hitorigame);
                         closeWindow();

@@ -82,6 +82,7 @@ public class HitoriGame extends JFrame {
 
 				spielfield[i][j].addActionListener(e -> {
                     try {
+						System.out.println("hitoriGameName: " + hitoriGameName);
                         fassade.buttonFarbeÄndern(spielfield[zeile][spalte],spielfield,hitoriGameName,dimension);
                     } catch (IOException ex) {
                         throw new RuntimeException(ex);
