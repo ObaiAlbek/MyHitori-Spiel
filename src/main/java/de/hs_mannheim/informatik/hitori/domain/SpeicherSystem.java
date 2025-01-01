@@ -31,9 +31,9 @@ public class SpeicherSystem {
 
         try (FileWriter writer = new FileWriter(file)) {
             for (int[] zeilen : staten) {
-                for (int state : zeilen) {
+                for (int state : zeilen) 
                     writer.write(state + " ");
-                }
+      
                 writer.write("\n");
             }
         }
@@ -89,7 +89,6 @@ public class SpeicherSystem {
     }
 
     public boolean removeFile() {
-        // TODO
         return true;
     }
 }

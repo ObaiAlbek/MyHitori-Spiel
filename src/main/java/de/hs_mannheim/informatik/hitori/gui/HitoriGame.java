@@ -2,14 +2,12 @@
 package de.hs_mannheim.informatik.hitori.gui;
 
 import de.hs_mannheim.informatik.hitori.fassade.Fassade;
-
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
-
 import javax.swing.border.LineBorder;
 
 public class HitoriGame extends JFrame {
@@ -22,41 +20,48 @@ public class HitoriGame extends JFrame {
 	private int auswahl;
 	private Timer timer;
 	private String hitoriGameName;
-	
+
 	public HitoriGame(int auswahl, Menu menu, String hitoriGameName, Fassade fassade) {
 		this.menu = menu;
 		this.auswahl = auswahl;
 		this.hitoriGameName = hitoriGameName;
 		this.fassade = fassade;
 		fassade.startTimer();
-	
+
 		WindowProperties();
 		addButtonsToWindow();
 		pauseTime();
 		addTimeToWindow();
 		gameField();
-		
+
 		saveButton.addActionListener(e -> saveGame());
-		
+		resetButton.addActionListener(e -> spielfieldZurücksetzen());
 		showWindow();
 	}
-	
-	
+
 	public void saveGame() {
-		
+
 		try {
-			if (fassade.saveGame(spielfield,hitoriGameName,dimension)) 
-				JOptionPane.showMessageDialog(null,"Das Spiel wurde erfolgreich abgespeichert", "Information" ,JOptionPane.INFORMATION_MESSAGE);
+			if (fassade.saveGame(spielfield, hitoriGameName, dimension))
+				JOptionPane.showMessageDialog(null, "Das Spiel wurde erfolgreich abgespeichert", "Information",
+						JOptionPane.INFORMATION_MESSAGE);
 			else
-				JOptionPane.showMessageDialog(null,"Das Spiel ist bereits gespeichert", "Fehler",JOptionPane.ERROR_MESSAGE);
-				
+				JOptionPane.showMessageDialog(null, "Das Spiel ist bereits gespeichert", "Fehler",
+						JOptionPane.ERROR_MESSAGE);
+
 		} catch (HeadlessException | IOException e) {
-			JOptionPane.showMessageDialog(null,"Das Spiel konnte nicht abgespeichert werden", "Fehler",JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(null, "Das Spiel konnte nicht abgespeichert werden", "Fehler",
+					JOptionPane.ERROR_MESSAGE);
 		}
 	}
 	
 	
-	// Elemente des Gemawindow
+
+	public void spielfieldZurücksetzen() {
+		fassade.spielfieldZurücksetzen(spielfield);
+	}
+
+	// Elemente des GemaWindow
 	public void gameField() {
 		dimension = fassade.getDimension(auswahl);
 		JPanel panel = new JPanel();
@@ -66,14 +71,14 @@ public class HitoriGame extends JFrame {
 		panel.setLayout(new GridBagLayout());
 		GridBagConstraints gbc = new GridBagConstraints();
 		gbc.fill = GridBagConstraints.BOTH;
-		gbc.insets = new Insets(3, 3, 3, 3); 
+		gbc.insets = new Insets(3, 3, 3, 3);
 		spielfield = new JButton[dimension][dimension];
-		
+
 		for (int i = 0; i < dimension; i++) {
 			for (int j = 0; j < dimension; j++) {
 				int zeile = i;
 				int spalte = j;
-				
+
 				spielfield[i][j] = new JButton(String.valueOf(Fassade.getSpielfeldFeld(j, i, auswahl)));
 				spielfield[i][j].setForeground(Color.white);
 				spielfield[i][j].setBackground(Color.GRAY);
@@ -81,13 +86,12 @@ public class HitoriGame extends JFrame {
 				spielfield[i][j].setPreferredSize(new Dimension(50, 50));
 
 				spielfield[i][j].addActionListener(e -> {
-                    try {
-						System.out.println("hitoriGameName: " + hitoriGameName);
-                        fassade.buttonFarbeÄndern(spielfield[zeile][spalte],spielfield,hitoriGameName,dimension);
-                    } catch (IOException ex) {
-                        throw new RuntimeException(ex);
-                    }
-                });
+					try {
+						fassade.buttonFarbeÄndern(spielfield[zeile][spalte], spielfield, hitoriGameName, dimension);
+					} catch (IOException ex) {
+						throw new RuntimeException(ex);
+					}
+				});
 
 				gbc.gridx = j;
 				gbc.gridy = i;
@@ -96,9 +100,9 @@ public class HitoriGame extends JFrame {
 		}
 
 	}
-	
- 	public void addTimeToWindow() {
- 		JLabel timeLabel = new JLabel(fassade.getTime());
+
+	public void addTimeToWindow() {
+		JLabel timeLabel = new JLabel(fassade.getTime());
 		timeLabel.setFont(new Font("Tahoma", Font.BOLD, 14));
 		timeLabel.setBounds(68, 74, 83, 34);
 		contentPane.add(timeLabel);
@@ -106,7 +110,7 @@ public class HitoriGame extends JFrame {
 		timer = new Timer(10, e -> timeLabel.setText(fassade.getTime()));
 		timer.start();
 	}
-	
+
 	public void addButtonsToWindow() {
 		JMenuBar menuBar = new JMenuBar();
 		menuBar.setToolTipText("Menu");
@@ -151,20 +155,12 @@ public class HitoriGame extends JFrame {
 		contentPane.add(resetButton);
 	}
 
-	public void showWindow() {
-		this.setVisible(true);
-	}
-
-	public void closeWindow() {
-		this.setVisible(false);
-	}
-	
 	public void WindowProperties() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 1000, 700);
 		this.setResizable(false);
 	}
-	
+
 	public void pauseTime() {
 		this.addWindowListener(new WindowAdapter() {
 			@Override
@@ -178,25 +174,17 @@ public class HitoriGame extends JFrame {
 			}
 		});
 	}
-	
+
 	public JButton getButton(int x, int y) {
 		return spielfield[x][y];
 	}
-	
-	// Getter Methoden
- 	public JButton getSaveButton() {
-		return saveButton;
+
+	public void showWindow() {
+		this.setVisible(true);
 	}
 
-	public JButton getUndoButton() {
-		return undoButton;
+	public void closeWindow() {
+		this.setVisible(false);
 	}
 
-	public JButton getRedoButton() {
-		return redoButton;
-	}
-
-	public JButton getResetButton() {
-		return resetButton;
-	}
 }
