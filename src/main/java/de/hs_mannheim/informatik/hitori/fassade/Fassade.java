@@ -19,7 +19,7 @@ public class Fassade {
         stoppUhr.startStoppUhr();
     }
 
-    public void spielWiederherstellen(String fileName, HitoriGame hitorigame) throws IOException {
+    public void spielWiederherstellen(String fileName, HitoriGame hitorigame, int auswahl) throws IOException {
         int[][] staten = spielSpeichern.spielWiederherstellen(fileName);
         
         if (staten == null || staten.length == 0 || staten[0].length == 0) {
@@ -35,17 +35,17 @@ public class Fassade {
                     case 2:
                         hitorigame.getButton(i, j).setBackground(Color.WHITE);
                         hitorigame.getButton(i, j).setForeground(Color.BLACK);
-                        hitorigame.getButton(i, j).setText("" + getSpielfeldFeld(j, i, 0));
+                        hitorigame.getButton(i, j).setText("" + getSpielfeldFeld(j, i, auswahl));
                         break;
                     case 1:
                     	hitorigame.getButton(i, j).setBackground(Color.GRAY);
                     	hitorigame.getButton(i, j).setForeground(Color.WHITE);
-                    	hitorigame.getButton(i, j).setText("" + getSpielfeldFeld(j, i, 0));
+                    	hitorigame.getButton(i, j).setText("" + getSpielfeldFeld(j, i, auswahl));
                         break;
                     case 0:
                     	hitorigame.getButton(i, j).setBackground(Color.BLACK);
                     	hitorigame.getButton(i, j).setForeground(Color.WHITE);
-                    	hitorigame.getButton(i, j).setText("" + getSpielfeldFeld(j, i, 0));
+                    	hitorigame.getButton(i, j).setText("" + getSpielfeldFeld(j, i, auswahl));
                         break;
                     default:
                         throw new IllegalArgumentException("Unknown state: " + staten[i][j]);
