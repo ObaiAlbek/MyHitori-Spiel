@@ -73,6 +73,12 @@ public class HitoriGame extends JFrame {
 		panel.setBounds(68, 119, 900, 500);
 		contentPane.add(panel);
 		panel.setLayout(new GridBagLayout());
+		
+		JLabel spielNameLable = new JLabel("SpielName: " + hitoriGameName);
+		spielNameLable.setForeground(new Color(0, 128, 0));
+		spielNameLable.setFont(new Font("Tahoma", Font.BOLD, 14));
+		spielNameLable.setBounds(400, 69, 200, 44);
+		contentPane.add(spielNameLable);
 		GridBagConstraints gbc = new GridBagConstraints();
 		gbc.fill = GridBagConstraints.BOTH;
 		gbc.insets = new Insets(3, 3, 3, 3);
@@ -190,5 +196,4 @@ public class HitoriGame extends JFrame {
 	public void closeWindow() {
 		this.setVisible(false);
 	}
-
 }
