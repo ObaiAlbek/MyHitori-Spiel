@@ -19,7 +19,7 @@ public class Fassade {
         stoppUhr.startStoppUhr();
     }
     
-	public void spielfieldZurücksetzen(JButton[][] spielfiled) {
+	public void spielfieldZurücksetzen(JButton[][] spielfiled,String fileName, int dimension) throws IOException {
 
 		for (int i = 0; i < spielfiled.length; i++)
 			for (int j = 0; j < spielfiled[i].length; j++) {
@@ -27,6 +27,7 @@ public class Fassade {
 				spielfiled[i][j].setForeground(Color.white);
 
 			}
+		saveGame(spielfiled,fileName,dimension);
 
 	}
 

@@ -58,7 +58,11 @@ public class HitoriGame extends JFrame {
 	
 
 	public void spielfieldZurücksetzen() {
-		fassade.spielfieldZurücksetzen(spielfield);
+		try {
+			fassade.spielfieldZurücksetzen(spielfield,hitoriGameName, dimension);
+		} catch (IOException e) {
+			JOptionPane.showMessageDialog(null, e.toString(), "Fehler", JOptionPane.ERROR_MESSAGE);
+		}
 	}
 
 	// Elemente des GemaWindow
