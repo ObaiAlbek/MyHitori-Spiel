@@ -31,9 +31,9 @@ public class SpeicherSystem {
 
         try (FileWriter writer = new FileWriter(file)) {
             for (int[] zeilen : staten) {
-                for (int state : zeilen) 
+                for (int state : zeilen)
                     writer.write(state + " ");
-      
+
                 writer.write("\n");
             }
         }
@@ -63,32 +63,86 @@ public class SpeicherSystem {
             while ((line = reader.readLine()) != null) {
                 String[] tokens = line.trim().split(" ");
                 int[] row = Arrays.stream(tokens)
-                                  .mapToInt(Integer::parseInt)
-                                  .toArray();
+                        .mapToInt(Integer::parseInt)
+                        .toArray();
                 lines.add(row);
             }
         }
 
-        if (lines.isEmpty()) 
-        	throw new IOException("The file is empty or invalid: " + fullPath);
-        
+        if (lines.isEmpty())
+            throw new IOException("The file is empty or invalid: " + fullPath);
+
 
         return lines.toArray(new int[0][]);
     }
 
     private int[][] getDefaultHitoriState(String fileName) {
-        if(fileName.equals("Hitori4x4_leicht")){
-            return new int[][] {
-                {1, 1, 1, 1},
-                {1, 1, 1, 1},
-                {1, 1, 1, 1},
-                {1, 1, 1, 2}
+        if (fileName.equals("Hitori4x4_leicht")) {
+            return new int[][]{
+                    {1, 1, 1, 1},
+                    {1, 1, 1, 1},
+                    {1, 1, 1, 1},
+                    {1, 1, 1, 1}
             };
-        }
-        else return null;
+        } else if (fileName.equals("Hitori5x5leicht")) {
+            return new int[][]{
+                    {1, 1, 1, 1, 1},
+                    {1, 1, 1, 1, 1},
+                    {1, 1, 1, 1, 1},
+                    {1, 1, 1, 1, 1},
+                    {1, 1, 1, 1, 1},
+
+            };
+        } else if (fileName.equals("Hitori8x8leicht") || fileName.equals("Hitori8x8medium")) {
+            return new int[][]{
+                    {1, 1, 1, 1, 1, 1, 1, 1},
+                    {1, 1, 1, 1, 1, 1, 1, 1},
+                    {1, 1, 1, 1, 1, 1, 1, 1},
+                    {1, 1, 1, 1, 1, 1, 1, 1},
+                    {1, 1, 1, 1, 1, 1, 1, 1},
+                    {1, 1, 1, 1, 1, 1, 1, 1},
+                    {1, 1, 1, 1, 1, 1, 1, 1},
+                    {1, 1, 1, 1, 1, 1, 1, 1},
+
+            };
+        } else if (fileName.equals("Hitori10x10medium")) {
+            return new int[][]{
+                    {1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+                    {1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+                    {1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+                    {1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+                    {1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+                    {1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+                    {1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+                    {1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+                    {1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+                    {1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+
+            };
+        } else if (fileName.equals("Hitori15x15medium")) {
+            return new int[][]{
+                    {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+                    {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+                    {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+                    {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+                    {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+                    {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+                    {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+                    {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+                    {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+                    {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+                    {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+                    {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+                    {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+                    {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+                    {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+            };
+
+
+        } else return null;
     }
 
-    public boolean removeFile() {
-        return true;
+        public boolean removeFile () {
+            return true;
+        }
     }
-}
