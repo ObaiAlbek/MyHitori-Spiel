@@ -30,33 +30,33 @@ public class Fassade {
 
 	}
 
-    public void spielWiederherstellen(String fileName, HitoriGame hitorigame) throws IOException {
+    public void spielWiederherstellen(String fileName, HitoriGame hitorigame, int auswahl) throws IOException {
         int[][] staten = spielSpeichern.spielWiederherstellen(fileName);
-        
+
         if (staten == null || staten.length == 0 || staten[0].length == 0) {
             //throw new IOException("The game state is empty or invalid.");
             return;
         }
-        
+
         for (int i = 0; i < staten.length; i++) {
             for (int j = 0; j < staten[i].length; j++) {
 
-            	
+
                 switch (staten[i][j]) {
                     case 2:
                         hitorigame.getButton(i, j).setBackground(Color.WHITE);
                         hitorigame.getButton(i, j).setForeground(Color.BLACK);
-                        hitorigame.getButton(i, j).setText("" + getSpielfeldFeld(j, i, 0));
+                        hitorigame.getButton(i, j).setText("" + getSpielfeldFeld(j, i, auswahl));
                         break;
                     case 1:
-                    	hitorigame.getButton(i, j).setBackground(Color.GRAY);
-                    	hitorigame.getButton(i, j).setForeground(Color.WHITE);
-                    	hitorigame.getButton(i, j).setText("" + getSpielfeldFeld(j, i, 0));
+                        hitorigame.getButton(i, j).setBackground(Color.GRAY);
+                        hitorigame.getButton(i, j).setForeground(Color.WHITE);
+                        hitorigame.getButton(i, j).setText("" + getSpielfeldFeld(j, i, auswahl));
                         break;
                     case 0:
-                    	hitorigame.getButton(i, j).setBackground(Color.BLACK);
-                    	hitorigame.getButton(i, j).setForeground(Color.WHITE);
-                    	hitorigame.getButton(i, j).setText("" + getSpielfeldFeld(j, i, 0));
+                        hitorigame.getButton(i, j).setBackground(Color.BLACK);
+                        hitorigame.getButton(i, j).setForeground(Color.WHITE);
+                        hitorigame.getButton(i, j).setText("" + getSpielfeldFeld(j, i, auswahl));
                         break;
                     default:
                         throw new IllegalArgumentException("Unknown state: " + staten[i][j]);
