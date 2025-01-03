@@ -31,7 +31,7 @@ public class StoppUhr {
     }
 
     private void updateZeit() {
-        // Timer logic
+
     }
 
     public String getFormattedTime() {

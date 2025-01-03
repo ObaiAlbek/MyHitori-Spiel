@@ -16,8 +16,7 @@ public class Menu extends JFrame {
     private JPanel contentPane, panel;
     private JButton[] schwierigkeitsButtons;
     private Fassade fassade;
-    final private static String[] spielfelderNamen = { "Hitori4x4_leicht", "Hitori5x5leicht", "Hitori8x8leicht",
-            "Hitori8x8medium", "Hitori10x10medium", "Hitori15x15_medium" };
+    final private static String[] spielfelderNamen = { "Hitori4x4_leicht", "Hitori5x5leicht", "Hitori8x8leicht","Hitori8x8medium", "Hitori10x10medium", "Hitori15x15_medium" };
     private String spielNameAuswahl;
     private int spielAuswahl;
 
@@ -43,7 +42,6 @@ public class Menu extends JFrame {
                     spielAuswahl = Integer.parseInt(e.getActionCommand());
                     spielNameAuswahl = spielfelderNamen[spielAuswahl];
                     try {
-                        System.out.println("hitoriGameName: " + spielNameAuswahl);
                         HitoriGame hitorigame = new HitoriGame(spielAuswahl, Menu.this, spielNameAuswahl, fassade);
                         fassade.spielWiederherstellen(spielfelderNamen[spielAuswahl], hitorigame, spielAuswahl);
                         closeWindow();
