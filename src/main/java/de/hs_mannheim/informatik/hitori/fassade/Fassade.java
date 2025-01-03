@@ -92,7 +92,7 @@ public class Fassade {
     }
 
     public void buttonFarbeÄndern(JButton spielfield, JButton[][] spielfeld, String fileName, int dimension) throws IOException {
-        saveGame(spielfeld, fileName, dimension);
+
         if (spielfield.getBackground().equals(Color.gray)) {
             spielfield.setBackground(Color.black);
         	spielfield.setForeground(Color.white);
@@ -103,6 +103,7 @@ public class Fassade {
             spielfield.setBackground(Color.gray);
         	spielfield.setForeground(Color.white);
         }
+        saveGame(spielfeld, fileName, dimension);
     }
 
     public String getTime() {
