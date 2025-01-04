@@ -1,11 +1,9 @@
-// Menu.java
 package de.hs_mannheim.informatik.hitori.gui;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
 import java.io.IOException;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
@@ -16,7 +14,10 @@ public class Menu extends JFrame {
     private JPanel contentPane, panel;
     private JButton[] schwierigkeitsButtons;
     private Fassade fassade;
-    final private static String[] spielfelderNamen = { "Hitori4x4_leicht", "Hitori5x5leicht", "Hitori8x8leicht","Hitori8x8medium", "Hitori10x10medium", "Hitori15x15_medium" };
+    private static final String[] spielfelderNamen = { 
+        "Hitori4x4_leicht", "Hitori5x5leicht", "Hitori8x8leicht",
+        "Hitori8x8medium", "Hitori10x10medium", "Hitori15x15_medium" 
+    };
     private String spielNameAuswahl;
     private int spielAuswahl;
 
@@ -27,36 +28,33 @@ public class Menu extends JFrame {
         showWindow();
     }
 
-    public void difficultyButtons() throws IOException {
+    private void difficultyButtons() {
         schwierigkeitsButtons = new JButton[6];
-
         for (int i = 0; i < schwierigkeitsButtons.length; i++) {
             schwierigkeitsButtons[i] = new JButton(spielfelderNamen[i]);
             schwierigkeitsButtons[i].setBounds(50, 50 + (50 * i), 200, 40);
             schwierigkeitsButtons[i].setActionCommand(i + "");
-
-
-            schwierigkeitsButtons[i].addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    spielAuswahl = Integer.parseInt(e.getActionCommand());
-                    spielNameAuswahl = spielfelderNamen[spielAuswahl];
-                    try {
-                        HitoriGame hitorigame = new HitoriGame(spielAuswahl, Menu.this, spielNameAuswahl, fassade);
-                        fassade.spielWiederherstellen(spielfelderNamen[spielAuswahl], hitorigame, spielAuswahl);
-                        closeWindow();
-                    } catch (IOException e1) {
-                        e1.printStackTrace();
-                    }
-
-                    closeWindow();
-                }
-            });
+            schwierigkeitsButtons[i].addActionListener(new DifficultyButtonListener());
             panel.add(schwierigkeitsButtons[i]);
         }
     }
 
-    public void WindowProperties() {
+    private class DifficultyButtonListener implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            spielAuswahl = Integer.parseInt(e.getActionCommand());
+            spielNameAuswahl = spielfelderNamen[spielAuswahl];
+            try {
+                HitoriGame hitoriGame = new HitoriGame(spielAuswahl, Menu.this, spielNameAuswahl, fassade);
+                fassade.spielWiederherstellen(spielfelderNamen[spielAuswahl], hitoriGame, spielAuswahl);
+                closeWindow();
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+        }
+    }
+
+    private void WindowProperties() {
         setTitle("Menu");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setBounds(100, 100, 400, 500);
@@ -83,3 +81,4 @@ public class Menu extends JFrame {
         this.setVisible(false);
     }
 }
+
