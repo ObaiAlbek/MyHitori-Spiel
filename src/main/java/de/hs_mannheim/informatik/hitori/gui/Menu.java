@@ -13,6 +13,7 @@ public class Menu extends JFrame {
 
     private JPanel contentPane, panel;
     private JButton[] schwierigkeitsButtons;
+    private GuiFassade guiFassade;
     private Fassade fassade;
     private static final String[] spielfelderNamen = { 
         "Hitori4x4_leicht", "Hitori5x5leicht", "Hitori8x8leicht",
@@ -22,6 +23,7 @@ public class Menu extends JFrame {
     private int spielAuswahl;
 
     public Menu() throws IOException {
+        this.guiFassade = new GuiFassade();
         this.fassade = new Fassade();
         WindowProperties();
         difficultyButtons();
@@ -45,11 +47,11 @@ public class Menu extends JFrame {
             spielAuswahl = Integer.parseInt(e.getActionCommand());
             spielNameAuswahl = spielfelderNamen[spielAuswahl];
             try {
-                HitoriGame hitoriGame = new HitoriGame(spielAuswahl, Menu.this, spielNameAuswahl, fassade);
-                fassade.spielWiederherstellen(spielfelderNamen[spielAuswahl], hitoriGame, spielAuswahl);
+                HitoriGame hitoriGame = new HitoriGame(spielAuswahl, Menu.this, spielNameAuswahl, guiFassade,fassade);
+                guiFassade.spielWiederherstellen(spielfelderNamen[spielAuswahl], hitoriGame, spielAuswahl);
                 closeWindow();
             } catch (IOException ex) {
-                ex.printStackTrace();
+            	ex.toString();
             }
         }
     }

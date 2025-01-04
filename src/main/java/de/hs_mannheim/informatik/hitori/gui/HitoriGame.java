@@ -14,6 +14,7 @@ public class HitoriGame extends JFrame {
     private JButton[][] spielfield;
     private int dimension;
     private JPanel contentPane, panel;
+    private GuiFassade guiFassade;
     private Fassade fassade;
     private Menu menu;
     private int auswahl;
@@ -21,11 +22,13 @@ public class HitoriGame extends JFrame {
     private String hitoriGameName;
     private GridBagConstraints gbc;
 
-    public HitoriGame(int auswahl, Menu menu, String hitoriGameName, Fassade fassade) {
+    public HitoriGame(int auswahl, Menu menu, String hitoriGameName, GuiFassade guiFassade,Fassade fassade) {
     	this.menu = menu;
         this.auswahl = auswahl;
         this.hitoriGameName = hitoriGameName;
-        this.fassade = fassade;
+        this.guiFassade = guiFassade;
+        this.fassade= fassade;
+        
         fassade.startTimer();
 
         WindowProperties();
@@ -33,36 +36,35 @@ public class HitoriGame extends JFrame {
         pauseTime();
         addTimeToWindow();
         gameField();
+        this.guiFassade.getFassade(fassade,dimension);
 
-        saveButton.addActionListener(e -> saveGame());
-        resetButton.addActionListener(e -> spielfieldZurücksetzen());
+		saveButton.addActionListener(e -> saveGame());
+		resetButton.addActionListener(e -> spielfieldZurücksetzen());
         undoButton.addActionListener(e -> undo());
         redoButton.addActionListener(e -> redo());
-        showWindow();
+		showWindow();
     }
 
-    public void undo() {
-        JButton[][] neuesSpielfeld = fassade.undo();
-        System.out.println("Undo-Stack GUI Größe nach Änderung: " + fassade.undo.size());
+   
 
-        if (neuesSpielfeld != null) {
-            aktualisiereSpielfeld(neuesSpielfeld);
-        } else {
-            JOptionPane.showMessageDialog(this, "Kein Undo möglich!");
-        }
-    }
+	public void undo() {
+		JButton[][] neuesSpielfeld = guiFassade.undo();
 
+		if (neuesSpielfeld != null)
+			aktualisiereSpielfeld(neuesSpielfeld);
+		else
+			JOptionPane.showMessageDialog(this, "Kein Undo möglich!");
+
+	}
 
     public void redo() {
-        JButton[][] neuesSpielfeld = fassade.redo();
-        if (neuesSpielfeld != null) {
-            aktualisiereSpielfeld(neuesSpielfeld);
-        } else {
-            JOptionPane.showMessageDialog(this, "Kein Redo möglich!");
-        }
+        System.out.println("Test");
+
     }
+   
 
-
+    
+    
     private void aktualisiereSpielfeld(JButton[][] neuesSpielfeld) {
         panel.removeAll(); 
         this.spielfield = neuesSpielfeld;
@@ -93,45 +95,38 @@ public class HitoriGame extends JFrame {
         knöpfe_Spielfield();
     }
 
-    public void knöpfe_Spielfield() {
-        spielfield = new JButton[dimension][dimension];
-        for (int i = 0; i < dimension; i++) {
-            for (int j = 0; j < dimension; j++) {
-                int zeile = i, spalte = j;
-                spielfield[i][j] = new JButton(String.valueOf(Fassade.getSpielfeldFeld(j, i, auswahl)));
-                spielfield[i][j].setForeground(Color.white);
-                spielfield[i][j].setBackground(Color.GRAY);
-                spielfield[i][j].setPreferredSize(new Dimension(50, 50));
-
-                spielfield[i][j].addActionListener(e -> {
-                    try {
-                        fassade.buttonFarbeÄndern(spielfield[zeile][spalte], spielfield, hitoriGameName, dimension);
-                    } catch (IOException ex) {
-                        ex.printStackTrace();
-                    }
-                });
-
-                gbc.gridx = j;
-                gbc.gridy = i;
-                panel.add(spielfield[i][j], gbc);
-            }
-        }
-    }
+	public void knöpfe_Spielfield() {
+		spielfield = new JButton[dimension][dimension];
+		for (int i = 0; i < dimension; i++) {
+			for (int j = 0; j < dimension; j++) {
+				int x = i;
+				int y = j;
+				spielfield[i][j] = new JButton(String.valueOf(fassade.getSpielfeldFeld(j, i, auswahl)));
+				spielfield[i][j].setForeground(Color.white);
+				spielfield[i][j].setBackground(Color.GRAY);
+				spielfield[i][j].setPreferredSize(new Dimension(50, 50));
+				spielfield[i][j].addActionListener(e -> guiFassade.buttonFarbeÄndern(spielfield,x,y));
+				gbc.gridx = j;
+				gbc.gridy = i;
+				panel.add(spielfield[i][j], gbc);
+			}
+		}
+	}
 
     public void saveGame() {
         try {
-            if (fassade.saveGame(spielfield, hitoriGameName, dimension))
+            if (guiFassade.saveGame(spielfield, hitoriGameName))
                 JOptionPane.showMessageDialog(null, "Spiel gespeichert!");
             else
                 JOptionPane.showMessageDialog(null, "Fehler beim Speichern!");
         } catch (IOException e) {
-            JOptionPane.showMessageDialog(null, "Speichern fehlgeschlagen!");
+            JOptionPane.showMessageDialog(null, e.toString());
         }
     }
 
-    public void spielfieldZurücksetzen() {
-        fassade.spielfieldZurücksetzen(spielfield);
-    }
+	public void spielfieldZurücksetzen() {
+		guiFassade.spielfieldZurücksetzen(spielfield);
+	}
 
     public void addTimeToWindow() {
         JLabel timeLabel = new JLabel(fassade.getTime());
@@ -143,30 +138,47 @@ public class HitoriGame extends JFrame {
     }
 
     public void addButtonsToWindow() {
-        contentPane = new JPanel();
-        contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
-        setContentPane(contentPane);
+    	JMenuBar menuBar = new JMenuBar();
+		menuBar.setToolTipText("Menu");
+		setJMenuBar(menuBar);
 
-        saveButton = new JButton("save");
-        saveButton.setBounds(68, 11, 75, 34);
-        contentPane.setLayout(null);
-        saveButton.setFont(new Font("Tahoma", Font.PLAIN, 11));
-        contentPane.add(saveButton);
+		JMenu mnNewMenu = new JMenu("Menu");
+		menuBar.add(mnNewMenu);
 
-        undoButton = new JButton("undo");
-        undoButton.setBounds(176, 11, 75, 34);
-        undoButton.setFont(new Font("Tahoma", Font.PLAIN, 11));
-        contentPane.add(undoButton);
+		JMenuItem exit = new JMenuItem("Exit");
+		mnNewMenu.add(exit);
+		JMenuItem zurück = new JMenuItem("Back to Menu");
+		zurück.addActionListener(e -> {
+			menu.showWindow();
+			closeWindow();
+		});
 
-        redoButton = new JButton("redo");
-        redoButton.setBounds(274, 11, 75, 34);
-        redoButton.setFont(new Font("Tahoma", Font.PLAIN, 11));
-        contentPane.add(redoButton);
+		mnNewMenu.add(zurück);
+		contentPane = new JPanel();
+		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 
-        resetButton = new JButton("reset");
-        resetButton.setBounds(379, 11, 75, 34);
-        resetButton.setFont(new Font("Tahoma", Font.PLAIN, 11));
-        contentPane.add(resetButton);
+		setContentPane(contentPane);
+
+		saveButton = new JButton("save");
+		saveButton.setBounds(68, 11, 75, 34);
+		contentPane.setLayout(null);
+		saveButton.setFont(new Font("Tahoma", Font.PLAIN, 11));
+		contentPane.add(saveButton);
+
+		undoButton = new JButton("undo");
+		undoButton.setBounds(176, 11, 75, 34);
+		undoButton.setFont(new Font("Tahoma", Font.PLAIN, 11));
+		contentPane.add(undoButton);
+
+		redoButton = new JButton("redo");
+		redoButton.setBounds(274, 11, 75, 34);
+		redoButton.setFont(new Font("Tahoma", Font.PLAIN, 11));
+		contentPane.add(redoButton);
+
+		resetButton = new JButton("reset");
+		resetButton.setBounds(379, 11, 75, 34);
+		resetButton.setFont(new Font("Tahoma", Font.PLAIN, 11));
+		contentPane.add(resetButton);
     }
 
     public void WindowProperties() {
