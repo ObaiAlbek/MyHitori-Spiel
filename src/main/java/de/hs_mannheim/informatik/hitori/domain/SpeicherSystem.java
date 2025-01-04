@@ -73,22 +73,32 @@ public class SpeicherSystem {
         return lines.toArray(new int[0][]);
     }
 
-    private int[][] getDefaultHitoriState(String fileName) {
-        if (fileName.equals("Hitori4x4_leicht")) {
-            return new int[4][4];
-            
-        } else if (fileName.equals("Hitori5x5leicht")) {
-            return new int[5][5];
-            
-        } else if (fileName.equals("Hitori8x8leicht") || fileName.equals("Hitori8x8medium")) {
-            return new int[8][8];
-            
-        } else if (fileName.equals("Hitori10x10medium")) {
-            return new int[10][10];
-        } else if (fileName.equals("Hitori15x15medium")) {
-            return new int[15][15];
+	private int[][] getDefaultHitoriState(String fileName) {
 
-        } else return null;
-    }
+		switch (fileName) {
+		case "Hitori4x4_leicht":
+			return new int[4][4];
 
-    }
+		case "Hitori5x5leicht":
+			return new int[5][5];
+
+		case "Hitori8x8leicht":
+			return new int[8][8];
+
+		case "Hitori8x8medium":
+			return new int[8][8];
+
+		case "Hitori10x10medium":
+			return new int[10][10];
+
+		case "Hitori15x15medium":
+			return new int[15][15];
+
+		default:
+			return null;
+
+		}
+
+	}
+
+}
