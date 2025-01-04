@@ -11,166 +11,99 @@ import de.hs_mannheim.informatik.hitori.domain.StoppUhr;
 import de.hs_mannheim.informatik.hitori.gui.HitoriGame;
 
 public class Fassade {
-    private final StoppUhr stoppUhr;
-    private SpeicherSystem spielSpeichern;
-    public Stack<JButton[][]> undo, redo;
+	private final StoppUhr stoppUhr;
+	private SpeicherSystem spielSpeichern;
+	private Stack<int[][]> undoStack, redoStack;
+	private CsvEinlesen files;
 
-    public Fassade() {
-        this.stoppUhr = new StoppUhr();
-        this.spielSpeichern = new SpeicherSystem();
-        this.undo = new Stack<>();
-        this.redo = new Stack<>();
-    }
+	public Fassade() {
+		this.stoppUhr = new StoppUhr();
+		this.spielSpeichern = new SpeicherSystem();
+		this.undoStack = new Stack<>();
+		this.redoStack = new Stack<>();
+		this.files = new CsvEinlesen();
+	}
 
-    private JButton[][] deepCopy(JButton[][] original) {
-        if (original == null) return null;
-        int rows = original.length;
-        int cols = original[0].length;
-        JButton[][] copy = new JButton[rows][cols];
+	public int[][] undo() {
+		if (!undoStack.isEmpty()) {
+			int[][] tempStaten = undoStack.pop();
+			redoStack.push(tempStaten);
+			return tempStaten;
+		}
 
-        for (int i = 0; i < rows; i++) {
-            for (int j = 0; j < cols; j++) {
-                JButton originalButton = original[i][j];
-                JButton newButton = new JButton(originalButton.getText());
-                newButton.setBackground(originalButton.getBackground());
-                newButton.setForeground(originalButton.getForeground());
-                newButton.setPreferredSize(originalButton.getPreferredSize());
-                if (originalButton.getActionListeners().length > 0) {
-                    newButton.addActionListener(originalButton.getActionListeners()[0]);
-                }
+		return null;
 
-                copy[i][j] = newButton;
-            }
-        }
+	}
 
-        return copy;
-    }
+	public int[][] redo() {
+		if (!redoStack.isEmpty()) {
+			int[][] tempStaten = redoStack.pop();
+			undoStack.push(tempStaten);
+			return tempStaten;
+		}
+		return null;
+	}
 
+	public void aktuelleButtonsZuständeSpeichern(int[][] staten) {
+		undoStack.push(staten);
+		for (int i = 0; i < staten.length; i++) {
+			for (int j = 0; j < staten[i].length; j++)
+				System.out.print(staten[i][j]);
 
-    public JButton[][] undo() {
-        if (!undo.isEmpty()) {
-            redo.push(deepCopy(undo.peek())); 
-            return undo.pop();
-        }
-        return null; 
-    }
+			System.out.println();
+		}
 
+	}
 
-
-    public JButton[][] redo() {
-        if (!redo.isEmpty()) {
-            undo.push(deepCopy(redo.peek())); 
-            return redo.pop(); 
-        }
-        return null; 
-    }
-
-    public void buttonFarbeÄndern(JButton spielfield, JButton[][] spielfeld, String fileName, int dimension)
-            throws IOException {
-        if (spielfield.getBackground().equals(Color.GRAY)) {
-            spielfield.setBackground(Color.BLACK);
-            spielfield.setForeground(Color.WHITE);
-        } else if (spielfield.getBackground().equals(Color.BLACK)) {
-            spielfield.setForeground(Color.BLACK);
-            spielfield.setBackground(Color.WHITE);
-        } else {
-            spielfield.setBackground(Color.GRAY);
-            spielfield.setForeground(Color.WHITE);
-        }
-
-        saveGame(spielfeld, fileName, dimension);
-        undo.push(deepCopy(spielfeld));
-
-
-    }
-
-    public void spielWiederherstellen(String fileName, HitoriGame hitorigame, int auswahl) throws IOException {
+	public int[][] spielWiederherstellen(String fileName) throws IOException {
 		int[][] staten = spielSpeichern.spielWiederherstellen(fileName);
 
-		if (staten == null || staten.length == 0 || staten[0].length == 0) {
-			// throw new IOException("The game state is empty or invalid.");
-			return;
-		}
-
-		for (int i = 0; i < staten.length; i++) {
-			for (int j = 0; j < staten[i].length; j++) {
-
-				switch (staten[i][j]) {
-				case 2:
-					hitorigame.getButton(i, j).setBackground(Color.WHITE);
-					hitorigame.getButton(i, j).setForeground(Color.BLACK);
-					hitorigame.getButton(i, j).setText("" + getSpielfeldFeld(j, i, auswahl));
-					break;
-				case 1:
-					hitorigame.getButton(i, j).setBackground(Color.GRAY);
-					hitorigame.getButton(i, j).setForeground(Color.WHITE);
-					hitorigame.getButton(i, j).setText("" + getSpielfeldFeld(j, i, auswahl));
-					break;
-				case 0:
-					hitorigame.getButton(i, j).setBackground(Color.BLACK);
-					hitorigame.getButton(i, j).setForeground(Color.WHITE);
-					hitorigame.getButton(i, j).setText("" + getSpielfeldFeld(j, i, auswahl));
-					break;
-				default:
-					throw new IllegalArgumentException("Unknown state: " + staten[i][j]);
-				}
-			}
-
-		}
+		if (staten == null || staten.length == 0 || staten[0].length == 0)
+			throw new IOException("SystemFehler!");
+		return staten;
 	}
-    
-    
-    // Restliche Methoden (unverändert)
-    public void startTimer() {
-        stoppUhr.startStoppUhr();
-    }
 
-    public void spielfieldZurücksetzen(JButton[][] spielfiled) {
-        for (int i = 0; i < spielfiled.length; i++)
-            for (int j = 0; j < spielfiled[i].length; j++) {
-                spielfiled[i][j].setBackground(Color.gray);
-                spielfiled[i][j].setForeground(Color.white);
-            }
-    }
+	public void startTimer() {
+		stoppUhr.startStoppUhr();
+	}
 
-    public boolean saveGame(JButton[][] spielfield, String fileName, int dimension) throws IOException {
-        int[][] staten = new int[dimension][dimension];
-        int schwarz = 0;
-        int grau = 1;
-        int weiss = 2;
+	public int[][] spielfieldZurücksetzen(int[][] staten) {
+		for (int i = 0; i < staten.length; i++)
+			for (int j = 0; j < staten[i].length; j++)
+				staten[i][j] = 1;
 
-        for (int i = 0; i < dimension; i++) {
-            for (int j = 0; j < dimension; j++) {
-                JButton tempButton = spielfield[i][j];
+		return staten;
+	}
 
-                if (tempButton.getBackground().equals(Color.black))
-                    staten[i][j] = schwarz;
-                else if (tempButton.getBackground().equals(Color.gray))
-                    staten[i][j] = grau;
-                else
-                    staten[i][j] = weiss;
-            }
-        }
-        return spielSpeichern.spielSpeichern(fileName, staten);
-    }
+	public boolean saveGame(int[][] staten, String fileName) throws IOException {
+		return spielSpeichern.spielSpeichern(fileName, staten);
+	}
 
-    public String getTime() {
-        return stoppUhr.getFormattedTime();
-    }
+	public String getTime() {
+		return stoppUhr.getFormattedTime();
+	}
 
-    public String getSpielfeld(int auswahl) {
-        return CsvEinlesen.getSpielfeld(auswahl);
-    }
+	public String getSpielfeld(int auswahl) {
+		return files.getSpielfeld(auswahl);
+	}
 
-    public String getLoesung(int auswahl) {
-        return CsvEinlesen.getLoesungen(auswahl);
-    }
+	public String getLoesung(int auswahl) {
+		return files.getLoesungen(auswahl);
+	}
 
-    public int getDimension(int auswahl) {
-        return CsvEinlesen.getDimension(getSpielfeld(auswahl));
-    }
+	public int getDimension(int auswahl) {
+		return files.getDimension(getSpielfeld(auswahl));
+	}
 
-    public static int getSpielfeldFeld(int x, int y, int auswahl) {
-        return CsvEinlesen.getFeld(x, y, auswahl);
-    }
+	public SpeicherSystem getSpeicherSystem() {
+		return spielSpeichern;
+	}
+
+	public Stack<int[][]> getUndoStack() {
+		return undoStack;
+	}
+
+	public int getSpielfeldFeld(int x, int y, int auswahl) {
+		return files.getFeld(x, y, auswahl);
+	}
 }

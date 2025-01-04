@@ -9,11 +9,11 @@ import java.util.Scanner;
 
 public class CsvEinlesen {
 
-	final private static String[] spielfelderNamen = { "Hitori4x4_leicht", "Hitori5x5leicht", "Hitori8x8leicht",
+	final private String[] spielfelderNamen = { "Hitori4x4_leicht", "Hitori5x5leicht", "Hitori8x8leicht",
 			"Hitori8x8medium", "Hitori10x10medium", "Hitori15x15_medium" };
 
-	public static String getSpielfeld(int auswahl) { // sollte man es protected machen - sind arrays primitive
-														// Datentypen
+	public String getSpielfeld(int auswahl) {
+
 		String path = new File(CsvEinlesen.class.getClassLoader()
 				.getResource("database/" + spielfelderNamen[auswahl] + ".csv").getFile()).getAbsolutePath();
 
@@ -48,9 +48,10 @@ public class CsvEinlesen {
 		return ergebnis.toString();
 	}
 
-	public static String getLoesungen(int auswahl) {
+	public String getLoesungen(int auswahl) {
 
-		String path = new File(CsvEinlesen.class.getClassLoader().getResource("database/" + spielfelderNamen[auswahl] + ".csv").getFile()).getAbsolutePath();
+		String path = new File(CsvEinlesen.class.getClassLoader()
+				.getResource("database/" + spielfelderNamen[auswahl] + ".csv").getFile()).getAbsolutePath();
 
 		ArrayList<String> lines = new ArrayList<>();
 		StringBuilder ergebnis = new StringBuilder();
@@ -72,9 +73,9 @@ public class CsvEinlesen {
 		}
 
 		for (int i = 0; i < loesungen.length; i++) {
-			for (int j = 0; j < loesungen.length; j++) 
+			for (int j = 0; j < loesungen.length; j++)
 				ergebnis.append(" " + loesungen[i][j]);
-			
+
 			ergebnis.append(",");
 		}
 		return ergebnis.toString();
@@ -84,18 +85,18 @@ public class CsvEinlesen {
 		ArrayList<String> lines = new ArrayList<>();
 		Scanner sc = new Scanner(new File(path));
 
-		while (sc.hasNextLine()) 
+		while (sc.hasNextLine())
 			lines.add(sc.nextLine());
-		
+
 		sc.close();
 		return lines;
 	}
 
-	public static int getDimension(String spielfeld) {
+	public int getDimension(String spielfeld) {
 		return spielfeld.split(",").length;
 	}
 
-	public static int getFeld(int x, int y, int auswahl) {
+	public int getFeld(int x, int y, int auswahl) {
 		String spielfeld = getSpielfeld(auswahl);
 		String[] zeilen = spielfeld.trim().split(",");
 		String[] spalten = zeilen[y].trim().split(" ");

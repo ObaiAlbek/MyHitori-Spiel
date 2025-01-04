@@ -6,7 +6,7 @@ import java.util.*;
 public class SpeicherSystem {
 
     private String filePfad;
-    private Map<String, int[][]> spielfelder = new HashMap<>();
+    private Map<String, int[][]> spielfelder;
 
     public SpeicherSystem() {
         this.filePfad = "src/main/resources/database/speicherDateien/";
@@ -68,79 +68,27 @@ public class SpeicherSystem {
         }
 
         if (lines.isEmpty())
-            throw new IOException("The file is empty or invalid: " + fullPath);
-
+            throw new IOException("Die Datei ist leer " + fullPath);
 
         return lines.toArray(new int[0][]);
     }
 
     private int[][] getDefaultHitoriState(String fileName) {
         if (fileName.equals("Hitori4x4_leicht")) {
-            return new int[][]{
-                    {1, 1, 1, 1},
-                    {1, 1, 1, 1},
-                    {1, 1, 1, 1},
-                    {1, 1, 1, 1}
-            };
+            return new int[4][4];
+            
         } else if (fileName.equals("Hitori5x5leicht")) {
-            return new int[][]{
-                    {1, 1, 1, 1, 1},
-                    {1, 1, 1, 1, 1},
-                    {1, 1, 1, 1, 1},
-                    {1, 1, 1, 1, 1},
-                    {1, 1, 1, 1, 1},
-
-            };
+            return new int[5][5];
+            
         } else if (fileName.equals("Hitori8x8leicht") || fileName.equals("Hitori8x8medium")) {
-            return new int[][]{
-                    {1, 1, 1, 1, 1, 1, 1, 1},
-                    {1, 1, 1, 1, 1, 1, 1, 1},
-                    {1, 1, 1, 1, 1, 1, 1, 1},
-                    {1, 1, 1, 1, 1, 1, 1, 1},
-                    {1, 1, 1, 1, 1, 1, 1, 1},
-                    {1, 1, 1, 1, 1, 1, 1, 1},
-                    {1, 1, 1, 1, 1, 1, 1, 1},
-                    {1, 1, 1, 1, 1, 1, 1, 1},
-
-            };
+            return new int[8][8];
+            
         } else if (fileName.equals("Hitori10x10medium")) {
-            return new int[][]{
-                    {1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
-                    {1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
-                    {1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
-                    {1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
-                    {1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
-                    {1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
-                    {1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
-                    {1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
-                    {1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
-                    {1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
-
-            };
+            return new int[10][10];
         } else if (fileName.equals("Hitori15x15medium")) {
-            return new int[][]{
-                    {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
-                    {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
-                    {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
-                    {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
-                    {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
-                    {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
-                    {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
-                    {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
-                    {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
-                    {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
-                    {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
-                    {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
-                    {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
-                    {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
-                    {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
-            };
-
+            return new int[15][15];
 
         } else return null;
     }
 
-        public boolean removeFile () {
-            return true;
-        }
     }
