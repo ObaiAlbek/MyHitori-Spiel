@@ -23,8 +23,8 @@ public class SpeicherSystem {
         File file = new File(fullPath);
 
         if (!file.exists()) {
-            file.getParentFile().mkdirs(); // Create directories if they do not exist
-            file.createNewFile(); // Create the file if it does not exist
+            file.getParentFile().mkdirs();
+            file.createNewFile(); 
         }
 
         int[][] staten = spielfelder.get(fileName);
@@ -47,9 +47,7 @@ public class SpeicherSystem {
         if (!fileCheck.exists()) {
             int[][] defaultStaten = getDefaultHitoriState(fileName);
             spielfelder.put(fileName, defaultStaten);
-            createFile(fileName); // Create the file if it does not exist
-
-            // Ensure the file is created before proceeding
+            createFile(fileName); 
             fileCheck = new File(fullPath);
             if (!fileCheck.exists()) {
                 throw new IOException("File creation failed: " + fullPath);

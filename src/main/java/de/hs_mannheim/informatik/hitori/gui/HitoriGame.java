@@ -64,7 +64,7 @@ public class HitoriGame extends JFrame {
 
 
     private void aktualisiereSpielfeld(JButton[][] neuesSpielfeld) {
-        panel.removeAll(); // Entferne alte Buttons
+        panel.removeAll(); 
         this.spielfield = neuesSpielfeld;
 
         for (int i = 0; i < spielfield.length; i++) {
@@ -75,8 +75,8 @@ public class HitoriGame extends JFrame {
             }
         }
 
-        panel.revalidate(); // Layout aktualisieren
-        panel.repaint(); // Panel neu rendern
+        panel.revalidate(); 
+        panel.repaint(); 
     }
 
 
