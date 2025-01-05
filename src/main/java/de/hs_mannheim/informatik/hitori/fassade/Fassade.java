@@ -1,14 +1,11 @@
 package de.hs_mannheim.informatik.hitori.fassade;
 
-import java.awt.Color;
 import java.io.IOException;
 import java.util.Stack;
-import javax.swing.JButton;
 
 import de.hs_mannheim.informatik.hitori.domain.CsvEinlesen;
 import de.hs_mannheim.informatik.hitori.domain.SpeicherSystem;
 import de.hs_mannheim.informatik.hitori.domain.StoppUhr;
-import de.hs_mannheim.informatik.hitori.gui.HitoriGame;
 
 public class Fassade {
 	private final StoppUhr stoppUhr;
@@ -23,35 +20,43 @@ public class Fassade {
 		this.redoStack = new Stack<>();
 		this.files = new CsvEinlesen();
 	}
+	
+	
 
-	public int[][] undo() {
+	public int[][] undo() throws UndoRedoNichtMöglichException {
 		if (!undoStack.isEmpty()) {
 			int[][] tempStaten = undoStack.pop();
 			redoStack.push(tempStaten);
 			return tempStaten;
 		}
 
-		return null;
+		throw new UndoRedoNichtMöglichException("Undo ist nicht möglich!");
 
 	}
 
-	public int[][] redo() {
+	public int[][] redo() throws UndoRedoNichtMöglichException {
 		if (!redoStack.isEmpty()) {
 			int[][] tempStaten = redoStack.pop();
 			undoStack.push(tempStaten);
 			return tempStaten;
 		}
-		return null;
+		throw new UndoRedoNichtMöglichException("Undo ist nicht möglich!");
 	}
 
-	public void aktuelleButtonsZuständeSpeichern(int[][] staten) {
-		undoStack.push(staten);
+	public void aktuelleButtonsZuständeSpeichern(int[][] staten, int dimension) {
+		int[][] tempStaten = new int[dimension][dimension];
+		System.out.println("---------------------------------");
 		for (int i = 0; i < staten.length; i++) {
-			for (int j = 0; j < staten[i].length; j++)
-				System.out.print(staten[i][j]);
-
+			for (int j = 0; j < staten[i].length; j++) {
+				tempStaten[i][j] = staten[i][j];
+				System.out.print("tempStaten[i][j]= " + tempStaten[i][j] );
+			}
 			System.out.println();
 		}
+			
+		
+		undoStack.push(tempStaten);
+		
 
 	}
 
