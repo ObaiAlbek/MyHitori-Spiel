@@ -70,14 +70,17 @@ public class GuiFassade {
 		if (tempButton.getBackground().equals(Color.BLACK)) {
 			tempButton.setBackground(Color.WHITE);
 			staten[x][y] = weiss;
+			tempButton.setForeground(Color.black);
 		}
 
 		else if (tempButton.getBackground().equals(Color.GRAY)) {
 			tempButton.setBackground(Color.BLACK);
+			tempButton.setForeground(Color.white);
 			staten[x][y] = schwarz;
 		}
 		else {
 			tempButton.setBackground(Color.GRAY);
+			tempButton.setForeground(Color.white);
 			staten[x][y] = grau;
 
 		}
