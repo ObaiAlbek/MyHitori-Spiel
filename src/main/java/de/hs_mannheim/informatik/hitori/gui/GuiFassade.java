@@ -68,20 +68,24 @@ public class GuiFassade {
 		JButton tempButton = spielfield[x][y];
 		
 		if (tempButton.getBackground().equals(Color.BLACK)) {
-			tempButton.setBackground(Color.WHITE);
-			staten[x][y] = weiss;
-			tempButton.setForeground(Color.black);
-		}
-
-		else if (tempButton.getBackground().equals(Color.GRAY)) {
-			tempButton.setBackground(Color.BLACK);
-			tempButton.setForeground(Color.white);
-			staten[x][y] = schwarz;
-		}
-		else {
 			tempButton.setBackground(Color.GRAY);
 			tempButton.setForeground(Color.white);
 			staten[x][y] = grau;
+
+		}
+
+		else if (tempButton.getBackground().equals(Color.GRAY)) {
+			tempButton.setBackground(Color.WHITE);
+			staten[x][y] = weiss;
+			tempButton.setForeground(Color.black);
+
+
+		}
+		else {
+			tempButton.setBackground(Color.BLACK);
+			tempButton.setForeground(Color.white);
+			staten[x][y] = schwarz;
+
 
 		}
 		
@@ -113,12 +117,12 @@ public class GuiFassade {
 			for (int j = 0; j < staten[i].length; j++) {
 				hitorigame.getButton(i, j).setForeground(Color.white);
 				switch (staten[i][j]) {
-				case 2:
+				case 1:
 					hitorigame.getButton(i, j).setBackground(Color.WHITE);
 					hitorigame.getButton(i, j).setForeground(Color.black);
 					hitorigame.getButton(i, j).setText("" + fassade.getSpielfeldFeld(j, i, auswahl));
 					break;
-				case 1:
+				case 2:
 					hitorigame.getButton(i, j).setBackground(Color.BLACK);
 					hitorigame.getButton(i, j).setForeground(Color.white);
 					hitorigame.getButton(i, j).setText("" + fassade.getSpielfeldFeld(j, i, auswahl));
