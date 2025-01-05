@@ -15,14 +15,13 @@ public class GuiFassade {
 	private int grau = 0;
 	private int schwarz = 1;
 	private int weiss = 2;
-	private JButton[][] neueSpielfield;
 	private int auswahl;
 	
 	
 	public JButton[][] undo() throws UndoRedoNichtMöglichException {
 		int[][] staten = fassade.undo();
 		
-		this.neueSpielfield = new JButton[dimension][dimension];
+		JButton[][] neueSpielfield = new JButton[dimension][dimension];
 		for (int i = 0; i < staten.length; i++) 
 			for (int j = 0; j < staten[i].length; j++) {
 				int akteulleZusatnd = staten[i][j];
@@ -145,6 +144,8 @@ public class GuiFassade {
 			}
 
 		}
+		
+		fassade.aktuelleButtonsZuständeSpeichern(staten, dimension);
 	}
 
 	public void getFassade(Fassade fassade,int dimension) {
