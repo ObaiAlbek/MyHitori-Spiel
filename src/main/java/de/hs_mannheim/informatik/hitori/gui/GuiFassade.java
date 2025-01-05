@@ -106,6 +106,7 @@ public class GuiFassade {
 					staten[i][j] = weiss;
 
 				spielfiled[i][j].setBackground(Color.GRAY);
+				spielfiled[i][j].setForeground(Color.white);
 			}
 		fassade.spielfieldZurücksetzen(staten);
 	}
