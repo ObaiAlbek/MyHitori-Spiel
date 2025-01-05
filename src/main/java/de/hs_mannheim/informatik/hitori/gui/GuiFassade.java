@@ -115,14 +115,17 @@ public class GuiFassade {
 				switch (staten[i][j]) {
 				case 2:
 					hitorigame.getButton(i, j).setBackground(Color.WHITE);
+					hitorigame.getButton(i, j).setForeground(Color.black);
 					hitorigame.getButton(i, j).setText("" + fassade.getSpielfeldFeld(j, i, auswahl));
 					break;
 				case 1:
 					hitorigame.getButton(i, j).setBackground(Color.BLACK);
+					hitorigame.getButton(i, j).setForeground(Color.white);
 					hitorigame.getButton(i, j).setText("" + fassade.getSpielfeldFeld(j, i, auswahl));
 					break;
 				case 0:
 					hitorigame.getButton(i, j).setBackground(Color.GRAY);
+					hitorigame.getButton(i, j).setForeground(Color.white);
 					hitorigame.getButton(i, j).setText("" + fassade.getSpielfeldFeld(j, i, auswahl));
 					break;
 				default:
