@@ -1,6 +1,8 @@
 package de.hs_mannheim.informatik.hitori.gui;
 
 import de.hs_mannheim.informatik.hitori.fassade.Fassade;
+import de.hs_mannheim.informatik.hitori.fassade.UndoRedoNichtMöglichException;
+
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
@@ -42,18 +44,24 @@ public class HitoriGame extends JFrame {
 		resetButton.addActionListener(e -> spielfieldZurücksetzen());
         undoButton.addActionListener(e -> undo());
         redoButton.addActionListener(e -> redo());
+        buttonFarbeÄndern();
 		showWindow();
     }
 
    
 
 	public void undo() {
-		JButton[][] neuesSpielfeld = guiFassade.undo();
-
-		if (neuesSpielfeld != null)
+		JButton[][] neuesSpielfeld;
+		try {
+			neuesSpielfeld = guiFassade.undo();
 			aktualisiereSpielfeld(neuesSpielfeld);
-		else
-			JOptionPane.showMessageDialog(this, "Kein Undo möglich!");
+
+		} catch (UndoRedoNichtMöglichException e) {
+			JOptionPane.showMessageDialog(this, "Undo ist nicht möglich!");
+
+		}
+
+		
 
 	}
 
@@ -71,14 +79,15 @@ public class HitoriGame extends JFrame {
 
         for (int i = 0; i < spielfield.length; i++) {
             for (int j = 0; j < spielfield[i].length; j++) {
+				spielfield[i][j].setPreferredSize(new Dimension(50, 50));
                 gbc.gridx = j;
                 gbc.gridy = i;
                 panel.add(spielfield[i][j], gbc);
             }
         }
-
         panel.revalidate(); 
         panel.repaint(); 
+        buttonFarbeÄndern();
     }
 
 
@@ -92,23 +101,32 @@ public class HitoriGame extends JFrame {
         gbc = new GridBagConstraints();
         gbc.fill = GridBagConstraints.BOTH;
         gbc.insets = new Insets(3, 3, 3, 3);
+		spielfield = new JButton[dimension][dimension];
+
         knöpfe_Spielfield();
     }
 
 	public void knöpfe_Spielfield() {
-		spielfield = new JButton[dimension][dimension];
 		for (int i = 0; i < dimension; i++) {
 			for (int j = 0; j < dimension; j++) {
-				int x = i;
-				int y = j;
 				spielfield[i][j] = new JButton(String.valueOf(fassade.getSpielfeldFeld(j, i, auswahl)));
 				spielfield[i][j].setForeground(Color.white);
 				spielfield[i][j].setBackground(Color.GRAY);
 				spielfield[i][j].setPreferredSize(new Dimension(50, 50));
-				spielfield[i][j].addActionListener(e -> guiFassade.buttonFarbeÄndern(spielfield,x,y));
 				gbc.gridx = j;
 				gbc.gridy = i;
 				panel.add(spielfield[i][j], gbc);
+			}
+		}
+	}
+	
+	public void buttonFarbeÄndern() {
+		for (int i = 0; i < dimension; i++) {
+			for (int j = 0; j < dimension; j++) {
+				int x = i;
+				int y = j;
+				spielfield[i][j].addActionListener(e -> guiFassade.buttonFarbeÄndern(spielfield,x,y));
+
 			}
 		}
 	}

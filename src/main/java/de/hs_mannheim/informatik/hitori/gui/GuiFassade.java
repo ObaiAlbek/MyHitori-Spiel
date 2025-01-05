@@ -6,6 +6,7 @@ import java.io.IOException;
 import javax.swing.JButton;
 
 import de.hs_mannheim.informatik.hitori.fassade.Fassade;
+import de.hs_mannheim.informatik.hitori.fassade.UndoRedoNichtMöglichException;
 
 public class GuiFassade {
 	private Fassade fassade;
@@ -15,11 +16,13 @@ public class GuiFassade {
 	private int schwarz = 1;
 	private int weiss = 2;
 	private JButton[][] neueSpielfield;
+	private int auswahl;
 	
-	public JButton[][] undo() {
-		staten = fassade.undo();
+	
+	public JButton[][] undo() throws UndoRedoNichtMöglichException {
+		int[][] staten = fassade.undo();
+		
 		this.neueSpielfield = new JButton[dimension][dimension];
-		System.out.println(neueSpielfield.length + " neueSpielfield");
 		for (int i = 0; i < staten.length; i++) 
 			for (int j = 0; j < staten[i].length; j++) {
 				int akteulleZusatnd = staten[i][j];
@@ -27,13 +30,22 @@ public class GuiFassade {
 
 				switch (akteulleZusatnd){
 					case 0:
-						neueSpielfield[i][j].setBackground(Color.GRAY); break;
+						neueSpielfield[i][j].setBackground(Color.GRAY); 
+						neueSpielfield[i][j].setForeground(Color.white);
+						neueSpielfield[i][j].setText("" + fassade.getSpielfeldFeld(j, i, auswahl));
+						break;
 					
 					case 1: 
-						neueSpielfield[i][j].setBackground(Color.BLACK); break;
+						neueSpielfield[i][j].setBackground(Color.BLACK); 
+						neueSpielfield[i][j].setForeground(Color.white);
+						neueSpielfield[i][j].setText("" + fassade.getSpielfeldFeld(j, i, auswahl));
+						break;
 					
 					case 2:
-						neueSpielfield[i][j].setBackground(Color.WHITE); break;
+						neueSpielfield[i][j].setBackground(Color.WHITE);
+						neueSpielfield[i][j].setForeground(Color.black);
+						neueSpielfield[i][j].setText("" + fassade.getSpielfeldFeld(j, i, auswahl));
+						break;
 				}
 				
 			}
@@ -41,11 +53,6 @@ public class GuiFassade {
 		return neueSpielfield;
 		
 	}
-	
-	public void redo() {
-		
-	}
-
     
     public boolean saveGame(JButton[][] spielfield, String fileName) throws IOException {
 		
@@ -66,7 +73,6 @@ public class GuiFassade {
 
 	public void buttonFarbeÄndern(JButton[][] spielfield,int x, int y) {
 		JButton tempButton = spielfield[x][y];
-		
 		if (tempButton.getBackground().equals(Color.BLACK)) {
 			tempButton.setBackground(Color.GRAY);
 			tempButton.setForeground(Color.white);
@@ -89,7 +95,7 @@ public class GuiFassade {
 
 		}
 		
-		fassade.aktuelleButtonsZuständeSpeichern(staten);
+		fassade.aktuelleButtonsZuständeSpeichern(staten,dimension);
 	}
 
 	public void spielfieldZurücksetzen(JButton[][] spielfiled) {
@@ -113,7 +119,7 @@ public class GuiFassade {
 
 	public void spielWiederherstellen(String fileName, HitoriGame hitorigame, int auswahl) throws IOException {
 		int[][] staten = fassade.spielWiederherstellen(fileName);
-	
+		this.auswahl = auswahl;
 		for (int i = 0; i < staten.length; i++) {
 			for (int j = 0; j < staten[i].length; j++) {
 				hitorigame.getButton(i, j).setForeground(Color.white);
