@@ -44,16 +44,10 @@ public class Fassade {
 	}
 
 	public void aktuelleButtonsZuständeSpeichern(int[][] staten, int dimension) {
-		int[][] tempStaten = new int[dimension][dimension];
-		System.out.println("---------------------------------");
-		for (int i = 0; i < staten.length; i++) {
-			for (int j = 0; j < staten[i].length; j++) {
+		int[][] tempStaten = new int[dimension][dimension];	
+		for (int i = 0; i < staten.length; i++)
+			for (int j = 0; j < staten[i].length; j++)
 				tempStaten[i][j] = staten[i][j];
-				System.out.print("tempStaten[i][j]= " + tempStaten[i][j] );
-			}
-			System.out.println();
-		}
-			
 		
 		undoStack.push(tempStaten);
 		

@@ -66,8 +66,17 @@ public class HitoriGame extends JFrame {
 	}
 
     public void redo() {
-        System.out.println("Test");
+    	JButton[][] neuesSpielfeld;
+    	try {
+			neuesSpielfeld = guiFassade.redo();
+			aktualisiereSpielfeld(neuesSpielfeld);
 
+		} catch (UndoRedoNichtMöglichException e) {
+			JOptionPane.showMessageDialog(this, "Redo ist nicht möglich!");
+
+		}
+
+    	
     }
    
 

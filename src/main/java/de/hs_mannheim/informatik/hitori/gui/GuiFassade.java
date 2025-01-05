@@ -12,6 +12,7 @@ public class GuiFassade {
 	private Fassade fassade;
 	private int[][] eingabeStaten;
 	private int[][] ausgabeStaten;
+	private JButton[][] neueSpielfield;
 	private int dimension;
 	private int grau = 0;
 	private int schwarz = 1;
@@ -21,9 +22,21 @@ public class GuiFassade {
 	
 	public JButton[][] undo() throws UndoRedoNichtMöglichException {
 		ausgabeStaten = fassade.undo();
-		JButton[][] neueSpielfield = new JButton[dimension][dimension];
+		neueSpielfield = new JButton[dimension][dimension];
+		aktulisiereSpielfiledNachUnodRedo();
+		return neueSpielfield;
 		
-		
+	}
+	
+	public JButton[][] redo()throws UndoRedoNichtMöglichException  {
+		ausgabeStaten = fassade.redo();
+		neueSpielfield = new JButton[dimension][dimension];
+		aktulisiereSpielfiledNachUnodRedo();
+
+		return neueSpielfield;
+	}
+	
+	private void aktulisiereSpielfiledNachUnodRedo() {
 		for (int i = 0; i < ausgabeStaten.length; i++) 
 			for (int j = 0; j < ausgabeStaten[i].length; j++) {
 				int akteulleZusatnd = ausgabeStaten[i][j];
@@ -51,12 +64,6 @@ public class GuiFassade {
 				
 			}
 
-		return neueSpielfield;
-		
-	}
-	
-	public JButton[][] redo()throws UndoRedoNichtMöglichException  {
-		return null;
 	}
     
     public boolean saveGame(JButton[][] spielfield, String fileName) throws IOException {
