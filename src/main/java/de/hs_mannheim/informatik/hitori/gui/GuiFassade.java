@@ -111,7 +111,7 @@ public class GuiFassade {
 	
 		for (int i = 0; i < staten.length; i++) {
 			for (int j = 0; j < staten[i].length; j++) {
-				hitorigame.getButton(i, j).setForeground(Color.green);
+				hitorigame.getButton(i, j).setForeground(Color.white);
 				switch (staten[i][j]) {
 				case 2:
 					hitorigame.getButton(i, j).setBackground(Color.WHITE);
