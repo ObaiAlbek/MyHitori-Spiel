@@ -98,8 +98,12 @@ public class Fassade {
 		return spielSpeichern;
 	}
 
-	public Stack<int[][]> getUndoStack() {
-		return undoStack;
+	public boolean kannUndo() {
+		return !undoStack.isEmpty();
+	}
+	
+	public boolean kannRedo() {
+		return !redoStack.isEmpty();
 	}
 
 	public int getSpielfeldFeld(int x, int y, int auswahl) {
