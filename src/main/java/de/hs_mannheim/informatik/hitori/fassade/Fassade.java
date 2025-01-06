@@ -22,8 +22,7 @@ public class Fassade {
 		this.redoStack = new Stack<>();
 		this.files = new CsvEinlesen();
 	}
-	
-	
+
 
 	public int[][] undo() throws UndoRedoNichtMöglichException {
 		if (!undoStack.isEmpty()) {
@@ -46,11 +45,11 @@ public class Fassade {
 	}
 
 	public void aktuelleButtonsZuständeSpeichern(int[][] staten, int dimension, String fileName) throws IOException {
-		int[][] tempStaten = new int[dimension][dimension];	
+		int[][] tempStaten = new int[dimension][dimension];
 		for (int i = 0; i < staten.length; i++)
 			for (int j = 0; j < staten[i].length; j++)
 				tempStaten[i][j] = staten[i][j];
-		
+
 		undoStack.push(tempStaten);
 		redoStack.clear();
 		saveGame(staten, fileName);
@@ -83,10 +82,10 @@ public class Fassade {
 	}
 
 	public String getLoesung(int auswahl, int dimension) throws FileNotFoundException {
-    String loesung = CsvEinlesen.getLoesung(auswahl);
-    //System.out.println(loesung);
-    return loesung;
-}
+		String loesung = CsvEinlesen.getLoesung(auswahl);
+		//System.out.println(loesung);
+		return loesung;
+	}
 
 
 	public String getTime() {
@@ -112,7 +111,7 @@ public class Fassade {
 	public boolean kannUndo() {
 		return !undoStack.isEmpty();
 	}
-	
+
 	public boolean kannRedo() {
 		return !redoStack.isEmpty();
 	}
@@ -132,6 +131,7 @@ public class Fassade {
 	public void fehlerSpeichern(int fehlercounter, int auswahl) {
 		spielSpeichern.fehlerSpeichern(fehlercounter, auswahl);
 	}
+
 	public void fehlerReset(int auswahl) {
 		spielSpeichern.fehlerReset(auswahl);
 	}
@@ -139,4 +139,16 @@ public class Fassade {
 	public int fehlercounterWeitergeben(int auswahl) {
 		return spielSpeichern.fehlercounterWeitergeben(auswahl);
 	}
+
+	public void saveTimerValue(String hitoriGameName, String time) {
+		spielSpeichern.saveTimerValue(hitoriGameName, time);
+	}
+
+	;
+
+	public String loadTimerValue(String gameName) {
+		return spielSpeichern.loadTimerValue(gameName);
+	}
+
+
 }

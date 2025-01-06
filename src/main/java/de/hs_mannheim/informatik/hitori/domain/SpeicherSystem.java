@@ -24,7 +24,7 @@ public class SpeicherSystem {
 
         if (!file.exists()) {
             file.getParentFile().mkdirs();
-            file.createNewFile(); 
+            file.createNewFile();
         }
 
         int[][] staten = spielfelder.get(fileName);
@@ -47,7 +47,7 @@ public class SpeicherSystem {
         if (!fileCheck.exists()) {
             int[][] defaultStaten = getDefaultHitoriState(fileName);
             spielfelder.put(fileName, defaultStaten);
-            createFile(fileName); 
+            createFile(fileName);
             fileCheck = new File(fullPath);
             if (!fileCheck.exists()) {
                 throw new IOException("File creation failed: " + fullPath);
@@ -73,69 +73,74 @@ public class SpeicherSystem {
         return lines.toArray(new int[0][]);
     }
 
-	private int[][] getDefaultHitoriState(String fileName) {
+    private int[][] getDefaultHitoriState(String fileName) {
 
-		switch (fileName) {
-		case "Hitori4x4_leicht":
-			return new int[4][4];
+        switch (fileName) {
+            case "Hitori4x4_leicht":
+                return new int[4][4];
 
-		case "Hitori5x5leicht":
-			return new int[5][5];
+            case "Hitori5x5leicht":
+                return new int[5][5];
 
-		case "Hitori8x8leicht":
-			return new int[8][8];
+            case "Hitori8x8leicht":
+                return new int[8][8];
 
-		case "Hitori8x8medium":
-			return new int[8][8];
+            case "Hitori8x8medium":
+                return new int[8][8];
 
-		case "Hitori10x10medium":
-			return new int[10][10];
+            case "Hitori10x10medium":
+                return new int[10][10];
 
-		case "Hitori15x15medium":
-			return new int[15][15];
+            case "Hitori15x15medium":
+                return new int[15][15];
 
-		default:
-			return null;
+            default:
+                return null;
 
-		}
+        }
 
-	}
-
-    public void spielGeloest(String name, String zeit, int auswahl) {
-    // Read fehlercounter from database/fehler/auswahl.txt
-    int fehlercounter = 0;
-    try {
-        File fehlerFile = new File("src/main/resources/database/fehler/" + auswahl + ".txt");
-        Scanner sc = new Scanner(fehlerFile);
-        fehlercounter = sc.nextInt();
-        sc.close();
-    } catch (FileNotFoundException e) {
-        e.printStackTrace();
     }
 
-    // Append name, zeit, and fehlercounter to sieger file
+    public void spielGeloest(String name, String zeit, int auswahl) {
+        // Read fehlercounter from database/fehler/auswahl.txt
+        int fehlercounter = 0;
+        try {
+            File fehlerFile = new File("src/main/resources/database/fehler/" + auswahl + ".txt");
+            Scanner sc = new Scanner(fehlerFile);
+            fehlercounter = sc.nextInt();
+            sc.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        // Append name, zeit, and fehlercounter to sieger file
+        try {
+            File siegerFile = new File("src/main/resources/database/Sieger.txt");
+            FileWriter writer = new FileWriter(siegerFile, true);
+            writer.write(name + ", " + zeit + ", Fehleranzahl: " + fehlercounter + " \n");
+            writer.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void fehlerSpeichern(int fehlercounter, int auswahl) {
+    // speicher den int fehlercounter in database/fehler/"auswahl".txt
+
     try {
-        File siegerFile = new File("src/main/resources/database/Sieger.txt");
-        FileWriter writer = new FileWriter(siegerFile, true);
-        writer.write(name + ", " + zeit + ", Fehleranzahl: " + fehlercounter + " \n");
+        File file = new File("src/main/resources/database/fehler/" + auswahl + ".txt");
+        if (!file.exists()) {
+            file.getParentFile().mkdirs();
+            file.createNewFile();
+        }
+        FileWriter writer = new FileWriter(file);
+        writer.write(fehlercounter + " \n");
         writer.close();
     } catch (IOException e) {
         e.printStackTrace();
     }
 }
 
-    public void fehlerSpeichern(int fehlercounter, int auswahl) {
-        //speicher den int fehlercounter in database/fehler/"auswahl".txt
-
-        try {
-    File file = new File("src/main/resources/database/fehler/" + auswahl + ".txt");
-    FileWriter writer = new FileWriter(file);
-    writer.write(fehlercounter + " \n");
-    writer.close();
-} catch (IOException e) {
-    e.printStackTrace();
-}
-    }
     public void fehlerReset(int auswahl) {
         //setze fehlercounter auf 0 in database/fehler/"auswahl".txt
         try {
@@ -161,4 +166,31 @@ public class SpeicherSystem {
         }
         return fehlercounter;
     }
-}
+
+    public void saveTimerValue(String hitoriGameName, String time) {
+        // erstell die datei wenn es sie nicht gibt
+        File file = new File("src/main/resources/database/timer/timer_" + hitoriGameName + ".txt");
+        try {
+            if (!file.exists()) {
+                file.getParentFile().mkdirs();
+                file.createNewFile();
+            }
+            FileWriter writer = new FileWriter(file);
+            writer.write(time);
+            writer.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+        public String loadTimerValue (String gameName){
+            File file = new File("src/main/resources/database/timer/timer_" + gameName + ".txt");
+            if (file.exists()) {
+                try (Scanner sc = new Scanner(file)) {
+                    return sc.nextLine();
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                }
+            }
+            return null;
+        }
+    }

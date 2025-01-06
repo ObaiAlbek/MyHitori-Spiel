@@ -135,9 +135,7 @@ public void spielGeloest(){
     JOptionPane.showMessageDialog(null, "Spiel gelöst! Ihre Zeit: " + zeit, "Spiel gelöst", JOptionPane.INFORMATION_MESSAGE);
     String name = JOptionPane.showInputDialog(null, "Bitte geben Sie Ihren Namen ein", "Spiel gelöst", JOptionPane.INFORMATION_MESSAGE);
     fassade.spielGeloest(name, zeit, auswahl);
-
-    //name und zeit wird in Spieler datei gespeichert
-    //spielSpeichern.spielGeloest(name, zeit);
+    fehlerReset(auswahl);
 }
 
    public void markiereFehlerhafteFelder(JButton[][] spielfeld, int auswahl, int dimension) throws FileNotFoundException {
@@ -239,5 +237,10 @@ public void spielGeloest(){
         fassade.fehlerReset(auswahl);
         fehlercounter = 0;
     }
+    public String loadTimeToWindow(String gameName) {
+        String savedTime = fassade.loadTimerValue(gameName);
+        return savedTime;
+    }
+
 }
 

@@ -45,7 +45,8 @@ public class HitoriGame extends JFrame {
 		resetButton.addActionListener(e -> {
             try {
                 spielfieldZurücksetzen();
-				guiFassade.fehlerReset(auswahl);
+				//timer resetten?
+				//guiFassade.fehlerReset(auswahl);
             } catch (IOException ex) {
                 throw new RuntimeException(ex);
             }
@@ -273,11 +274,21 @@ public class HitoriGame extends JFrame {
 	}
 
 	public void closeWindow() {
+		fassade.saveTimerValue(hitoriGameName, fassade.getTime());
 		this.setVisible(false);
 	}
 
 	public static void stopTimer() {
 		timer.stop();
+	}
+	private void addTimeToWindow(String hitoriGameName) {
+		String savedTime = fassade.loadTimerValue(hitoriGameName);
+		JLabel timeLabel = new JLabel(savedTime != null ? savedTime : fassade.getTime());
+		timeLabel.setFont(new Font("Tahoma", Font.BOLD, 14));
+		timeLabel.setBounds(68, 74, 83, 34);
+		contentPane.add(timeLabel);
+		timer = new Timer(10, e -> timeLabel.setText(fassade.getTime()));
+		timer.start();
 	}
 
 }
