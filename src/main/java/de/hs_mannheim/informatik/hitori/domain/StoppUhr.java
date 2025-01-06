@@ -35,4 +35,12 @@ public class StoppUhr {
         double elapsed = (System.currentTimeMillis() - startzeit) / 1000.0;
         return String.format("Zeit: %.3f s", elapsed);
     }
+
+
+    public void setTime(String time) {
+        String[] parts = time.split(",");
+        long seconds = Long.parseLong(parts[0]);
+        long milliseconds = Long.parseLong(parts[1]);
+        startzeit = System.currentTimeMillis() - (seconds * 1000 + milliseconds);
+    }
 }

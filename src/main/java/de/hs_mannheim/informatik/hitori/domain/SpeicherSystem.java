@@ -168,6 +168,7 @@ public class SpeicherSystem {
     }
 
     public void saveTimerValue(String hitoriGameName, String time) {
+
         // erstell die datei wenn es sie nicht gibt
         File file = new File("src/main/resources/database/timer/timer_" + hitoriGameName + ".txt");
         try {
@@ -176,7 +177,8 @@ public class SpeicherSystem {
                 file.createNewFile();
             }
             FileWriter writer = new FileWriter(file);
-            writer.write(time);
+            writer.write(time.replace("Zeit: ", "").replace(" s", ""));
+            //writer.write(time);
             writer.close();
         } catch (IOException e) {
             e.printStackTrace();
@@ -193,4 +195,10 @@ public class SpeicherSystem {
             }
             return null;
         }
+
+    public boolean timerExists(String gameName) {
+        //prüfe ob die datei leer ist
+        File file = new File("src/main/resources/database/timer/timer_" + gameName + ".txt");
+        return file.exists();
     }
+}

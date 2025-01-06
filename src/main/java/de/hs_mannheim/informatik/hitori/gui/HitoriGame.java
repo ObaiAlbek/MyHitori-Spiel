@@ -270,26 +270,24 @@ public class HitoriGame extends JFrame {
 	}
 
 	public void showWindow() {
+
+		if(fassade.timerExists(hitoriGameName))setTime(hitoriGameName);
 		this.setVisible(true);
+
 	}
 
 	public void closeWindow() {
 		fassade.saveTimerValue(hitoriGameName, fassade.getTime());
+		System.out.println(fassade.getTime());
 		this.setVisible(false);
 	}
 
 	public static void stopTimer() {
 		timer.stop();
 	}
-	private void addTimeToWindow(String hitoriGameName) {
-		String savedTime = fassade.loadTimerValue(hitoriGameName);
-		JLabel timeLabel = new JLabel(savedTime != null ? savedTime : fassade.getTime());
-		timeLabel.setFont(new Font("Tahoma", Font.BOLD, 14));
-		timeLabel.setBounds(68, 74, 83, 34);
-		contentPane.add(timeLabel);
-		timer = new Timer(10, e -> timeLabel.setText(fassade.getTime()));
-		timer.start();
-	}
-
+public void setTime(String hitoriGameName) {
+    String time = fassade.loadTimerValue(hitoriGameName);
+    fassade.setTime(time);
+}
 }
 
