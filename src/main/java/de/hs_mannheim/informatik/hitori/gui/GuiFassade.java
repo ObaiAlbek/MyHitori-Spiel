@@ -2,7 +2,9 @@ package de.hs_mannheim.informatik.hitori.gui;
 
 import java.awt.Color;
 import java.io.FileNotFoundException;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
 
 import javax.swing.*;
 
@@ -140,6 +142,7 @@ public void spielGeloest(){
 
    public void markiereFehlerhafteFelder(JButton[][] spielfeld, int auswahl, int dimension) throws FileNotFoundException {
     String[] loesungen = fassade.getLoesung(auswahl, dimension).split("\n");
+    fehlercounter = fassade.fehlercounterWeitergeben(auswahl);
     for (int i = 0; i < spielfeld.length; i++) {
         for (int j = 0; j < spielfeld[i].length; j++) {
             if (spielfeld[i][j].getBackground().equals(Color.BLACK) && !isInLoesungen(i + 1, j + 1, loesungen)) {
@@ -162,6 +165,8 @@ public void spielGeloest(){
     });
     timer.setRepeats(false);
     timer.start();
+    fassade.fehlerSpeichern(fehlercounter, auswahl);
+    fehlercounter = 0;
 }
 
 
@@ -229,5 +234,10 @@ public void spielGeloest(){
         }
         return false;
     }
+
+    public void fehlerReset(int auswahl) {
+        fassade.fehlerReset(auswahl);
+        fehlercounter = 0;
     }
+}
 

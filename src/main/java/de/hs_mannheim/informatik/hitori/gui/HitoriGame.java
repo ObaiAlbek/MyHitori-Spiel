@@ -45,6 +45,7 @@ public class HitoriGame extends JFrame {
 		resetButton.addActionListener(e -> {
             try {
                 spielfieldZurücksetzen();
+				guiFassade.fehlerReset(auswahl);
             } catch (IOException ex) {
                 throw new RuntimeException(ex);
             }

@@ -114,4 +114,42 @@ public class SpeicherSystem {
         }
 
     }
+
+    public void fehlerSpeichern(int fehlercounter, int auswahl) {
+        //speicher den int fehlercounter in database/fehler/"auswahl".txt
+
+        try {
+    File file = new File("src/main/resources/database/fehler/" + auswahl + ".txt");
+    FileWriter writer = new FileWriter(file);
+    writer.write(fehlercounter + " \n");
+    writer.close();
+} catch (IOException e) {
+    e.printStackTrace();
+}
+    }
+    public void fehlerReset(int auswahl) {
+        //setze fehlercounter auf 0 in database/fehler/"auswahl".txt
+        try {
+            File file = new File("src/main/resources/database/fehler/" + auswahl + ".txt");
+            FileWriter writer = new FileWriter(file);
+            writer.write("0 \n");
+            writer.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public int fehlercounterWeitergeben(int auswahl) {
+        //auslesen des fehlercounter aus database/fehler/"auswahl".txt
+        int fehlercounter = 0;
+        try {
+            File file = new File("src/main/resources/database/fehler/" + auswahl + ".txt");
+            Scanner sc = new Scanner(file);
+            fehlercounter = sc.nextInt();
+            sc.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        return fehlercounter;
+    }
 }
