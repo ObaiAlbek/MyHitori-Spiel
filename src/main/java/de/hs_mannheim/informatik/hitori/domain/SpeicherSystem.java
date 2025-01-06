@@ -107,7 +107,7 @@ public class SpeicherSystem {
         try {
             File file = new File("src/main/resources/database/Sieger.txt");
             FileWriter writer = new FileWriter(file, true);
-            writer.write(name + "," + zeit + "\n");
+            writer.write(name + ", " + zeit + " \n");
             writer.close();
         } catch (IOException e) {
             e.printStackTrace();

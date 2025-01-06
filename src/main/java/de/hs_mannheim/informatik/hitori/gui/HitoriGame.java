@@ -194,9 +194,13 @@ public class HitoriGame extends JFrame {
 		mnNewMenu.add(exit);
 		JMenuItem zurück = new JMenuItem("Back to Menu");
 		zurück.addActionListener(e -> {
-			menu.showWindow();
 			closeWindow();
-		});
+            try {
+                menu.showWindow();
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
+        });
 
 		mnNewMenu.add(zurück);
 		contentPane = new JPanel();
