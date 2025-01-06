@@ -78,6 +78,7 @@ public class Fassade {
 	}
 
 	public boolean saveGame(int[][] staten, String fileName) throws IOException {
+		saveTimerValue(fileName, stoppUhr.getFormattedTime());
 		return spielSpeichern.spielSpeichern(fileName, staten);
 	}
 
