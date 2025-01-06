@@ -101,19 +101,28 @@ public class SpeicherSystem {
 
 	}
 
-    public void spielGeloest(String name, String zeit) {
-        //database/Sieger/Spieler soll name und zeit gespeichert werden
-        //name und zeit wird in Spieler datei gespeichert
-        try {
-            File file = new File("src/main/resources/database/Sieger.txt");
-            FileWriter writer = new FileWriter(file, true);
-            writer.write(name + ", " + zeit + " \n");
-            writer.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
+    public void spielGeloest(String name, String zeit, int auswahl) {
+    // Read fehlercounter from database/fehler/auswahl.txt
+    int fehlercounter = 0;
+    try {
+        File fehlerFile = new File("src/main/resources/database/fehler/" + auswahl + ".txt");
+        Scanner sc = new Scanner(fehlerFile);
+        fehlercounter = sc.nextInt();
+        sc.close();
+    } catch (FileNotFoundException e) {
+        e.printStackTrace();
     }
+
+    // Append name, zeit, and fehlercounter to sieger file
+    try {
+        File siegerFile = new File("src/main/resources/database/Sieger.txt");
+        FileWriter writer = new FileWriter(siegerFile, true);
+        writer.write(name + ", " + zeit + ", Fehleranzahl: " + fehlercounter + " \n");
+        writer.close();
+    } catch (IOException e) {
+        e.printStackTrace();
+    }
+}
 
     public void fehlerSpeichern(int fehlercounter, int auswahl) {
         //speicher den int fehlercounter in database/fehler/"auswahl".txt

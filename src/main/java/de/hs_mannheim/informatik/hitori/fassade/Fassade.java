@@ -121,8 +121,8 @@ public class Fassade {
 		return files.getFeld(x, y, auswahl);
 	}
 
-	public void spielGeloest(String name, String zeit) {
-		spielSpeichern.spielGeloest(name, zeit);
+	public void spielGeloest(String name, String zeit, int auswahl) {
+		spielSpeichern.spielGeloest(name, zeit, auswahl);
 	}
 
 	public String getSiegerListe() {
