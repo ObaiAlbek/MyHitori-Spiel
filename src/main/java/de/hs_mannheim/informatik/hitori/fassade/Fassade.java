@@ -128,4 +128,15 @@ public class Fassade {
 	public String getSiegerListe() {
 		return CsvEinlesen.getSieger();
 	}
+
+	public void fehlerSpeichern(int fehlercounter, int auswahl) {
+		spielSpeichern.fehlerSpeichern(fehlercounter, auswahl);
+	}
+	public void fehlerReset(int auswahl) {
+		spielSpeichern.fehlerReset(auswahl);
+	}
+
+	public int fehlercounterWeitergeben(int auswahl) {
+		return spielSpeichern.fehlercounterWeitergeben(auswahl);
+	}
 }
