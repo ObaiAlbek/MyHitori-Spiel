@@ -24,10 +24,7 @@ public class StoppUhr {
     }
 
     public void stopStoppUhr() {
-        if (running) {
             timer.stop();
-            running = false;
-        }
     }
 
     private void updateZeit() {

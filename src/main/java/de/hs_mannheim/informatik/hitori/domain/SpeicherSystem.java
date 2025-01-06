@@ -101,4 +101,17 @@ public class SpeicherSystem {
 
 	}
 
+    public void spielGeloest(String name, String zeit) {
+        //database/Sieger/Spieler soll name und zeit gespeichert werden
+        //name und zeit wird in Spieler datei gespeichert
+        try {
+            File file = new File("src/main/resources/database/Sieger.txt");
+            FileWriter writer = new FileWriter(file, true);
+            writer.write(name + "," + zeit + "\n");
+            writer.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
 }

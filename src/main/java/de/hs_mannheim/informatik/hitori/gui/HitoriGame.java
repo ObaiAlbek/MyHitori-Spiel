@@ -20,7 +20,7 @@ public class HitoriGame extends JFrame {
 	private Fassade fassade;
 	private Menu menu;
 	private int auswahl;
-	private Timer timer;
+	private static Timer timer;
 	private String hitoriGameName;
 	private GridBagConstraints gbc;
 
@@ -56,19 +56,17 @@ public class HitoriGame extends JFrame {
 	}
 
 	public void undo() {
-		JButton[][] neuesSpielfeld;
-		try {
-			neuesSpielfeld = guiFassade.undo(hitoriGameName);
-			aktualisiereSpielfeld(neuesSpielfeld);
-
-		} catch (UndoRedoNichtMöglichException e) {
-			JOptionPane.showMessageDialog(this, "Undo ist nicht möglich!");
-		} catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-        updateUndoRedoState();
-
-	}
+    JButton[][] neuesSpielfeld;
+    try {
+        neuesSpielfeld = guiFassade.undo(hitoriGameName);
+        aktualisiereSpielfeld(neuesSpielfeld);
+        updateUndoRedoState(); // Move this line inside the try block
+    } catch (UndoRedoNichtMöglichException e) {
+        JOptionPane.showMessageDialog(this, "Undo ist nicht möglich!");
+    } catch (IOException e) {
+        throw new RuntimeException(e);
+    }
+}
 
 	public void redo() {
 		JButton[][] neuesSpielfeld;
@@ -259,4 +257,10 @@ public class HitoriGame extends JFrame {
 	public void closeWindow() {
 		this.setVisible(false);
 	}
+
+	public static void stopTimer() {
+		timer.stop();
+	}
+
 }
+
