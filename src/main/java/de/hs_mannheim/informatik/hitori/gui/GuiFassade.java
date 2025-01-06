@@ -134,7 +134,7 @@ public void spielGeloest(){
     String zeit = fassade.getTime();
     JOptionPane.showMessageDialog(null, "Spiel gelöst! Ihre Zeit: " + zeit, "Spiel gelöst", JOptionPane.INFORMATION_MESSAGE);
     String name = JOptionPane.showInputDialog(null, "Bitte geben Sie Ihren Namen ein", "Spiel gelöst", JOptionPane.INFORMATION_MESSAGE);
-    fassade.spielGeloest(name, zeit);
+    fassade.spielGeloest(name, zeit, auswahl);
 
     //name und zeit wird in Spieler datei gespeichert
     //spielSpeichern.spielGeloest(name, zeit);
