@@ -17,22 +17,49 @@ public class CsvEinlesen {
 			"Hitori8x8medium", "Hitori10x10medium", "Hitori15x15_medium" };
 
 	public static String getSieger() {
-		// liste der Sieger aus database/sieger.txt ausgeben
-		String path = new File(CsvEinlesen.class.getClassLoader().getResource("database/sieger.txt").getFile())
-				.getAbsolutePath();
-		StringBuilder sieger = new StringBuilder();
-		try {
-			Scanner sc = new Scanner(new File(path));
-			while (sc.hasNextLine()) {
-				sieger.append(sc.nextLine()).append("\n");
+		// List of winners from database/sieger.txt
+		// If the file does not exist, create sieger.txt
+
+		URL resource = CsvEinlesen.class.getClassLoader().getResource("database/sieger.txt");
+		if (resource == null) {
+			// sieger.txt erstellen
+			try {
+				File file = new File("src/main/resources/database/sieger.txt");
+				if (!file.exists()) {
+					file.getParentFile().mkdirs();
+					file.createNewFile();
+				}
+				resource = file.toURI().toURL();
+			} catch (IOException e) {
+				e.printStackTrace();
+				return "";
 			}
-			sc.close();
-		} catch (FileNotFoundException e) {
+		}
+
+		String path;
+		try {
+			path = new File(resource.toURI()).getAbsolutePath();
+		} catch (Exception e) {
+			e.printStackTrace();
+			return "";
+		}
+
+		StringBuilder sieger = new StringBuilder();
+		File file = new File(path);
+		try {
+			if (!file.exists()) {
+				System.out.println(file.createNewFile());
+			}
+			try (Scanner sc = new Scanner(file)) {
+				while (sc.hasNextLine()) {
+					sieger.append(sc.nextLine()).append("\n");
+				}
+			}
+		} catch (IOException e) {
 			e.printStackTrace();
 		}
 		return sieger.toString();
 	}
-
 	public String getSpielfeld(int auswahl) {
 
 		String path = new File(CsvEinlesen.class.getClassLoader()
