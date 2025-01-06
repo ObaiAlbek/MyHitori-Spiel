@@ -43,16 +43,18 @@ public class Fassade {
 		throw new UndoRedoNichtMöglichException("Undo ist nicht möglich!");
 	}
 
-	public void aktuelleButtonsZuständeSpeichern(int[][] staten, int dimension) {
+	public void aktuelleButtonsZuständeSpeichern(int[][] staten, int dimension, String fileName) throws IOException {
 		int[][] tempStaten = new int[dimension][dimension];	
 		for (int i = 0; i < staten.length; i++)
 			for (int j = 0; j < staten[i].length; j++)
 				tempStaten[i][j] = staten[i][j];
 		
 		undoStack.push(tempStaten);
-		
+		redoStack.clear();
+		saveGame(staten, fileName);
 
 	}
+
 
 	public int[][] spielWiederherstellen(String fileName) throws IOException {
 		int[][] staten = spielSpeichern.spielWiederherstellen(fileName);
