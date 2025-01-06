@@ -2,6 +2,8 @@ package de.hs_mannheim.informatik.hitori.domain;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -11,7 +13,8 @@ public class CsvEinlesen {
 
 	final private String[] spielfelderNamen = { "Hitori4x4_leicht", "Hitori5x5leicht", "Hitori8x8leicht",
 			"Hitori8x8medium", "Hitori10x10medium", "Hitori15x15_medium" };
-
+	final private static String[] spielfelderNamenStatic = { "Hitori4x4_leicht", "Hitori5x5leicht", "Hitori8x8leicht",
+			"Hitori8x8medium", "Hitori10x10medium", "Hitori15x15_medium" };
 	public String getSpielfeld(int auswahl) {
 
 		String path = new File(CsvEinlesen.class.getClassLoader()
@@ -102,5 +105,23 @@ public class CsvEinlesen {
 		String[] spalten = zeilen[y].trim().split(" ");
 
 		return Integer.parseInt(spalten[x]);
+	}
+	public static String getLoesung(int auswahl) throws FileNotFoundException {
+		StringBuilder loesungen = new StringBuilder();
+		String path = new File(CsvEinlesen.class.getClassLoader()
+				.getResource("database/" + spielfelderNamenStatic[auswahl] + ".csv").getFile()).getAbsolutePath();
+		Scanner sc = new Scanner(new File(path));
+		boolean wortGefunden = false;
+
+		while (sc.hasNextLine()) {
+			String line = sc.nextLine();
+			if (wortGefunden) {
+				loesungen.append(line).append("\n");
+			} else if (line.contains("Lösung")) {
+				wortGefunden = true;
+			}
+		}
+		sc.close();
+		return loesungen.toString();
 	}
 }

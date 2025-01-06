@@ -1,6 +1,8 @@
 package de.hs_mannheim.informatik.hitori.fassade;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Stack;
 
 import de.hs_mannheim.informatik.hitori.domain.CsvEinlesen;
@@ -80,6 +82,13 @@ public class Fassade {
 		return spielSpeichern.spielSpeichern(fileName, staten);
 	}
 
+	public String getLoesung(int auswahl, int dimension) throws FileNotFoundException {
+    String loesung = CsvEinlesen.getLoesung(auswahl);
+    //System.out.println(loesung);
+    return loesung;
+}
+
+
 	public String getTime() {
 		return stoppUhr.getFormattedTime();
 	}
@@ -110,5 +119,9 @@ public class Fassade {
 
 	public int getSpielfeldFeld(int x, int y, int auswahl) {
 		return files.getFeld(x, y, auswahl);
+	}
+
+	public void spielGeloest(String name, String zeit) {
+		spielSpeichern.spielGeloest(name, zeit);
 	}
 }
