@@ -32,7 +32,6 @@ public class Menu extends JFrame {
         this.fassade = new Fassade();
         WindowProperties();
         difficultyButtons();
-        showLeaderboard();
         showWindow();
     }
 
@@ -81,31 +80,6 @@ public class Menu extends JFrame {
         panel.add(willkommenNachricht);
     }
 
-    private void showLeaderboard() throws IOException {
-        String leaderboard = fassade.getSiegerListe();
-        leaderboardPanel = new JPanel();
-        leaderboardPanel.setBorder(new LineBorder(new Color(0, 0, 0), 2));
-        leaderboardPanel.setBounds(51, 400, 303, 100);
-        leaderboardPanel.setLayout(new BoxLayout(leaderboardPanel, BoxLayout.Y_AXIS));
-
-        JLabel title = new JLabel("Bestenliste:");
-        title.setFont(new Font("Tahoma", Font.BOLD, 14));
-        leaderboardPanel.add(title);
-
-        String[] lines = leaderboard.split("\n");
-        for (String line : lines) {
-            JLabel label = new JLabel(line);
-            leaderboardPanel.add(label);
-        }
-
-        contentPane.add(leaderboardPanel);
-    }
-
-    private List<String> readLeaderboard(String filePath) throws IOException {
-        try (Stream<String> lines = Files.lines(Paths.get(filePath))) {
-            return lines.collect(Collectors.toList());
-        }
-    }
 
     public void showWindow() throws IOException {
         this.setVisible(true);
