@@ -91,7 +91,7 @@ public class Menu extends JFrame {
         title.setFont(new Font("Tahoma", Font.BOLD, 14));
         leaderboardPanel.add(title);
 
-        String[] lines = fassade.getSiegerListe().split("\n");
+        String[] lines = fassade.getSiegerListe(spielAuswahl).split("\n");
         for (String line : lines) {
             JLabel label = new JLabel(line);
             leaderboardPanel.add(label);

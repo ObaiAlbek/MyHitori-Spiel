@@ -16,15 +16,15 @@ public class CsvEinlesen {
 	final private static String[] spielfelderNamenStatic = { "Hitori4x4_leicht", "Hitori5x5leicht", "Hitori8x8leicht",
 			"Hitori8x8medium", "Hitori10x10medium", "Hitori15x15_medium" };
 
-	public static String getSieger() {
+	public static String getSieger(int auswahl) {
 		// List of winners from database/sieger.txt
 		// If the file does not exist, create sieger.txt
 
-		URL resource = CsvEinlesen.class.getClassLoader().getResource("database/sieger.txt");
+		URL resource = CsvEinlesen.class.getClassLoader().getResource("src/main/resources/database/Siegerliste/" + spielfelderNamenStatic[auswahl] + "_sieger.txt");
 		if (resource == null) {
 			// sieger.txt erstellen
 			try {
-				File file = new File("src/main/resources/database/sieger.txt");
+				File file = new File("src/main/resources/database/Siegerliste/" + spielfelderNamenStatic[auswahl] + "_sieger.txt");
 				if (!file.exists()) {
 					file.getParentFile().mkdirs();
 					file.createNewFile();

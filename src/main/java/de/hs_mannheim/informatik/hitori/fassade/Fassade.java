@@ -125,8 +125,8 @@ public class Fassade {
 		spielSpeichern.spielGeloest(name, zeit, auswahl);
 	}
 
-	public String getSiegerListe() {
-		return CsvEinlesen.getSieger();
+	public String getSiegerListe(int auswahl) {
+		return CsvEinlesen.getSieger(auswahl);
 	}
 
 	public void fehlerSpeichern(int fehlercounter, int auswahl) {
