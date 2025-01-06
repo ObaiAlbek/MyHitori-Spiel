@@ -10,13 +10,17 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import javax.swing.border.LineBorder;
 
 public class HitoriGame extends JFrame {
 	private JButton saveButton, undoButton, redoButton, resetButton, hilfeButton;
 	private JButton[][] spielfield;
 	private int dimension;
-	private JPanel contentPane, panel;
+	private JPanel contentPane, panel, leaderboardPanel;
 	private GuiFassade guiFassade;
 	private Fassade fassade;
 	private Menu menu;
@@ -25,12 +29,13 @@ public class HitoriGame extends JFrame {
 	private String hitoriGameName;
 	private GridBagConstraints gbc;
 
-	public HitoriGame(int auswahl, Menu menu, String hitoriGameName, GuiFassade guiFassade, Fassade fassade) {
+	public HitoriGame(int auswahl, Menu menu, String hitoriGameName, GuiFassade guiFassade, Fassade fassade) throws IOException {
 		this.menu = menu;
 		this.auswahl = auswahl;
 		this.hitoriGameName = hitoriGameName;
 		this.guiFassade = guiFassade;
 		this.fassade = fassade;
+
 
 		fassade.startTimer();
 
@@ -63,6 +68,7 @@ public class HitoriGame extends JFrame {
 		
 		buttonFarbeÄndern();
 		showWindow();
+		showLeaderboard();
 	}
 
 	public void undo() {
@@ -186,7 +192,7 @@ public class HitoriGame extends JFrame {
 	public void addTimeToWindow() {
 		JLabel timeLabel = new JLabel(fassade.getTime());
 		timeLabel.setFont(new Font("Tahoma", Font.BOLD, 14));
-		timeLabel.setBounds(68, 74, 83, 34);
+		timeLabel.setBounds(68, 74, 200, 34);
 		contentPane.add(timeLabel);
 		timer = new Timer(10, e -> timeLabel.setText(fassade.getTime()));
 		timer.start();
@@ -247,8 +253,8 @@ public class HitoriGame extends JFrame {
 	}
 	public void WindowProperties() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 1000, 700);
-		this.setResizable(false);
+		setBounds(100, 0, 1000, 700);
+		this.setResizable(true);
 	}
 
 	public void pauseTime() {
@@ -289,5 +295,31 @@ public void setTime(String hitoriGameName) {
     String time = fassade.loadTimerValue(hitoriGameName);
     fassade.setTime(time);
 }
+
+	private void showLeaderboard() throws IOException {
+		String leaderboard = fassade.getSiegerListe();
+		leaderboardPanel = new JPanel();
+		leaderboardPanel.setBorder(new LineBorder(new Color(0, 0, 0), 2));
+		leaderboardPanel.setBounds(967, 120, 303, 100);
+		leaderboardPanel.setLayout(new BoxLayout(leaderboardPanel, BoxLayout.Y_AXIS));
+
+		JLabel title = new JLabel("Bestenliste:");
+		title.setFont(new Font("Tahoma", Font.BOLD, 14));
+		leaderboardPanel.add(title);
+
+		String[] lines = leaderboard.split("\n");
+		for (String line : lines) {
+			JLabel label = new JLabel(line);
+			leaderboardPanel.add(label);
+		}
+
+		contentPane.add(leaderboardPanel);
+	}
+
+	private java.util.List<String> readLeaderboard(String filePath) throws IOException {
+		try (Stream<String> lines = Files.lines(Paths.get(filePath))) {
+			return lines.collect(Collectors.toList());
+		}
+	}
 }
 
