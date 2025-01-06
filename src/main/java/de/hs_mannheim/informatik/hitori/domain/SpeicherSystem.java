@@ -7,11 +7,14 @@ public class SpeicherSystem {
 
     private String filePfad;
     private Map<String, int[][]> spielfelder;
+    final private String[] spielfelderNamen = { "Hitori4x4_leicht", "Hitori5x5leicht", "Hitori8x8leicht",
+            "Hitori8x8medium", "Hitori10x10medium", "Hitori15x15_medium" };
 
     public SpeicherSystem() {
         this.filePfad = "src/main/resources/database/speicherDateien/";
         this.spielfelder = new HashMap<>();
     }
+
 
     public boolean spielSpeichern(String name, int[][] feld) throws IOException {
         spielfelder.put(name, feld);
@@ -115,7 +118,7 @@ public class SpeicherSystem {
 
         // Append name, zeit, and fehlercounter to sieger file
         try {
-            File siegerFile = new File("src/main/resources/database/Sieger.txt");
+            File siegerFile = new File("src/main/resources/database/Siegerliste/" + spielfelderNamen[auswahl] + "_sieger.txt");
             FileWriter writer = new FileWriter(siegerFile, true);
             writer.write(name + ", " + zeit + ", Fehleranzahl: " + fehlercounter + " \n");
             writer.close();

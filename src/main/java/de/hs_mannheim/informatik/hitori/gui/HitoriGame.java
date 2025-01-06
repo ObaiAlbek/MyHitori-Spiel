@@ -297,7 +297,7 @@ public void setTime(String hitoriGameName) {
 }
 
 	private void showLeaderboard() throws IOException {
-		String leaderboard = fassade.getSiegerListe();
+		String leaderboard = fassade.getSiegerListe(auswahl);
 		leaderboardPanel = new JPanel();
 		leaderboardPanel.setBorder(new LineBorder(new Color(0, 0, 0), 2));
 		leaderboardPanel.setBounds(967, 120, 303, 100);
