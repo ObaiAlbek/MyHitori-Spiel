@@ -5,19 +5,24 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 import de.hs_mannheim.informatik.hitori.fassade.Fassade;
 
 public class Menu extends JFrame {
 
-    private JPanel contentPane, panel;
+    private JPanel contentPane, panel, leaderboardPanel;
     private JButton[] schwierigkeitsButtons;
     private GuiFassade guiFassade;
     private Fassade fassade;
-    private static final String[] spielfelderNamen = { 
+    private static final String[] spielfelderNamen = {
         "Hitori4x4_leicht", "Hitori5x5leicht", "Hitori8x8leicht",
-        "Hitori8x8medium", "Hitori10x10medium", "Hitori15x15_medium" 
+        "Hitori8x8medium", "Hitori10x10medium", "Hitori15x15_medium"
     };
     private String spielNameAuswahl;
     private int spielAuswahl;
@@ -27,6 +32,7 @@ public class Menu extends JFrame {
         this.fassade = new Fassade();
         WindowProperties();
         difficultyButtons();
+        showLeaderboard();
         showWindow();
     }
 
@@ -47,11 +53,11 @@ public class Menu extends JFrame {
             spielAuswahl = Integer.parseInt(e.getActionCommand());
             spielNameAuswahl = spielfelderNamen[spielAuswahl];
             try {
-                HitoriGame hitoriGame = new HitoriGame(spielAuswahl, Menu.this, spielNameAuswahl, guiFassade,fassade);
+                HitoriGame hitoriGame = new HitoriGame(spielAuswahl, Menu.this, spielNameAuswahl, guiFassade, fassade);
                 guiFassade.spielWiederherstellen(spielfelderNamen[spielAuswahl], hitoriGame, spielAuswahl);
                 closeWindow();
             } catch (IOException ex) {
-            	ex.toString();
+                ex.toString();
             }
         }
     }
@@ -59,7 +65,7 @@ public class Menu extends JFrame {
     private void WindowProperties() {
         setTitle("Menu");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setBounds(100, 100, 400, 500);
+        setBounds(500, 100, 400, 550);
         contentPane = new JPanel();
         contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
         setContentPane(contentPane);
@@ -75,12 +81,53 @@ public class Menu extends JFrame {
         panel.add(willkommenNachricht);
     }
 
-    public void showWindow() {
+    private void showLeaderboard() throws IOException {
+        String leaderboard = fassade.getSiegerListe();
+        leaderboardPanel = new JPanel();
+        leaderboardPanel.setBorder(new LineBorder(new Color(0, 0, 0), 2));
+        leaderboardPanel.setBounds(51, 400, 303, 100);
+        leaderboardPanel.setLayout(new BoxLayout(leaderboardPanel, BoxLayout.Y_AXIS));
+
+        JLabel title = new JLabel("Bestenliste:");
+        title.setFont(new Font("Tahoma", Font.BOLD, 14));
+        leaderboardPanel.add(title);
+
+        String[] lines = leaderboard.split("\n");
+        for (String line : lines) {
+            JLabel label = new JLabel(line);
+            leaderboardPanel.add(label);
+        }
+
+        contentPane.add(leaderboardPanel);
+    }
+
+    private List<String> readLeaderboard(String filePath) throws IOException {
+        try (Stream<String> lines = Files.lines(Paths.get(filePath))) {
+            return lines.collect(Collectors.toList());
+        }
+    }
+
+    public void showWindow() throws IOException {
         this.setVisible(true);
+    }
+
+    private void aktualisiereLeaderboard() throws IOException {
+        leaderboardPanel.removeAll();
+        JLabel title = new JLabel("Bestenliste:");
+        title.setFont(new Font("Tahoma", Font.BOLD, 14));
+        leaderboardPanel.add(title);
+
+        String[] lines = fassade.getSiegerListe().split("\n");
+        for (String line : lines) {
+            JLabel label = new JLabel(line);
+            leaderboardPanel.add(label);
+        }
+
+        leaderboardPanel.revalidate();
+        leaderboardPanel.repaint();
     }
 
     public void closeWindow() {
         this.setVisible(false);
     }
 }
-

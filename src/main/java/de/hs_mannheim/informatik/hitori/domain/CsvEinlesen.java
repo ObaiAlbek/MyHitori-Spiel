@@ -15,6 +15,24 @@ public class CsvEinlesen {
 			"Hitori8x8medium", "Hitori10x10medium", "Hitori15x15_medium" };
 	final private static String[] spielfelderNamenStatic = { "Hitori4x4_leicht", "Hitori5x5leicht", "Hitori8x8leicht",
 			"Hitori8x8medium", "Hitori10x10medium", "Hitori15x15_medium" };
+
+	public static String getSieger() {
+		// liste der Sieger aus database/sieger.txt ausgeben
+		String path = new File(CsvEinlesen.class.getClassLoader().getResource("database/sieger.txt").getFile())
+				.getAbsolutePath();
+		StringBuilder sieger = new StringBuilder();
+		try {
+			Scanner sc = new Scanner(new File(path));
+			while (sc.hasNextLine()) {
+				sieger.append(sc.nextLine()).append("\n");
+			}
+			sc.close();
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
+		return sieger.toString();
+	}
+
 	public String getSpielfeld(int auswahl) {
 
 		String path = new File(CsvEinlesen.class.getClassLoader()

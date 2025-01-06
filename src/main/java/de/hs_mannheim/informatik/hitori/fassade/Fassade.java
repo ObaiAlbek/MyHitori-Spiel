@@ -124,4 +124,8 @@ public class Fassade {
 	public void spielGeloest(String name, String zeit) {
 		spielSpeichern.spielGeloest(name, zeit);
 	}
+
+	public String getSiegerListe() {
+		return CsvEinlesen.getSieger();
+	}
 }
