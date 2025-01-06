@@ -19,6 +19,7 @@ public class GuiFassade {
     private int schwarz = 1;
     private int weiss = 2;
     private int auswahl;
+    private int fehlercounter = 0;
 
     public JButton[][] undo(String fileName) throws UndoRedoNichtMöglichException, IOException {
         ausgabeStaten = fassade.undo();
@@ -135,6 +136,32 @@ public void spielGeloest(){
 
     //name und zeit wird in Spieler datei gespeichert
     //spielSpeichern.spielGeloest(name, zeit);
+}
+
+   public void markiereFehlerhafteFelder(JButton[][] spielfeld, int auswahl, int dimension) throws FileNotFoundException {
+    String[] loesungen = fassade.getLoesung(auswahl, dimension).split("\n");
+    for (int i = 0; i < spielfeld.length; i++) {
+        for (int j = 0; j < spielfeld[i].length; j++) {
+            if (spielfeld[i][j].getBackground().equals(Color.BLACK) && !isInLoesungen(i + 1, j + 1, loesungen)) {
+                spielfeld[i][j].setBackground(Color.RED);
+                fehlercounter++;
+                System.out.println(fehlercounter);
+
+                // Markiere fälschlich schwarz markierte Felder rot
+            }
+        }
+    }
+    Timer timer = new Timer(1000, e -> {
+        for (int k = 0; k < spielfeld.length; k++) {
+            for (int l = 0; l < spielfeld[k].length; l++) {
+                if (spielfeld[k][l].getBackground().equals(Color.RED)) {
+                    spielfeld[k][l].setBackground(Color.BLACK);
+                }
+            }
+        }
+    });
+    timer.setRepeats(false);
+    timer.start();
 }
 
 
