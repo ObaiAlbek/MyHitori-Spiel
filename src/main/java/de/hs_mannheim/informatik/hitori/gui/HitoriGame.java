@@ -41,7 +41,13 @@ public class HitoriGame extends JFrame {
 		this.guiFassade.getFassade(fassade, dimension);
 
 		saveButton.addActionListener(e -> saveGame());
-		resetButton.addActionListener(e -> spielfieldZurücksetzen());
+		resetButton.addActionListener(e -> {
+            try {
+                spielfieldZurücksetzen();
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
+        });
 		undoButton.addActionListener(e -> undo());
 		redoButton.addActionListener(e -> redo());
 		
@@ -52,27 +58,31 @@ public class HitoriGame extends JFrame {
 	public void undo() {
 		JButton[][] neuesSpielfeld;
 		try {
-			neuesSpielfeld = guiFassade.undo();
+			neuesSpielfeld = guiFassade.undo(hitoriGameName);
 			aktualisiereSpielfeld(neuesSpielfeld);
 
 		} catch (UndoRedoNichtMöglichException e) {
 			JOptionPane.showMessageDialog(this, "Undo ist nicht möglich!");
-		}
-		updateUndoRedoState(); 
+		} catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        updateUndoRedoState();
 
 	}
 
 	public void redo() {
 		JButton[][] neuesSpielfeld;
 		try {
-			neuesSpielfeld = guiFassade.redo();
+			neuesSpielfeld = guiFassade.redo(hitoriGameName);
 			aktualisiereSpielfeld(neuesSpielfeld);
 
 		} catch (UndoRedoNichtMöglichException e) {
 			JOptionPane.showMessageDialog(this, "Redo ist nicht möglich!");
 
-		}
-		updateUndoRedoState(); 
+		} catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        updateUndoRedoState();
 	}
 	
 	
@@ -138,7 +148,13 @@ public class HitoriGame extends JFrame {
 			for (int j = 0; j < dimension; j++) {
 				int x = i;
 				int y = j;
-				spielfield[i][j].addActionListener(e -> guiFassade.buttonFarbeÄndern(spielfield, x, y));
+				spielfield[i][j].addActionListener(e -> {
+                    try {
+                        guiFassade.buttonFarbeÄndern(spielfield, x, y, hitoriGameName);
+                    } catch (IOException ex) {
+                        throw new RuntimeException(ex);
+                    }
+                });
 
 			}
 
@@ -155,8 +171,8 @@ public class HitoriGame extends JFrame {
 		}
 	}
 
-	public void spielfieldZurücksetzen() {
-		guiFassade.spielfieldZurücksetzen(spielfield);
+	public void spielfieldZurücksetzen() throws IOException {
+		guiFassade.spielfieldZurücksetzen(spielfield, hitoriGameName);
 	}
 
 	public void addTimeToWindow() {
