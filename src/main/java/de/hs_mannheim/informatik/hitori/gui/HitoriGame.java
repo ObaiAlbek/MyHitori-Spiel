@@ -8,11 +8,12 @@ import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import javax.swing.border.LineBorder;
 
 public class HitoriGame extends JFrame {
-	private JButton saveButton, undoButton, redoButton, resetButton;
+	private JButton saveButton, undoButton, redoButton, resetButton, hilfeButton;
 	private JButton[][] spielfield;
 	private int dimension;
 	private JPanel contentPane, panel;
@@ -50,6 +51,13 @@ public class HitoriGame extends JFrame {
         });
 		undoButton.addActionListener(e -> undo());
 		redoButton.addActionListener(e -> redo());
+		hilfeButton.addActionListener(e -> {
+            try {
+                guiFassade.markiereFehlerhafteFelder(spielfield, auswahl, dimension);
+            } catch (FileNotFoundException ex) {
+                throw new RuntimeException(ex);
+            }
+        });
 		
 		buttonFarbeÄndern();
 		showWindow();
@@ -195,12 +203,12 @@ public class HitoriGame extends JFrame {
 		JMenuItem zurück = new JMenuItem("Back to Menu");
 		zurück.addActionListener(e -> {
 			closeWindow();
-            try {
-                menu.showWindow();
-            } catch (IOException ex) {
-                throw new RuntimeException(ex);
-            }
-        });
+			try {
+				menu.showWindow();
+			} catch (IOException ex) {
+				throw new RuntimeException(ex);
+			}
+		});
 
 		mnNewMenu.add(zurück);
 		contentPane = new JPanel();
@@ -228,8 +236,13 @@ public class HitoriGame extends JFrame {
 		resetButton.setBounds(379, 11, 75, 34);
 		resetButton.setFont(new Font("Tahoma", Font.PLAIN, 11));
 		contentPane.add(resetButton);
-	}
 
+		hilfeButton = new JButton("Hilfestellung");
+		hilfeButton.setBounds(479, 11, 150, 34);
+		hilfeButton.setFont(new Font("Tahoma", Font.PLAIN, 11));
+		contentPane.add(hilfeButton);
+
+	}
 	public void WindowProperties() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 1000, 700);
