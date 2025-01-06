@@ -151,4 +151,11 @@ public class Fassade {
 	}
 
 
+	public void setTime(String time) {
+		stoppUhr.setTime(time);
+	}
+
+	public boolean timerExists(String gameName) {
+		return spielSpeichern.timerExists(gameName);
+	}
 }
