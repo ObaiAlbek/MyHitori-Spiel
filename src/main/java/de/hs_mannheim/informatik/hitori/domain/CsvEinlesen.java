@@ -18,8 +18,13 @@ public class CsvEinlesen {
 public static String getSieger(int auswahl) throws IOException {
     // List of winners from database/sieger.txt
     // If the file does not exist, create sieger.txt
+    if(auswahl < 0 || auswahl >= spielfelderNamenStatic.length) {
+        throw new IOException("Invalid index" + auswahl);
+    }
+
     String fileName = "database/siegerliste/" + spielfelderNamenStatic[auswahl] + "_sieger.txt";
     File file = new File(fileName);
+
     if (!file.exists()) {
         file.getParentFile().mkdirs();
         file.createNewFile();
@@ -36,7 +41,11 @@ public static String getSieger(int auswahl) throws IOException {
 }
 
     public String getSpielfeld(int auswahl) {
-        String fileName = "database/" + spielfelderNamen[auswahl] + ".csv";
+        if (auswahl < 0 || auswahl >= spielfelderNamen.length) {
+            return null;
+        }
+    String fileName = "database/" + spielfelderNamen[auswahl] + ".csv";
+
         ArrayList<String> lines = readFile(fileName);
         if (lines == null) {
             return null;
@@ -64,32 +73,36 @@ public static String getSieger(int auswahl) throws IOException {
         return ergebnis.toString();
     }
 
-    public String getLoesungen(int auswahl) {
-        String fileName = "database/" + spielfelderNamen[auswahl] + ".csv";
-        ArrayList<String> lines = readFile(fileName);
-        if (lines == null) {
-            return null;
-        }
+ public String getLoesungen(int auswahl) {
+    if (auswahl < 0 || auswahl >= spielfelderNamen.length) {
+        return null;
+    }
+    String fileName = "database/" + spielfelderNamen[auswahl] + ".csv";
+    ArrayList<String> lines = readFile(fileName);
 
-        StringBuilder ergebnis = new StringBuilder();
-        String[] zwischenspeicher = lines.get(0).split(",");
+    StringBuilder ergebnis = new StringBuilder();
+    String[] zwischenspeicher = lines.get(0).split(",");
 
-        int[][] loesungen = new int[lines.size() - (zwischenspeicher.length + 2)][2];
+    int[][] loesungen = new int[lines.size() - (zwischenspeicher.length + 2)][2];
 
-        for (int i = 0; i < loesungen.length; i++) {
-            zwischenspeicher = lines.get(i + (zwischenspeicher.length + 2)).split(",");
+    for (int i = 0; i < loesungen.length; i++) {
+        zwischenspeicher = lines.get(i + (zwischenspeicher.length + 2)).split(",");
+        try {
             loesungen[i][0] = Integer.parseInt(zwischenspeicher[0]);
             loesungen[i][1] = Integer.parseInt(zwischenspeicher[1]);
+        } catch (NumberFormatException e) {
+            return "0";
         }
-
-        for (int i = 0; i < loesungen.length; i++) {
-            for (int j = 0; j < loesungen.length; j++)
-                ergebnis.append(" ").append(loesungen[i][j]);
-
-            ergebnis.append(",");
-        }
-        return ergebnis.toString();
     }
+
+    for (int i = 0; i < loesungen.length; i++) {
+        for (int j = 0; j < loesungen[i].length; j++) {
+            ergebnis.append(" ").append(loesungen[i][j]);
+        }
+        ergebnis.append(",");
+    }
+    return ergebnis.toString();
+}
 
     private ArrayList<String> readFile(String fileName) {
         ArrayList<String> lines = new ArrayList<>();
@@ -107,7 +120,11 @@ public static String getSieger(int auswahl) throws IOException {
     }
 
     public int getDimension(String spielfeld) {
-        return spielfeld.split(",").length;
+        if (spielfeld == null || spielfeld.isEmpty()) {
+            return 0;
+        }
+
+       return spielfeld.split(",").length;
     }
 
     public int getFeld(int x, int y, int auswahl) {
@@ -119,6 +136,9 @@ public static String getSieger(int auswahl) throws IOException {
     }
 
     public static String getLoesung(int auswahl) throws IOException {
+    if(auswahl < 0 || auswahl >= spielfelderNamenStatic.length) {
+        throw new IOException("Invalid index" + auswahl);
+    }
         StringBuilder loesungen = new StringBuilder();
         String fileName = "database/" + spielfelderNamenStatic[auswahl] + ".csv";
         InputStream resource = CsvEinlesen.class.getClassLoader().getResourceAsStream(fileName);

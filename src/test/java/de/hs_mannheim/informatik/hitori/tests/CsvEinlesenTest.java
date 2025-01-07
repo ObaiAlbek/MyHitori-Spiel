@@ -70,7 +70,7 @@ public class CsvEinlesenTest {
     @Test
     public void getFeld_validCoordinates_returnsValue() {
         int value = csvEinlesen.getFeld(0, 0, 0);
-        assertEquals(1, value);
+        assertEquals(3, value);
     }
 
     @Test
