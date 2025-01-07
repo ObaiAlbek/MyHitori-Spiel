@@ -136,6 +136,7 @@ public void spielGeloest(){
     String name = JOptionPane.showInputDialog(null, "Bitte geben Sie Ihren Namen ein", "Spiel gelöst", JOptionPane.INFORMATION_MESSAGE);
     fassade.spielGeloest(name, zeit, auswahl);
     fehlerReset(auswahl);
+    fassade.resetTimerValue(auswahl);
 }
 
    public void markiereFehlerhafteFelder(JButton[][] spielfeld, int auswahl, int dimension) throws FileNotFoundException {

@@ -28,6 +28,7 @@ public class HitoriGame extends JFrame {
 	private static Timer timer;
 	private String hitoriGameName;
 	private GridBagConstraints gbc;
+	private static boolean freshStart;
 
 	public HitoriGame(int auswahl, Menu menu, String hitoriGameName, GuiFassade guiFassade, Fassade fassade) throws IOException {
 		this.menu = menu;
@@ -210,6 +211,7 @@ public class HitoriGame extends JFrame {
 		mnNewMenu.add(exit);
 		JMenuItem zurück = new JMenuItem("Back to Menu");
 		zurück.addActionListener(e -> {
+
 			closeWindow();
 			try {
 				menu.showWindow();
@@ -283,9 +285,13 @@ public class HitoriGame extends JFrame {
 	}
 
 	public void closeWindow() {
-		fassade.saveTimerValue(hitoriGameName, fassade.getTime());
-		System.out.println(fassade.getTime());
+		if(!freshStart){
+			fassade.saveTimerValue(hitoriGameName, fassade.getTime());
+		}
+//		System.out.println(freshStart);
+//		System.out.println(fassade.getTime());
 		this.setVisible(false);
+		freshStart = false;
 	}
 
 	public static void stopTimer() {
@@ -320,6 +326,9 @@ public void setTime(String hitoriGameName) {
 		try (Stream<String> lines = Files.lines(Paths.get(filePath))) {
 			return lines.collect(Collectors.toList());
 		}
+	}
+	public static void setFreshStart(){
+		freshStart = true;
 	}
 }
 

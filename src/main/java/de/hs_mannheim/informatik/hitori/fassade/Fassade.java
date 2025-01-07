@@ -8,6 +8,8 @@ import java.util.Stack;
 import de.hs_mannheim.informatik.hitori.domain.CsvEinlesen;
 import de.hs_mannheim.informatik.hitori.domain.SpeicherSystem;
 import de.hs_mannheim.informatik.hitori.domain.StoppUhr;
+import de.hs_mannheim.informatik.hitori.gui.GuiFassade;
+import de.hs_mannheim.informatik.hitori.gui.HitoriGame;
 
 public class Fassade {
 	private final StoppUhr stoppUhr;
@@ -145,8 +147,6 @@ public class Fassade {
 		spielSpeichern.saveTimerValue(hitoriGameName, time);
 	}
 
-	;
-
 	public String loadTimerValue(String gameName) {
 		return spielSpeichern.loadTimerValue(gameName);
 	}
@@ -158,5 +158,17 @@ public class Fassade {
 
 	public boolean timerExists(String gameName) {
 		return spielSpeichern.timerExists(gameName);
+	}
+
+	public void resetTimerValue(int auswahl) {
+		spielSpeichern.resetTimerValue(auswahl);
+		stoppUhr.setTime("0,0");
+		stoppUhr.stopStoppUhr();
+		setFreshstart();
+		//GuiFassade.freshTime();
+
+	}
+	public void setFreshstart(){
+		HitoriGame.setFreshStart();
 	}
 }
