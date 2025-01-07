@@ -220,4 +220,49 @@ public class SpeicherSystem {
         }
 
     }
+    public double berechneDurchschnitt(int auswahl){
+    double durchschnitt = 0.0;
+    File file = new File("src/main/resources/database/Siegerliste/" + spielfelderNamen[auswahl] + "_sieger.txt");
+    if (file.exists()) {
+        try (Scanner sc = new Scanner(file)) {
+            double sum = 0;
+            int count = 0;
+            while (sc.hasNextLine()) {
+                String line = sc.nextLine();
+                String[] parts = line.split(", ");
+                String[] time = parts[1].split(" ");
+                sum += Double.parseDouble(time[1].replace(",", "."));
+                count++;
+            }
+            durchschnitt = sum / count;
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+    return durchschnitt;
+}
+
+    public void sortiereLeaderboard(int auswahl) {
+        //sortiere die siegerliste nach zeit
+        File file = new File("src/main/resources/database/Siegerliste/" + spielfelderNamen[auswahl] + "_sieger.txt");
+        if (file.exists()) {
+            try {
+                List<String> lines = new ArrayList<>();
+                try (Scanner sc = new Scanner(file)) {
+                    while (sc.hasNextLine()) {
+                        lines.add(sc.nextLine());
+                    }
+                }
+                lines.sort(Comparator.comparingDouble(o -> Double.parseDouble(o.split(", ")[1].split(" ")[1].replace(",", "."))));
+                FileWriter writer = new FileWriter(file);
+                for (String line : lines) {
+                    writer.write(line + "\n");
+                }
+                writer.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+    }
 }

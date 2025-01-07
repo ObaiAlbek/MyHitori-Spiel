@@ -49,41 +49,41 @@ public class HitoriGame extends JFrame {
 
 		saveButton.addActionListener(e -> saveGame());
 		resetButton.addActionListener(e -> {
-            try {
-                spielfieldZurücksetzen();
+			try {
+				spielfieldZurücksetzen();
 				//timer resetten?
 				//guiFassade.fehlerReset(auswahl);
-            } catch (IOException ex) {
-                throw new RuntimeException(ex);
-            }
-        });
+			} catch (IOException ex) {
+				throw new RuntimeException(ex);
+			}
+		});
 		undoButton.addActionListener(e -> undo());
 		redoButton.addActionListener(e -> redo());
 		hilfeButton.addActionListener(e -> {
-            try {
-                guiFassade.markiereFehlerhafteFelder(spielfield, auswahl, dimension);
-            } catch (FileNotFoundException ex) {
-                throw new RuntimeException(ex);
-            }
-        });
-		
+			try {
+				guiFassade.markiereFehlerhafteFelder(spielfield, auswahl, dimension);
+			} catch (FileNotFoundException ex) {
+				throw new RuntimeException(ex);
+			}
+		});
+
 		buttonFarbeÄndern();
 		showWindow();
 		showLeaderboard();
 	}
 
 	public void undo() {
-    JButton[][] neuesSpielfeld;
-    try {
-        neuesSpielfeld = guiFassade.undo(hitoriGameName);
-        aktualisiereSpielfeld(neuesSpielfeld);
-        updateUndoRedoState(); // Move this line inside the try block
-    } catch (UndoRedoNichtMöglichException e) {
-        JOptionPane.showMessageDialog(this, "Undo ist nicht möglich!");
-    } catch (IOException e) {
-        throw new RuntimeException(e);
-    }
-}
+		JButton[][] neuesSpielfeld;
+		try {
+			neuesSpielfeld = guiFassade.undo(hitoriGameName);
+			aktualisiereSpielfeld(neuesSpielfeld);
+			updateUndoRedoState(); // Move this line inside the try block
+		} catch (UndoRedoNichtMöglichException e) {
+			JOptionPane.showMessageDialog(this, "Undo ist nicht möglich!");
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
+	}
 
 	public void redo() {
 		JButton[][] neuesSpielfeld;
@@ -95,12 +95,12 @@ public class HitoriGame extends JFrame {
 			JOptionPane.showMessageDialog(this, "Redo ist nicht möglich!");
 
 		} catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-        updateUndoRedoState();
+			throw new RuntimeException(e);
+		}
+		updateUndoRedoState();
 	}
-	
-	
+
+
 	private void updateUndoRedoState() {
 
 		boolean undo = (fassade.kannUndo()) ? true : false;
@@ -164,12 +164,12 @@ public class HitoriGame extends JFrame {
 				int x = i;
 				int y = j;
 				spielfield[i][j].addActionListener(e -> {
-                    try {
-                        guiFassade.buttonFarbeÄndern(spielfield, x, y, hitoriGameName);
-                    } catch (IOException ex) {
-                        throw new RuntimeException(ex);
-                    }
-                });
+					try {
+						guiFassade.buttonFarbeÄndern(spielfield, x, y, hitoriGameName);
+					} catch (IOException ex) {
+						throw new RuntimeException(ex);
+					}
+				});
 
 			}
 
@@ -253,6 +253,7 @@ public class HitoriGame extends JFrame {
 		contentPane.add(hilfeButton);
 
 	}
+
 	public void WindowProperties() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 0, 1000, 700);
@@ -279,13 +280,13 @@ public class HitoriGame extends JFrame {
 
 	public void showWindow() {
 
-		if(fassade.timerExists(hitoriGameName))setTime(hitoriGameName);
+		if (fassade.timerExists(hitoriGameName)) setTime(hitoriGameName);
 		this.setVisible(true);
 
 	}
 
 	public void closeWindow() {
-		if(!freshStart){
+		if (!freshStart) {
 			fassade.saveTimerValue(hitoriGameName, fassade.getTime());
 		}
 //		System.out.println(freshStart);
@@ -297,28 +298,33 @@ public class HitoriGame extends JFrame {
 	public static void stopTimer() {
 		timer.stop();
 	}
-public void setTime(String hitoriGameName) {
-    String time = fassade.loadTimerValue(hitoriGameName);
-    fassade.setTime(time);
-}
+
+	public void setTime(String hitoriGameName) {
+		String time = fassade.loadTimerValue(hitoriGameName);
+		fassade.setTime(time);
+	}
 
 	private void showLeaderboard() throws IOException {
+		sortiereLeaderboard();
+		System.out.println(fassade.getDurchschnitt(auswahl));
 		String leaderboard = fassade.getSiegerListe(auswahl);
 		leaderboardPanel = new JPanel();
 		leaderboardPanel.setBorder(new LineBorder(new Color(0, 0, 0), 2));
-		leaderboardPanel.setBounds(967, 120, 303, 100);
+		leaderboardPanel.setBounds(967, 120, 303, 500);
 		leaderboardPanel.setLayout(new BoxLayout(leaderboardPanel, BoxLayout.Y_AXIS));
 
 		JLabel title = new JLabel("Bestenliste:");
 		title.setFont(new Font("Tahoma", Font.BOLD, 14));
 		leaderboardPanel.add(title);
+		JLabel averageLabel = new JLabel("Durchschnitt: " + fassade.getDurchschnitt(auswahl));
+		averageLabel.setFont(new Font("Tahoma", Font.BOLD, 12));
+		leaderboardPanel.add(averageLabel);
 
 		String[] lines = leaderboard.split("\n");
 		for (String line : lines) {
 			JLabel label = new JLabel(line);
 			leaderboardPanel.add(label);
 		}
-
 		contentPane.add(leaderboardPanel);
 	}
 
@@ -327,8 +333,15 @@ public void setTime(String hitoriGameName) {
 			return lines.collect(Collectors.toList());
 		}
 	}
-	public static void setFreshStart(){
+
+	public static void setFreshStart() {
 		freshStart = true;
 	}
+
+	public void sortiereLeaderboard() {
+		fassade.sortiereLeaderboard(auswahl);
+	}
+
+
 }
 

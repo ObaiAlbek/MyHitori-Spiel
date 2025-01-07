@@ -171,4 +171,14 @@ public class Fassade {
 	public void setFreshstart(){
 		HitoriGame.setFreshStart();
 	}
+	public String getDurchschnitt(int auswahl) {
+		String durchschnitt = String.valueOf(spielSpeichern.berechneDurchschnitt(auswahl));
+		// runde durschnitt auf 3 nachkommastellen und ersetze . mit ,
+		durchschnitt = durchschnitt.substring(0, durchschnitt.indexOf(".") + 4).replace(".", ",") + " s";
+		return durchschnitt;
+	}
+
+	public void sortiereLeaderboard(int auswahl) {
+		spielSpeichern.sortiereLeaderboard(auswahl);
+	}
 }
