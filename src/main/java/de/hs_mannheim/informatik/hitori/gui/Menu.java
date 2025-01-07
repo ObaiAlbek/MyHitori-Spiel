@@ -64,7 +64,7 @@ public class Menu extends JFrame {
     private void WindowProperties() {
         setTitle("Menu");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setBounds(500, 100, 400, 550);
+        setBounds(500, 100, 400, 500);
         contentPane = new JPanel();
         contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
         setContentPane(contentPane);

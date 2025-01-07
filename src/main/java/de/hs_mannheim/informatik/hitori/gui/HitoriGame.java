@@ -257,6 +257,7 @@ public class HitoriGame extends JFrame {
 	public void WindowProperties() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 0, 1000, 700);
+		setExtendedState(JFrame.MAXIMIZED_BOTH); // Setzt das Fenster in den Vollbildmodus
 		this.setResizable(true);
 	}
 
