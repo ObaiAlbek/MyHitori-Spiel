@@ -131,7 +131,7 @@ public class SpeicherSystem {
     // speicher den int fehlercounter in database/fehler/"auswahl".txt
 
     try {
-        File file = new File("src/main/resources/database/fehler/" + auswahl + ".txt");
+        File file = new File("src/main/resources/database/fehler/" + spielfelderNamen[auswahl] + ".txt");
         if (!file.exists()) {
             file.getParentFile().mkdirs();
             file.createNewFile();
@@ -147,7 +147,7 @@ public class SpeicherSystem {
     public void fehlerReset(int auswahl) {
         //setze fehlercounter auf 0 in database/fehler/"auswahl".txt
         try {
-            File file = new File("src/main/resources/database/fehler/" + auswahl + ".txt");
+            File file = new File("src/main/resources/database/fehler/" + spielfelderNamen[auswahl] + ".txt");
             FileWriter writer = new FileWriter(file);
             writer.write("0 \n");
             writer.close();
@@ -160,7 +160,7 @@ public class SpeicherSystem {
         //auslesen des fehlercounter aus database/fehler/"auswahl".txt
         int fehlercounter = 0;
         try {
-            File file = new File("src/main/resources/database/fehler/" + auswahl + ".txt");
+            File file = new File("src/main/resources/database/fehler/" + spielfelderNamen[auswahl] + ".txt");
             Scanner sc = new Scanner(file);
             fehlercounter = sc.nextInt();
             sc.close();
@@ -203,5 +203,21 @@ public class SpeicherSystem {
         //prüfe ob die datei leer ist
         File file = new File("src/main/resources/database/timer/timer_" + gameName + ".txt");
         return file.exists();
+    }
+
+    public void resetTimerValue(int auswahl) {
+        //lösche die datei
+        File file = new File("src/main/resources/database/timer/timer_" + spielfelderNamen[auswahl] + ".txt");
+        if (file.exists()) {
+            //ersetze erste zeile mit 0
+            try {
+                FileWriter writer = new FileWriter(file);
+                writer.write("0,000");
+                writer.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
     }
 }
