@@ -135,7 +135,10 @@ public class SpeicherSystem {
     }
 
     public double berechneDurchschnitt(int auswahl) {
-        double sum = 0;
+        if(auswahl < 0 || auswahl >= spielfelderNamen.length) {
+            return 0.0;
+        }
+        double sum = 0.0;
         int count = 0;
         File file = new File("database/Siegerliste/" + spielfelderNamen[auswahl] + "_sieger.txt");
         if (file.exists()) {

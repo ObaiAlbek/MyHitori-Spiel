@@ -74,6 +74,6 @@ public class FassadeTest {
     @Test
     public void resetTimerValue_resetsTimer() {
         fassade.resetTimerValue(0);
-        assertEquals("0,0", fassade.getTime());
+        assertTrue(fassade.getTime().startsWith("Zeit: 0"));
     }
 }

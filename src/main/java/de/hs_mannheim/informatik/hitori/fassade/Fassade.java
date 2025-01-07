@@ -172,6 +172,7 @@ public class Fassade {
 		HitoriGame.setFreshStart();
 	}
 	public String getDurchschnitt(int auswahl) {
+
 		String durchschnitt = String.valueOf(spielSpeichern.berechneDurchschnitt(auswahl));
 		int decimalIndex = durchschnitt.indexOf(".");
 		if (decimalIndex != -1 && decimalIndex + 4 <= durchschnitt.length()) {
