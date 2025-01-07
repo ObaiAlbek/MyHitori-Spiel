@@ -39,14 +39,14 @@ public class StoppUhrTest {
         }
         stoppUhr.stopStoppUhr();
         String formattedTime = stoppUhr.getFormattedTime();
-        assertTrue(formattedTime.startsWith("Zeit: 1.0"));
+        assertTrue(formattedTime.startsWith("Zeit: 1,0"));
     }
 
     @Test
     public void setTime_setsCorrectTime() {
         stoppUhr.setTime("1,500");
         String formattedTime = stoppUhr.getFormattedTime();
-        assertTrue(formattedTime.startsWith("Zeit: 1.5"));
+        assertTrue(formattedTime.startsWith("Zeit: 1,5"));
     }
 
     @Test

@@ -25,6 +25,7 @@ public class StoppUhr {
 
     public void stopStoppUhr() {
             timer.stop();
+            running = false;
     }
 
     private void updateZeit() {
