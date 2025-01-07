@@ -15,34 +15,25 @@ public class CsvEinlesen {
     final private static String[] spielfelderNamenStatic = { "Hitori4x4_leicht", "Hitori5x5leicht", "Hitori8x8leicht",
             "Hitori8x8medium", "Hitori10x10medium", "Hitori15x15_medium" };
 
-    public static String getSieger(int auswahl) throws IOException {
-        // List of winners from database/sieger.txt
-        // If the file does not exist, create sieger.txt
-        String fileName = "database/siegerliste/" + spielfelderNamenStatic[auswahl] + "_sieger.txt";
-        InputStream resource = CsvEinlesen.class.getClassLoader().getResourceAsStream(fileName);
-        if (resource == null) {
-            // sieger.txt erstellen
-            try {
-                File file = new File(fileName);
-                if (!file.exists()) {
-                    file.getParentFile().mkdirs();
-                    file.createNewFile();
-                }
-                resource = file.toURI().toURL().openStream();
-            } catch (MalformedURLException e) {
-                e.printStackTrace();
-                return "";
-            }
-        }
-
-        StringBuilder sieger = new StringBuilder();
-        try (Scanner sc = new Scanner(resource)) {
-            while (sc.hasNextLine()) {
-                sieger.append(sc.nextLine()).append("\n");
-            }
-        }
-        return sieger.toString();
+public static String getSieger(int auswahl) throws IOException {
+    // List of winners from database/sieger.txt
+    // If the file does not exist, create sieger.txt
+    String fileName = "database/siegerliste/" + spielfelderNamenStatic[auswahl] + "_sieger.txt";
+    File file = new File(fileName);
+    if (!file.exists()) {
+        file.getParentFile().mkdirs();
+        file.createNewFile();
     }
+    InputStream resource = file.toURI().toURL().openStream();
+
+    StringBuilder sieger = new StringBuilder();
+    try (Scanner sc = new Scanner(resource)) {
+        while (sc.hasNextLine()) {
+            sieger.append(sc.nextLine()).append("\n");
+        }
+    }
+    return sieger.toString();
+}
 
     public String getSpielfeld(int auswahl) {
         String fileName = "database/" + spielfelderNamen[auswahl] + ".csv";
