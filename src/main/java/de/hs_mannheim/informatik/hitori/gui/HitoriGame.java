@@ -64,8 +64,10 @@ public class HitoriGame extends JFrame {
 				guiFassade.markiereFehlerhafteFelder(spielfield, auswahl, dimension);
 			} catch (FileNotFoundException ex) {
 				throw new RuntimeException(ex);
-			}
-		});
+			} catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
+        });
 
 		buttonFarbeÄndern();
 		showWindow();
@@ -307,7 +309,7 @@ public class HitoriGame extends JFrame {
 
 	private void showLeaderboard() throws IOException {
 		sortiereLeaderboard();
-		System.out.println(fassade.getDurchschnitt(auswahl));
+		//System.out.println(fassade.getDurchschnitt(auswahl));
 		String leaderboard = fassade.getSiegerListe(auswahl);
 		leaderboardPanel = new JPanel();
 		leaderboardPanel.setBorder(new LineBorder(new Color(0, 0, 0), 2));

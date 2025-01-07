@@ -84,7 +84,7 @@ public class Fassade {
 		return spielSpeichern.spielSpeichern(fileName, staten);
 	}
 
-	public String getLoesung(int auswahl, int dimension) throws FileNotFoundException {
+	public String getLoesung(int auswahl, int dimension) throws IOException {
 		String loesung = CsvEinlesen.getLoesung(auswahl);
 		//System.out.println(loesung);
 		return loesung;
@@ -127,7 +127,7 @@ public class Fassade {
 		spielSpeichern.spielGeloest(name, zeit, auswahl);
 	}
 
-	public String getSiegerListe(int auswahl) {
+	public String getSiegerListe(int auswahl) throws IOException {
 		return CsvEinlesen.getSieger(auswahl);
 	}
 
@@ -173,9 +173,15 @@ public class Fassade {
 	}
 	public String getDurchschnitt(int auswahl) {
 		String durchschnitt = String.valueOf(spielSpeichern.berechneDurchschnitt(auswahl));
-		// runde durschnitt auf 3 nachkommastellen und ersetze . mit ,
-		durchschnitt = durchschnitt.substring(0, durchschnitt.indexOf(".") + 4).replace(".", ",") + " s";
+		int decimalIndex = durchschnitt.indexOf(".");
+		if (decimalIndex != -1 && decimalIndex + 4 <= durchschnitt.length()) {
+			durchschnitt = durchschnitt.substring(0, decimalIndex + 4).replace(".", ",") + " s";
+		} else {
+			durchschnitt = durchschnitt.replace(".", ",") + " s";
+		}
+		System.out.println(durchschnitt);
 		return durchschnitt;
+
 	}
 
 	public void sortiereLeaderboard(int auswahl) {

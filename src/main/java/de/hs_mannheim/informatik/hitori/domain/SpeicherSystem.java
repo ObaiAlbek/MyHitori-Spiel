@@ -11,7 +11,7 @@ public class SpeicherSystem {
             "Hitori8x8medium", "Hitori10x10medium", "Hitori15x15_medium" };
 
     public SpeicherSystem() {
-        this.filePfad = "src/main/resources/database/speicherDateien/";
+        this.filePfad = "database/speicherDateien/";
         this.spielfelder = new HashMap<>();
     }
 
@@ -108,7 +108,8 @@ public class SpeicherSystem {
         // Read fehlercounter from database/fehler/auswahl.txt
         int fehlercounter = 0;
         try {
-            File fehlerFile = new File("src/main/resources/database/fehler/" + auswahl + ".txt");
+
+            File fehlerFile = new File("database/fehler/" + spielfelderNamen[auswahl] + ".txt");
             Scanner sc = new Scanner(fehlerFile);
             fehlercounter = sc.nextInt();
             sc.close();
@@ -118,7 +119,7 @@ public class SpeicherSystem {
 
         // Append name, zeit, and fehlercounter to sieger file
         try {
-            File siegerFile = new File("src/main/resources/database/Siegerliste/" + spielfelderNamen[auswahl] + "_sieger.txt");
+            File siegerFile = new File("database/siegerliste/" + spielfelderNamen[auswahl] + "_sieger.txt");
             FileWriter writer = new FileWriter(siegerFile, true);
             writer.write(name + ", " + zeit + ", Fehleranzahl: " + fehlercounter + " \n");
             writer.close();
@@ -131,7 +132,7 @@ public class SpeicherSystem {
     // speicher den int fehlercounter in database/fehler/"auswahl".txt
 
     try {
-        File file = new File("src/main/resources/database/fehler/" + spielfelderNamen[auswahl] + ".txt");
+        File file = new File("database/fehler/" + spielfelderNamen[auswahl] + ".txt");
         if (!file.exists()) {
             file.getParentFile().mkdirs();
             file.createNewFile();
@@ -147,7 +148,7 @@ public class SpeicherSystem {
     public void fehlerReset(int auswahl) {
         //setze fehlercounter auf 0 in database/fehler/"auswahl".txt
         try {
-            File file = new File("src/main/resources/database/fehler/" + spielfelderNamen[auswahl] + ".txt");
+            File file = new File("database/fehler/" + spielfelderNamen[auswahl] + ".txt");
             FileWriter writer = new FileWriter(file);
             writer.write("0 \n");
             writer.close();
@@ -160,7 +161,7 @@ public class SpeicherSystem {
         //auslesen des fehlercounter aus database/fehler/"auswahl".txt
         int fehlercounter = 0;
         try {
-            File file = new File("src/main/resources/database/fehler/" + spielfelderNamen[auswahl] + ".txt");
+            File file = new File("database/fehler/" + spielfelderNamen[auswahl] + ".txt");
             Scanner sc = new Scanner(file);
             fehlercounter = sc.nextInt();
             sc.close();
@@ -173,7 +174,7 @@ public class SpeicherSystem {
     public void saveTimerValue(String hitoriGameName, String time) {
 
         // erstell die datei wenn es sie nicht gibt
-        File file = new File("src/main/resources/database/timer/timer_" + hitoriGameName + ".txt");
+        File file = new File("database/timer/timer_" + hitoriGameName + ".txt");
         try {
             if (!file.exists()) {
                 file.getParentFile().mkdirs();
@@ -188,7 +189,7 @@ public class SpeicherSystem {
         }
     }
         public String loadTimerValue (String gameName){
-            File file = new File("src/main/resources/database/timer/timer_" + gameName + ".txt");
+            File file = new File("database/timer/timer_" + gameName + ".txt");
             if (file.exists()) {
                 try (Scanner sc = new Scanner(file)) {
                     return sc.nextLine();
@@ -201,13 +202,13 @@ public class SpeicherSystem {
 
     public boolean timerExists(String gameName) {
         //prüfe ob die datei leer ist
-        File file = new File("src/main/resources/database/timer/timer_" + gameName + ".txt");
+        File file = new File("database/timer/timer_" + gameName + ".txt");
         return file.exists();
     }
 
     public void resetTimerValue(int auswahl) {
         //lösche die datei
-        File file = new File("src/main/resources/database/timer/timer_" + spielfelderNamen[auswahl] + ".txt");
+        File file = new File("database/timer/timer_" + spielfelderNamen[auswahl] + ".txt");
         if (file.exists()) {
             //ersetze erste zeile mit 0
             try {
@@ -222,7 +223,7 @@ public class SpeicherSystem {
     }
     public double berechneDurchschnitt(int auswahl){
     double durchschnitt = 0.0;
-    File file = new File("src/main/resources/database/Siegerliste/" + spielfelderNamen[auswahl] + "_sieger.txt");
+    File file = new File("database/Siegerliste/" + spielfelderNamen[auswahl] + "_sieger.txt");
     if (file.exists()) {
         try (Scanner sc = new Scanner(file)) {
             double sum = 0;
@@ -244,7 +245,7 @@ public class SpeicherSystem {
 
     public void sortiereLeaderboard(int auswahl) {
         //sortiere die siegerliste nach zeit
-        File file = new File("src/main/resources/database/Siegerliste/" + spielfelderNamen[auswahl] + "_sieger.txt");
+        File file = new File("database/Siegerliste/" + spielfelderNamen[auswahl] + "_sieger.txt");
         if (file.exists()) {
             try {
                 List<String> lines = new ArrayList<>();

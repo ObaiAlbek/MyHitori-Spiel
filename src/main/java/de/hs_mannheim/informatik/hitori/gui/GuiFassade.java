@@ -105,7 +105,7 @@ public class GuiFassade {
         }
 
     }
-  public boolean isSpielGewonnen(JButton[][] spielfeld, int auswahl, int dimension) throws FileNotFoundException {
+  public boolean isSpielGewonnen(JButton[][] spielfeld, int auswahl, int dimension) throws IOException {
       String[] loesungen = fassade.getLoesung(auswahl, dimension).split("\n");
       int x;
       int y;
@@ -139,7 +139,7 @@ public void spielGeloest(){
     fassade.resetTimerValue(auswahl);
 }
 
-   public void markiereFehlerhafteFelder(JButton[][] spielfeld, int auswahl, int dimension) throws FileNotFoundException {
+   public void markiereFehlerhafteFelder(JButton[][] spielfeld, int auswahl, int dimension) throws IOException {
     String[] loesungen = fassade.getLoesung(auswahl, dimension).split("\n");
     fehlercounter = fassade.fehlercounterWeitergeben(auswahl);
     for (int i = 0; i < spielfeld.length; i++) {
@@ -147,7 +147,7 @@ public void spielGeloest(){
             if (spielfeld[i][j].getBackground().equals(Color.BLACK) && !isInLoesungen(i + 1, j + 1, loesungen)) {
                 spielfeld[i][j].setBackground(Color.RED);
                 fehlercounter++;
-                System.out.println(fehlercounter);
+                //System.out.println(fehlercounter);
 
                 // Markiere fälschlich schwarz markierte Felder rot
             }
