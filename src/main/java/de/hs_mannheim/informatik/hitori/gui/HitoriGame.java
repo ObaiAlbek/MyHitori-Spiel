@@ -1,31 +1,43 @@
-// HitoriGame.java
 package de.hs_mannheim.informatik.hitori.gui;
 
 import de.hs_mannheim.informatik.hitori.fassade.Fassade;
+import de.hs_mannheim.informatik.hitori.fassade.UndoRedoNichtMöglichException;
+
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import javax.swing.border.LineBorder;
 
 public class HitoriGame extends JFrame {
-	private JButton saveButton, undoButton, redoButton, resetButton;
+	private JButton saveButton, undoButton, redoButton, resetButton, hilfeButton;
 	private JButton[][] spielfield;
 	private int dimension;
-	private JPanel contentPane;
+	private JPanel contentPane, panel, leaderboardPanel;
+	private GuiFassade guiFassade;
 	private Fassade fassade;
 	private Menu menu;
 	private int auswahl;
-	private Timer timer;
+	private static Timer timer;
 	private String hitoriGameName;
+	private GridBagConstraints gbc;
+	private static boolean freshStart;
 
-	public HitoriGame(int auswahl, Menu menu, String hitoriGameName, Fassade fassade) {
+	public HitoriGame(int auswahl, Menu menu, String hitoriGameName, GuiFassade guiFassade, Fassade fassade) throws IOException {
 		this.menu = menu;
 		this.auswahl = auswahl;
 		this.hitoriGameName = hitoriGameName;
+		this.guiFassade = guiFassade;
 		this.fassade = fassade;
+
+
 		fassade.startTimer();
 
 		WindowProperties();
@@ -33,90 +45,156 @@ public class HitoriGame extends JFrame {
 		pauseTime();
 		addTimeToWindow();
 		gameField();
+		this.guiFassade.getFassade(fassade, dimension);
 
 		saveButton.addActionListener(e -> saveGame());
-		resetButton.addActionListener(e -> spielfieldZurücksetzen());
+		resetButton.addActionListener(e -> {
+			try {
+				spielfieldZurücksetzen();
+				//timer resetten?
+				//guiFassade.fehlerReset(auswahl);
+			} catch (IOException ex) {
+				throw new RuntimeException(ex);
+			}
+		});
+		undoButton.addActionListener(e -> undo());
+		redoButton.addActionListener(e -> redo());
+		hilfeButton.addActionListener(e -> {
+			try {
+				guiFassade.markiereFehlerhafteFelder(spielfield, auswahl, dimension);
+			} catch (FileNotFoundException ex) {
+				throw new RuntimeException(ex);
+			}
+		});
+
+		buttonFarbeÄndern();
 		showWindow();
+		showLeaderboard();
 	}
 
-	public void saveGame() {
-
+	public void undo() {
+		JButton[][] neuesSpielfeld;
 		try {
-			if (fassade.saveGame(spielfield, hitoriGameName, dimension))
-				JOptionPane.showMessageDialog(null, "Das Spiel wurde erfolgreich abgespeichert", "Information",
-						JOptionPane.INFORMATION_MESSAGE);
-			else
-				JOptionPane.showMessageDialog(null, "Das Spiel ist bereits gespeichert", "Fehler",
-						JOptionPane.ERROR_MESSAGE);
-
-		} catch (HeadlessException | IOException e) {
-			JOptionPane.showMessageDialog(null, "Das Spiel konnte nicht abgespeichert werden", "Fehler",
-					JOptionPane.ERROR_MESSAGE);
-		}
-	}
-	
-	
-
-	public void spielfieldZurücksetzen() {
-		try {
-			fassade.spielfieldZurücksetzen(spielfield,hitoriGameName, dimension);
+			neuesSpielfeld = guiFassade.undo(hitoriGameName);
+			aktualisiereSpielfeld(neuesSpielfeld);
+			updateUndoRedoState(); // Move this line inside the try block
+		} catch (UndoRedoNichtMöglichException e) {
+			JOptionPane.showMessageDialog(this, "Undo ist nicht möglich!");
 		} catch (IOException e) {
-			JOptionPane.showMessageDialog(null, e.toString(), "Fehler", JOptionPane.ERROR_MESSAGE);
+			throw new RuntimeException(e);
 		}
 	}
 
-	// Elemente des GemaWindow
-	public void gameField() {
-		dimension = fassade.getDimension(auswahl);
-		JPanel panel = new JPanel();
-		panel.setBorder(new LineBorder(new Color(0, 0, 0), 2));
-		panel.setBounds(68, 119, 900, 500);
-		contentPane.add(panel);
-		panel.setLayout(new GridBagLayout());
-		
-		JLabel spielNameLable = new JLabel("SpielName: " + hitoriGameName);
-		spielNameLable.setForeground(new Color(0, 128, 0));
-		spielNameLable.setFont(new Font("Tahoma", Font.BOLD, 14));
-		spielNameLable.setBounds(400, 69, 200, 44);
-		contentPane.add(spielNameLable);
-		GridBagConstraints gbc = new GridBagConstraints();
-		gbc.fill = GridBagConstraints.BOTH;
-		gbc.insets = new Insets(3, 3, 3, 3);
-		spielfield = new JButton[dimension][dimension];
+	public void redo() {
+		JButton[][] neuesSpielfeld;
+		try {
+			neuesSpielfeld = guiFassade.redo(hitoriGameName);
+			aktualisiereSpielfeld(neuesSpielfeld);
 
-		for (int i = 0; i < dimension; i++) {
-			for (int j = 0; j < dimension; j++) {
-				int zeile = i;
-				int spalte = j;
+		} catch (UndoRedoNichtMöglichException e) {
+			JOptionPane.showMessageDialog(this, "Redo ist nicht möglich!");
 
-				spielfield[i][j] = new JButton(String.valueOf(Fassade.getSpielfeldFeld(j, i, auswahl)));
-				spielfield[i][j].setForeground(Color.white);
-				spielfield[i][j].setBackground(Color.GRAY);
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
+		updateUndoRedoState();
+	}
 
+
+	private void updateUndoRedoState() {
+
+		boolean undo = (fassade.kannUndo()) ? true : false;
+		undoButton.setEnabled(undo);
+
+		boolean redo = (fassade.kannRedo()) ? true : false;
+		redoButton.setEnabled(redo);
+
+	}
+
+	private void aktualisiereSpielfeld(JButton[][] neuesSpielfeld) {
+		panel.removeAll();
+		this.spielfield = neuesSpielfeld;
+
+		for (int i = 0; i < spielfield.length; i++) {
+			for (int j = 0; j < spielfield[i].length; j++) {
 				spielfield[i][j].setPreferredSize(new Dimension(50, 50));
-
-				spielfield[i][j].addActionListener(e -> {
-					try {
-						fassade.buttonFarbeÄndern(spielfield[zeile][spalte], spielfield, hitoriGameName, dimension);
-					} catch (IOException ex) {
-						throw new RuntimeException(ex);
-					}
-				});
-
 				gbc.gridx = j;
 				gbc.gridy = i;
 				panel.add(spielfield[i][j], gbc);
 			}
 		}
+		panel.revalidate();
+		panel.repaint();
+		buttonFarbeÄndern();
+	}
 
+	public void gameField() {
+		dimension = fassade.getDimension(auswahl);
+		panel = new JPanel();
+		panel.setBorder(new LineBorder(new Color(0, 0, 0), 2));
+		panel.setBounds(68, 119, 900, 500);
+		contentPane.add(panel);
+		panel.setLayout(new GridBagLayout());
+		gbc = new GridBagConstraints();
+		gbc.fill = GridBagConstraints.BOTH;
+		gbc.insets = new Insets(3, 3, 3, 3);
+		spielfield = new JButton[dimension][dimension];
+
+		knöpfe_Spielfield();
+	}
+
+	public void knöpfe_Spielfield() {
+		for (int i = 0; i < dimension; i++) {
+			for (int j = 0; j < dimension; j++) {
+				spielfield[i][j] = new JButton(String.valueOf(fassade.getSpielfeldFeld(j, i, auswahl)));
+				spielfield[i][j].setForeground(Color.white);
+				spielfield[i][j].setBackground(Color.GRAY);
+				spielfield[i][j].setPreferredSize(new Dimension(50, 50));
+				gbc.gridx = j;
+				gbc.gridy = i;
+				panel.add(spielfield[i][j], gbc);
+			}
+		}
+	}
+
+	public void buttonFarbeÄndern() {
+
+		for (int i = 0; i < dimension; i++)
+			for (int j = 0; j < dimension; j++) {
+				int x = i;
+				int y = j;
+				spielfield[i][j].addActionListener(e -> {
+					try {
+						guiFassade.buttonFarbeÄndern(spielfield, x, y, hitoriGameName);
+					} catch (IOException ex) {
+						throw new RuntimeException(ex);
+					}
+				});
+
+			}
+
+	}
+
+	public void saveGame() {
+		try {
+			if (guiFassade.saveGame(spielfield, hitoriGameName))
+				JOptionPane.showMessageDialog(null, "Spiel gespeichert!");
+			else
+				JOptionPane.showMessageDialog(null, "Fehler beim Speichern!");
+		} catch (IOException e) {
+			JOptionPane.showMessageDialog(null, e.toString());
+		}
+	}
+
+	public void spielfieldZurücksetzen() throws IOException {
+		guiFassade.spielfieldZurücksetzen(spielfield, hitoriGameName);
 	}
 
 	public void addTimeToWindow() {
 		JLabel timeLabel = new JLabel(fassade.getTime());
 		timeLabel.setFont(new Font("Tahoma", Font.BOLD, 14));
-		timeLabel.setBounds(68, 74, 83, 34);
+		timeLabel.setBounds(68, 74, 200, 34);
 		contentPane.add(timeLabel);
-
 		timer = new Timer(10, e -> timeLabel.setText(fassade.getTime()));
 		timer.start();
 	}
@@ -133,8 +211,13 @@ public class HitoriGame extends JFrame {
 		mnNewMenu.add(exit);
 		JMenuItem zurück = new JMenuItem("Back to Menu");
 		zurück.addActionListener(e -> {
-			menu.showWindow();
+
 			closeWindow();
+			try {
+				menu.showWindow();
+			} catch (IOException ex) {
+				throw new RuntimeException(ex);
+			}
 		});
 
 		mnNewMenu.add(zurück);
@@ -163,12 +246,18 @@ public class HitoriGame extends JFrame {
 		resetButton.setBounds(379, 11, 75, 34);
 		resetButton.setFont(new Font("Tahoma", Font.PLAIN, 11));
 		contentPane.add(resetButton);
+
+		hilfeButton = new JButton("Hilfestellung");
+		hilfeButton.setBounds(479, 11, 150, 34);
+		hilfeButton.setFont(new Font("Tahoma", Font.PLAIN, 11));
+		contentPane.add(hilfeButton);
+
 	}
 
 	public void WindowProperties() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 1000, 700);
-		this.setResizable(false);
+		setBounds(100, 0, 1000, 700);
+		this.setResizable(true);
 	}
 
 	public void pauseTime() {
@@ -190,10 +279,69 @@ public class HitoriGame extends JFrame {
 	}
 
 	public void showWindow() {
+
+		if (fassade.timerExists(hitoriGameName)) setTime(hitoriGameName);
 		this.setVisible(true);
+
 	}
 
 	public void closeWindow() {
+		if (!freshStart) {
+			fassade.saveTimerValue(hitoriGameName, fassade.getTime());
+		}
+//		System.out.println(freshStart);
+//		System.out.println(fassade.getTime());
 		this.setVisible(false);
+		freshStart = false;
 	}
+
+	public static void stopTimer() {
+		timer.stop();
+	}
+
+	public void setTime(String hitoriGameName) {
+		String time = fassade.loadTimerValue(hitoriGameName);
+		fassade.setTime(time);
+	}
+
+	private void showLeaderboard() throws IOException {
+		sortiereLeaderboard();
+		System.out.println(fassade.getDurchschnitt(auswahl));
+		String leaderboard = fassade.getSiegerListe(auswahl);
+		leaderboardPanel = new JPanel();
+		leaderboardPanel.setBorder(new LineBorder(new Color(0, 0, 0), 2));
+		leaderboardPanel.setBounds(967, 120, 303, 500);
+		leaderboardPanel.setLayout(new BoxLayout(leaderboardPanel, BoxLayout.Y_AXIS));
+
+		JLabel title = new JLabel("Bestenliste:");
+		title.setFont(new Font("Tahoma", Font.BOLD, 14));
+		leaderboardPanel.add(title);
+		JLabel averageLabel = new JLabel("Durchschnitt: " + fassade.getDurchschnitt(auswahl));
+		averageLabel.setFont(new Font("Tahoma", Font.BOLD, 12));
+		leaderboardPanel.add(averageLabel);
+
+		String[] lines = leaderboard.split("\n");
+		for (String line : lines) {
+			JLabel label = new JLabel(line);
+			leaderboardPanel.add(label);
+		}
+		contentPane.add(leaderboardPanel);
+	}
+
+	private java.util.List<String> readLeaderboard(String filePath) throws IOException {
+		try (Stream<String> lines = Files.lines(Paths.get(filePath))) {
+			return lines.collect(Collectors.toList());
+		}
+	}
+
+	public static void setFreshStart() {
+		freshStart = true;
+	}
+
+	public void sortiereLeaderboard() {
+		fassade.sortiereLeaderboard(auswahl);
+	}
+
+
 }
+
