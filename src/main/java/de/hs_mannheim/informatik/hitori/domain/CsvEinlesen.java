@@ -1,7 +1,7 @@
 package de.hs_mannheim.informatik.hitori.domain;
 
 import java.io.File;
-import java.io.FileNotFoundException;
+//import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;

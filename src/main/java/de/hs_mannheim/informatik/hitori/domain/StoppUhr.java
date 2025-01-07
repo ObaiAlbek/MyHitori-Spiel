@@ -43,4 +43,8 @@ public class StoppUhr {
         long milliseconds = Long.parseLong(parts[1]);
         startzeit = System.currentTimeMillis() - (seconds * 1000 + milliseconds);
     }
+
+    public boolean isRunning() {
+        return running;
+    }
 }

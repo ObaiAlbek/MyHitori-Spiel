@@ -5,8 +5,8 @@ import java.util.*;
 
 public class SpeicherSystem {
 
-    private String filePfad;
-    private Map<String, int[][]> spielfelder;
+    private final String filePfad;
+    private final Map<String, int[][]> spielfelder;
     final private String[] spielfelderNamen = { "Hitori4x4_leicht", "Hitori5x5leicht", "Hitori8x8leicht",
             "Hitori8x8medium", "Hitori10x10medium", "Hitori15x15_medium" };
 
