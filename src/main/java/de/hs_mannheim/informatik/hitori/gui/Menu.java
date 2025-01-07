@@ -14,6 +14,11 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 import de.hs_mannheim.informatik.hitori.fassade.Fassade;
 
+/**
+ * Die Klasse Menu stellt das Hauptmenü für das Hitori-Spiel dar.
+ * Sie erweitert JFrame und enthält verschiedene Komponenten und Funktionen,
+ * um die Spielauswahl und Anzeige zu verwalten.
+ */
 public class Menu extends JFrame {
 
     private JPanel contentPane, panel, leaderboardPanel;
@@ -27,6 +32,11 @@ public class Menu extends JFrame {
     private String spielNameAuswahl;
     private int spielAuswahl;
 
+    /**
+     * Konstruktor für Menu.
+     *
+     * @throws IOException wenn ein I/O-Fehler auftritt
+     */
     public Menu() throws IOException {
         this.guiFassade = new GuiFassade();
         this.fassade = new Fassade();
@@ -35,6 +45,9 @@ public class Menu extends JFrame {
         showWindow();
     }
 
+    /**
+     * Initialisiert die Schwierigkeitsbuttons.
+     */
     private void difficultyButtons() {
         schwierigkeitsButtons = new JButton[6];
         for (int i = 0; i < schwierigkeitsButtons.length; i++) {
@@ -46,6 +59,9 @@ public class Menu extends JFrame {
         }
     }
 
+    /**
+     * ActionListener für die Schwierigkeitsbuttons.
+     */
     private class DifficultyButtonListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
@@ -61,6 +77,9 @@ public class Menu extends JFrame {
         }
     }
 
+    /**
+     * Setzt die Eigenschaften des Fensters.
+     */
     private void WindowProperties() {
         setTitle("Menu");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -80,11 +99,20 @@ public class Menu extends JFrame {
         panel.add(willkommenNachricht);
     }
 
-
+    /**
+     * Zeigt das Fenster an.
+     *
+     * @throws IOException wenn ein I/O-Fehler auftritt
+     */
     public void showWindow() throws IOException {
         this.setVisible(true);
     }
 
+    /**
+     * Aktualisiert die Bestenliste.
+     *
+     * @throws IOException wenn ein I/O-Fehler auftritt
+     */
     private void aktualisiereLeaderboard() throws IOException {
         leaderboardPanel.removeAll();
         JLabel title = new JLabel("Bestenliste:");
@@ -101,6 +129,9 @@ public class Menu extends JFrame {
         leaderboardPanel.repaint();
     }
 
+    /**
+     * Schließt das Fenster.
+     */
     public void closeWindow() {
         this.setVisible(false);
     }

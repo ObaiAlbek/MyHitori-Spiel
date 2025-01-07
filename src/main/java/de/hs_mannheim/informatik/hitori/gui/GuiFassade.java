@@ -11,6 +11,10 @@ import javax.swing.*;
 import de.hs_mannheim.informatik.hitori.fassade.Fassade;
 import de.hs_mannheim.informatik.hitori.fassade.UndoRedoNichtMöglichException;
 
+/**
+ * Die Klasse GuiFassade bietet eine Fassade für die GUI-Operationen des Hitori-Spiels,
+ * einschließlich der Verwaltung des Spielzustands, der Handhabung von Undo/Redo-Operationen und der Interaktion mit der Benutzeroberfläche.
+ */
 public class GuiFassade {
     private Fassade fassade;
     private int[][] eingabeStaten;
@@ -23,6 +27,14 @@ public class GuiFassade {
     private int auswahl;
     private int fehlercounter = 0;
 
+    /**
+     * Führt eine Undo-Operation durch und aktualisiert das Spielfeld.
+     *
+     * @param fileName Der Name der Datei, in der der Spielzustand gespeichert werden soll.
+     * @return Das aktualisierte Spielfeld.
+     * @throws UndoRedoNichtMöglichException Wenn ein Undo nicht möglich ist.
+     * @throws IOException Wenn ein I/O-Fehler auftritt.
+     */
     public JButton[][] undo(String fileName) throws UndoRedoNichtMöglichException, IOException {
         ausgabeStaten = fassade.undo();
         aktualisiereSpielfeldNachUndoRedo();
@@ -30,6 +42,14 @@ public class GuiFassade {
         return neueSpielfield;
     }
 
+    /**
+     * Führt eine Redo-Operation durch und aktualisiert das Spielfeld.
+     *
+     * @param fileName Der Name der Datei, in der der Spielzustand gespeichert werden soll.
+     * @return Das aktualisierte Spielfeld.
+     * @throws UndoRedoNichtMöglichException Wenn ein Redo nicht möglich ist.
+     * @throws IOException Wenn ein I/O-Fehler auftritt.
+     */
     public JButton[][] redo(String fileName) throws UndoRedoNichtMöglichException, IOException {
         ausgabeStaten = fassade.redo();
         aktualisiereSpielfeldNachUndoRedo();
@@ -37,6 +57,9 @@ public class GuiFassade {
         return neueSpielfield;
     }
 
+    /**
+     * Aktualisiert das Spielfeld nach einer Undo- oder Redo-Operation.
+     */
     private void aktualisiereSpielfeldNachUndoRedo() {
         for (int i = 0; i < ausgabeStaten.length; i++) {
             for (int j = 0; j < ausgabeStaten[i].length; j++) {
@@ -66,6 +89,14 @@ public class GuiFassade {
         }
     }
 
+    /**
+     * Speichert den aktuellen Spielzustand in einer Datei.
+     *
+     * @param spielfield Das aktuelle Spielfeld.
+     * @param fileName Der Name der Datei, in der der Spielzustand gespeichert werden soll.
+     * @return true, wenn der Spielzustand erfolgreich gespeichert wurde, sonst false.
+     * @throws IOException Wenn ein I/O-Fehler auftritt.
+     */
     public boolean saveGame(JButton[][] spielfield, String fileName) throws IOException {
         for (int i = 0; i < spielfield.length; i++) {
             for (int j = 0; j < spielfield[i].length; j++) {
@@ -82,6 +113,15 @@ public class GuiFassade {
         return fassade.saveGame(eingabeStaten, fileName);
     }
 
+    /**
+     * Ändert die Farbe eines Buttons im Spielfeld und speichert den Spielzustand.
+     *
+     * @param spielfield Das aktuelle Spielfeld.
+     * @param x Die x-Koordinate des Buttons.
+     * @param y Die y-Koordinate des Buttons.
+     * @param fileName Der Name der Datei, in der der Spielzustand gespeichert werden soll.
+     * @throws IOException Wenn ein I/O-Fehler auftritt.
+     */
     public void buttonFarbeÄndern(JButton[][] spielfield, int x, int y, String fileName) throws IOException {
         JButton tempButton = spielfield[x][y];
 
@@ -105,70 +145,93 @@ public class GuiFassade {
         }
 
     }
-  public boolean isSpielGewonnen(JButton[][] spielfeld, int auswahl, int dimension) throws IOException {
-      String[] loesungen = fassade.getLoesung(auswahl, dimension).split("\n");
-      int x;
-      int y;
-      String[] loesung;
-      for (int i = 0; i < loesungen.length; i++){
+
+    /**
+     * Überprüft, ob das Spiel gewonnen ist, indem das aktuelle Spielfeld mit der Lösung verglichen wird.
+     *
+     * @param spielfeld Das aktuelle Spielfeld.
+     * @param auswahl Der Index des Spielfelds.
+     * @param dimension Die Dimension des Spielfelds.
+     * @return true, wenn das Spiel gewonnen ist, sonst false.
+     * @throws IOException Wenn ein I/O-Fehler auftritt.
+     */
+    public boolean isSpielGewonnen(JButton[][] spielfeld, int auswahl, int dimension) throws IOException {
+        String[] loesungen = fassade.getLoesung(auswahl, dimension).split("\n");
+        int x;
+        int y;
+        String[] loesung;
+        for (int i = 0; i < loesungen.length; i++){
             loesung = loesungen[i].split(",");
             x = Integer.parseInt(loesung[0]);
             y = Integer.parseInt(loesung[1]);
-            //System.out.println(x+ " " + y);
-            //System.out.println(spielfeld[x-1][y-1].getBackground());
 
             if(!spielfeld[x-1][y-1].getBackground().equals(Color.BLACK))
                 return false;
-      }
-      for(int i = 0; i < spielfeld.length; i++){
-          for(int j = 0; j < spielfeld.length; j++){
-              if(spielfeld[i][j].getBackground().equals(Color.gray) || ((spielfeld[i][j].getBackground().equals(Color.BLACK)) && !isInLoesungen(i + 1, j + 1, loesungen))) {
-                  return false;
-              }
-          }
-      }
-return true;
-}
-public void spielGeloest(){
-    HitoriGame.stopTimer();
-    String zeit = fassade.getTime();
-    JOptionPane.showMessageDialog(null, "Spiel gelöst! Ihre Zeit: " + zeit, "Spiel gelöst", JOptionPane.INFORMATION_MESSAGE);
-    String name = JOptionPane.showInputDialog(null, "Bitte geben Sie Ihren Namen ein", "Spiel gelöst", JOptionPane.INFORMATION_MESSAGE);
-    fassade.spielGeloest(name, zeit, auswahl);
-    fehlerReset(auswahl);
-    fassade.resetTimerValue(auswahl);
-}
-
-   public void markiereFehlerhafteFelder(JButton[][] spielfeld, int auswahl, int dimension) throws IOException {
-    String[] loesungen = fassade.getLoesung(auswahl, dimension).split("\n");
-    fehlercounter = fassade.fehlercounterWeitergeben(auswahl);
-    for (int i = 0; i < spielfeld.length; i++) {
-        for (int j = 0; j < spielfeld[i].length; j++) {
-            if (spielfeld[i][j].getBackground().equals(Color.BLACK) && !isInLoesungen(i + 1, j + 1, loesungen)) {
-                spielfeld[i][j].setBackground(Color.RED);
-                fehlercounter++;
-                //System.out.println(fehlercounter);
-
-                // Markiere fälschlich schwarz markierte Felder rot
-            }
         }
-    }
-    Timer timer = new Timer(1000, e -> {
-        for (int k = 0; k < spielfeld.length; k++) {
-            for (int l = 0; l < spielfeld[k].length; l++) {
-                if (spielfeld[k][l].getBackground().equals(Color.RED)) {
-                    spielfeld[k][l].setBackground(Color.BLACK);
+        for(int i = 0; i < spielfeld.length; i++){
+            for(int j = 0; j < spielfeld.length; j++){
+                if(spielfeld[i][j].getBackground().equals(Color.gray) || ((spielfeld[i][j].getBackground().equals(Color.BLACK)) && !isInLoesungen(i + 1, j + 1, loesungen))) {
+                    return false;
                 }
             }
         }
-    });
-    timer.setRepeats(false);
-    timer.start();
-    fassade.fehlerSpeichern(fehlercounter, auswahl);
-    fehlercounter = 0;
-}
+        return true;
+    }
 
+    /**
+     * Handhabt die Aktionen, die ausgeführt werden sollen, wenn das Spiel gelöst ist.
+     */
+    public void spielGeloest(){
+        HitoriGame.stopTimer();
+        String zeit = fassade.getTime();
+        JOptionPane.showMessageDialog(null, "Spiel gelöst! Ihre Zeit: " + zeit, "Spiel gelöst", JOptionPane.INFORMATION_MESSAGE);
+        String name = JOptionPane.showInputDialog(null, "Bitte geben Sie Ihren Namen ein", "Spiel gelöst", JOptionPane.INFORMATION_MESSAGE);
+        fassade.spielGeloest(name, zeit, auswahl);
+        fehlerReset(auswahl);
+        fassade.resetTimerValue(auswahl);
+    }
 
+    /**
+     * Markiert die fehlerhaften Felder im Spielfeld.
+     *
+     * @param spielfeld Das aktuelle Spielfeld.
+     * @param auswahl Der Index des Spielfelds.
+     * @param dimension Die Dimension des Spielfelds.
+     * @throws IOException Wenn ein I/O-Fehler auftritt.
+     */
+    public void markiereFehlerhafteFelder(JButton[][] spielfeld, int auswahl, int dimension) throws IOException {
+        String[] loesungen = fassade.getLoesung(auswahl, dimension).split("\n");
+        fehlercounter = fassade.fehlercounterWeitergeben(auswahl);
+        for (int i = 0; i < spielfeld.length; i++) {
+            for (int j = 0; j < spielfeld[i].length; j++) {
+                if (spielfeld[i][j].getBackground().equals(Color.BLACK) && !isInLoesungen(i + 1, j + 1, loesungen)) {
+                    spielfeld[i][j].setBackground(Color.RED);
+                    fehlercounter++;
+                }
+            }
+        }
+        Timer timer = new Timer(1000, e -> {
+            for (int k = 0; k < spielfeld.length; k++) {
+                for (int l = 0; l < spielfeld[k].length; l++) {
+                    if (spielfeld[k][l].getBackground().equals(Color.RED)) {
+                        spielfeld[k][l].setBackground(Color.BLACK);
+                    }
+                }
+            }
+        });
+        timer.setRepeats(false);
+        timer.start();
+        fassade.fehlerSpeichern(fehlercounter, auswahl);
+        fehlercounter = 0;
+    }
+
+    /**
+     * Setzt das Spielfeld auf seinen Anfangszustand zurück.
+     *
+     * @param spielfiled Das aktuelle Spielfeld.
+     * @param fileName Der Name der Datei, in der der Spielzustand gespeichert werden soll.
+     * @throws IOException Wenn ein I/O-Fehler auftritt.
+     */
     public void spielfieldZurücksetzen(JButton[][] spielfiled, String fileName) throws IOException {
         for (int i = 0; i < spielfiled.length; i++) {
             for (int j = 0; j < spielfiled[i].length; j++) {
@@ -187,6 +250,14 @@ public void spielGeloest(){
         saveGame(spielfiled, fileName);
     }
 
+    /**
+     * Stellt den Spielzustand aus der angegebenen Datei wieder her.
+     *
+     * @param fileName Der Name der Datei, aus der der Spielzustand wiederhergestellt werden soll.
+     * @param hitorigame Die Hitori-Spielinstanz.
+     * @param auswahl Der Index des Spielfelds.
+     * @throws IOException Wenn ein I/O-Fehler auftritt.
+     */
     public void spielWiederherstellen(String fileName, HitoriGame hitorigame, int auswahl) throws IOException {
         int[][] staten = fassade.spielWiederherstellen(fileName);
         this.auswahl = auswahl;
@@ -218,6 +289,12 @@ public void spielGeloest(){
         fassade.aktuelleButtonsZuständeSpeichern(staten, dimension, fileName);
     }
 
+    /**
+     * Initialisiert die Fassade-Instanz und die Spielfeld-Dimensionen.
+     *
+     * @param fassade Die Fassade-Instanz.
+     * @param dimension Die Dimension des Spielfelds.
+     */
     public void getFassade(Fassade fassade, int dimension) {
         this.fassade = fassade;
         this.dimension = dimension;
@@ -225,6 +302,14 @@ public void spielGeloest(){
         this.neueSpielfield = new JButton[this.dimension][this.dimension];
     }
 
+    /**
+     * Überprüft, ob die angegebenen Koordinaten in der Lösung enthalten sind.
+     *
+     * @param i Die x-Koordinate.
+     * @param i1 Die y-Koordinate.
+     * @param loesungen Das Array der Lösungen.
+     * @return true, wenn die Koordinaten in der Lösung enthalten sind, sonst false.
+     */
     private boolean isInLoesungen(int i, int i1, String[] loesungen) {
         for (int j = 0; j < loesungen.length; j++) {
             String[] loesung = loesungen[j].split(",");
@@ -234,14 +319,25 @@ public void spielGeloest(){
         return false;
     }
 
+    /**
+     * Setzt die Fehleranzahl für den angegebenen Spielfeld-Index zurück.
+     *
+     * @param auswahl Der Index des Spielfelds.
+     */
     public void fehlerReset(int auswahl) {
         fassade.fehlerReset(auswahl);
         fehlercounter = 0;
     }
+
+    /**
+     * Lädt die gespeicherte Zeit für das angegebene Spiel.
+     *
+     * @param gameName Der Name des Spiels.
+     * @return Die gespeicherte Zeit.
+     */
     public String loadTimeToWindow(String gameName) {
         String savedTime = fassade.loadTimerValue(gameName);
         return savedTime;
     }
 
 }
-

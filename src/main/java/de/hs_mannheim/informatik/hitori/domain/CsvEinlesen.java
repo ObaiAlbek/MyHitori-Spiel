@@ -1,50 +1,61 @@
 package de.hs_mannheim.informatik.hitori.domain;
 
 import java.io.File;
-//import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.Scanner;
 
 public class CsvEinlesen {
 
+    // Array der Spielfeldnamen
     final private String[] spielfelderNamen = { "Hitori4x4_leicht", "Hitori5x5leicht", "Hitori8x8leicht",
             "Hitori8x8medium", "Hitori10x10medium", "Hitori15x15_medium" };
     final private static String[] spielfelderNamenStatic = { "Hitori4x4_leicht", "Hitori5x5leicht", "Hitori8x8leicht",
             "Hitori8x8medium", "Hitori10x10medium", "Hitori15x15_medium" };
 
-public static String getSieger(int auswahl) throws IOException {
-    // List of winners from database/sieger.txt
-    // If the file does not exist, create sieger.txt
-    if(auswahl < 0 || auswahl >= spielfelderNamenStatic.length) {
-        throw new IOException("Invalid index" + auswahl);
-    }
-
-    String fileName = "database/siegerliste/" + spielfelderNamenStatic[auswahl] + "_sieger.txt";
-    File file = new File(fileName);
-
-    if (!file.exists()) {
-        file.getParentFile().mkdirs();
-        file.createNewFile();
-    }
-    InputStream resource = file.toURI().toURL().openStream();
-
-    StringBuilder sieger = new StringBuilder();
-    try (Scanner sc = new Scanner(resource)) {
-        while (sc.hasNextLine()) {
-            sieger.append(sc.nextLine()).append("\n");
+    /**
+     * Ruft die Liste der Sieger aus der angegebenen Datei ab.
+     * Wenn die Datei nicht existiert, wird sie erstellt.
+     *
+     * @param auswahl Der Index des Spielfelds.
+     * @return Ein String, der die Liste der Sieger enthält.
+     * @throws IOException Wenn ein I/O-Fehler auftritt.
+     */
+    public static String getSieger(int auswahl) throws IOException {
+        if(auswahl < 0 || auswahl >= spielfelderNamenStatic.length) {
+            throw new IOException("Ungültiger Index " + auswahl);
         }
-    }
-    return sieger.toString();
-}
 
+        String fileName = "database/siegerliste/" + spielfelderNamenStatic[auswahl] + "_sieger.txt";
+        File file = new File(fileName);
+
+        if (!file.exists()) {
+            file.getParentFile().mkdirs();
+            file.createNewFile();
+        }
+        InputStream resource = file.toURI().toURL().openStream();
+
+        StringBuilder sieger = new StringBuilder();
+        try (Scanner sc = new Scanner(resource)) {
+            while (sc.hasNextLine()) {
+                sieger.append(sc.nextLine()).append("\n");
+            }
+        }
+        return sieger.toString();
+    }
+
+    /**
+     * Ruft die Spielfeld-Daten für den angegebenen Index ab.
+     *
+     * @param auswahl Der Index des Spielfelds.
+     * @return Eine String-Darstellung des Spielfelds.
+     */
     public String getSpielfeld(int auswahl) {
         if (auswahl < 0 || auswahl >= spielfelderNamen.length) {
             return null;
         }
-    String fileName = "database/" + spielfelderNamen[auswahl] + ".csv";
+        String fileName = "database/" + spielfelderNamen[auswahl] + ".csv";
 
         ArrayList<String> lines = readFile(fileName);
         if (lines == null) {
@@ -73,37 +84,49 @@ public static String getSieger(int auswahl) throws IOException {
         return ergebnis.toString();
     }
 
- public String getLoesungen(int auswahl) {
-    if (auswahl < 0 || auswahl >= spielfelderNamen.length) {
-        return null;
-    }
-    String fileName = "database/" + spielfelderNamen[auswahl] + ".csv";
-    ArrayList<String> lines = readFile(fileName);
-
-    StringBuilder ergebnis = new StringBuilder();
-    String[] zwischenspeicher = lines.get(0).split(",");
-
-    int[][] loesungen = new int[lines.size() - (zwischenspeicher.length + 2)][2];
-
-    for (int i = 0; i < loesungen.length; i++) {
-        zwischenspeicher = lines.get(i + (zwischenspeicher.length + 2)).split(",");
-        try {
-            loesungen[i][0] = Integer.parseInt(zwischenspeicher[0]);
-            loesungen[i][1] = Integer.parseInt(zwischenspeicher[1]);
-        } catch (NumberFormatException e) {
-            return "0";
+    /**
+     * Ruft die Lösungen für den angegebenen Spielfeld-Index ab.
+     *
+     * @param auswahl Der Index des Spielfelds.
+     * @return Eine String-Darstellung der Lösungen.
+     */
+    public String getLoesungen(int auswahl) {
+        if (auswahl < 0 || auswahl >= spielfelderNamen.length) {
+            return null;
         }
-    }
+        String fileName = "database/" + spielfelderNamen[auswahl] + ".csv";
+        ArrayList<String> lines = readFile(fileName);
 
-    for (int i = 0; i < loesungen.length; i++) {
-        for (int j = 0; j < loesungen[i].length; j++) {
-            ergebnis.append(" ").append(loesungen[i][j]);
+        StringBuilder ergebnis = new StringBuilder();
+        String[] zwischenspeicher = lines.get(0).split(",");
+
+        int[][] loesungen = new int[lines.size() - (zwischenspeicher.length + 2)][2];
+
+        for (int i = 0; i < loesungen.length; i++) {
+            zwischenspeicher = lines.get(i + (zwischenspeicher.length + 2)).split(",");
+            try {
+                loesungen[i][0] = Integer.parseInt(zwischenspeicher[0]);
+                loesungen[i][1] = Integer.parseInt(zwischenspeicher[1]);
+            } catch (NumberFormatException e) {
+                return "0";
+            }
         }
-        ergebnis.append(",");
-    }
-    return ergebnis.toString();
-}
 
+        for (int i = 0; i < loesungen.length; i++) {
+            for (int j = 0; j < loesungen[i].length; j++) {
+                ergebnis.append(" ").append(loesungen[i][j]);
+            }
+            ergebnis.append(",");
+        }
+        return ergebnis.toString();
+    }
+
+    /**
+     * Liest den Inhalt der angegebenen Datei.
+     *
+     * @param fileName Der Name der Datei, die gelesen werden soll.
+     * @return Eine Liste von Strings, die die Zeilen der Datei darstellen.
+     */
     private ArrayList<String> readFile(String fileName) {
         ArrayList<String> lines = new ArrayList<>();
         ClassLoader classLoader = getClass().getClassLoader();
@@ -119,26 +142,53 @@ public static String getSieger(int auswahl) throws IOException {
         return lines;
     }
 
+    /**
+     * Ruft die Dimension des Spielfelds ab.
+     *
+     * @param spielfeld Die String-Darstellung des Spielfelds.
+     * @return Die Dimension des Spielfelds.
+     */
     public int getDimension(String spielfeld) {
         if (spielfeld == null || spielfeld.isEmpty()) {
             return 0;
         }
 
-       return spielfeld.split(",").length;
+        return spielfeld.split(",").length;
     }
 
+    /**
+     * Ruft den Wert eines bestimmten Feldes im Spielfeld ab.
+     *
+     * @param x Die x-Koordinate des Feldes.
+     * @param y Die y-Koordinate des Feldes.
+     * @param auswahl Der Index des Spielfelds.
+     * @return Der Wert des angegebenen Feldes.
+     */
     public int getFeld(int x, int y, int auswahl) {
         String spielfeld = getSpielfeld(auswahl);
         String[] zeilen = spielfeld.trim().split(",");
+        if (y < 0 || y >= zeilen.length) {
+            throw new ArrayIndexOutOfBoundsException("Index " + y + " außerhalb der Grenzen " + zeilen.length);
+        }
         String[] spalten = zeilen[y].trim().split(" ");
+        if (x < 0 || x >= spalten.length) {
+            throw new ArrayIndexOutOfBoundsException("Index " + x + " außerhalb der Grenzen " + spalten.length);
+        }
 
         return Integer.parseInt(spalten[x]);
     }
 
+    /**
+     * Ruft die Lösung für den angegebenen Spielfeld-Index ab.
+     *
+     * @param auswahl Der Index des Spielfelds.
+     * @return Eine String-Darstellung der Lösung.
+     * @throws IOException Wenn ein I/O-Fehler auftritt.
+     */
     public static String getLoesung(int auswahl) throws IOException {
-    if(auswahl < 0 || auswahl >= spielfelderNamenStatic.length) {
-        throw new IOException("Invalid index" + auswahl);
-    }
+        if(auswahl < 0 || auswahl >= spielfelderNamenStatic.length) {
+            throw new IOException("Ungültiger Index " + auswahl);
+        }
         StringBuilder loesungen = new StringBuilder();
         String fileName = "database/" + spielfelderNamenStatic[auswahl] + ".csv";
         InputStream resource = CsvEinlesen.class.getClassLoader().getResourceAsStream(fileName);

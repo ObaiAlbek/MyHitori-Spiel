@@ -5,18 +5,36 @@ import java.util.*;
 
 public class SpeicherSystem {
 
+    // Pfad zu den Speicherdateien
     private final String filePfad = "database/speicherDateien/";
+    // Map zur Speicherung der Spielfelder
     private final Map<String, int[][]> spielfelder = new HashMap<>();
+    // Array der Spielfeldnamen
     private final String[] spielfelderNamen = {
         "Hitori4x4_leicht", "Hitori5x5leicht", "Hitori8x8leicht",
         "Hitori8x8medium", "Hitori10x10medium", "Hitori15x15_medium"
     };
 
+    /**
+     * Speichert das Spiel mit dem angegebenen Namen und Spielfeld.
+     *
+     * @param name Der Name des Spiels.
+     * @param feld Das Spielfeld.
+     * @return true, wenn das Spiel erfolgreich gespeichert wurde, sonst false.
+     * @throws IOException Wenn ein I/O-Fehler auftritt.
+     */
     public boolean spielSpeichern(String name, int[][] feld) throws IOException {
         spielfelder.put(name, feld);
         return createFile(name);
     }
 
+    /**
+     * Erstellt eine Datei mit dem angegebenen Namen.
+     *
+     * @param fileName Der Name der Datei.
+     * @return true, wenn die Datei erfolgreich erstellt wurde, sonst false.
+     * @throws IOException Wenn ein I/O-Fehler auftritt.
+     */
     public boolean createFile(String fileName) throws IOException {
         File file = new File(filePfad + fileName + ".csv");
         if (!file.exists()) {
@@ -32,6 +50,13 @@ public class SpeicherSystem {
         return true;
     }
 
+    /**
+     * Stellt das Spiel mit dem angegebenen Dateinamen wieder her.
+     *
+     * @param fileName Der Name der Datei.
+     * @return Das wiederhergestellte Spielfeld.
+     * @throws IOException Wenn ein I/O-Fehler auftritt.
+     */
     public int[][] spielWiederherstellen(String fileName) throws IOException {
         File file = new File(filePfad + fileName + ".csv");
         if (!file.exists()) {
@@ -51,6 +76,12 @@ public class SpeicherSystem {
         return lines.toArray(new int[0][]);
     }
 
+    /**
+     * Gibt den Standardzustand des Hitori-Spielfelds für den angegebenen Dateinamen zurück.
+     *
+     * @param fileName Der Name der Datei.
+     * @return Der Standardzustand des Spielfelds.
+     */
     private int[][] getDefaultHitoriState(String fileName) {
         switch (fileName) {
             case "Hitori4x4_leicht": return new int[4][4];
@@ -63,6 +94,13 @@ public class SpeicherSystem {
         }
     }
 
+    /**
+     * Speichert die Spielinformationen, wenn das Spiel gelöst wurde.
+     *
+     * @param name Der Name des Spielers.
+     * @param zeit Die benötigte Zeit.
+     * @param auswahl Der Index des Spielfelds.
+     */
     public void spielGeloest(String name, String zeit, int auswahl) {
         int fehlercounter = 0;
         try (Scanner sc = new Scanner(new File("database/fehler/" + spielfelderNamen[auswahl] + ".txt"))) {
@@ -77,6 +115,12 @@ public class SpeicherSystem {
         }
     }
 
+    /**
+     * Speichert die Anzahl der Fehler für das angegebene Spielfeld.
+     *
+     * @param fehlercounter Die Anzahl der Fehler.
+     * @param auswahl Der Index des Spielfelds.
+     */
     public void fehlerSpeichern(int fehlercounter, int auswahl) {
         try (FileWriter writer = new FileWriter("database/fehler/" + spielfelderNamen[auswahl] + ".txt")) {
             writer.write(fehlercounter + " \n");
@@ -85,6 +129,11 @@ public class SpeicherSystem {
         }
     }
 
+    /**
+     * Setzt die Anzahl der Fehler für das angegebene Spielfeld zurück.
+     *
+     * @param auswahl Der Index des Spielfelds.
+     */
     public void fehlerReset(int auswahl) {
         try (FileWriter writer = new FileWriter("database/fehler/" + spielfelderNamen[auswahl] + ".txt")) {
             writer.write("0 \n");
@@ -93,6 +142,12 @@ public class SpeicherSystem {
         }
     }
 
+    /**
+     * Gibt die Anzahl der Fehler für das angegebene Spielfeld zurück.
+     *
+     * @param auswahl Der Index des Spielfelds.
+     * @return Die Anzahl der Fehler.
+     */
     public int fehlercounterWeitergeben(int auswahl) {
         try (Scanner sc = new Scanner(new File("database/fehler/" + spielfelderNamen[auswahl] + ".txt"))) {
             return sc.nextInt();
@@ -102,6 +157,12 @@ public class SpeicherSystem {
         }
     }
 
+    /**
+     * Speichert den Timer-Wert für das angegebene Spiel.
+     *
+     * @param hitoriGameName Der Name des Hitori-Spiels.
+     * @param time Der Timer-Wert.
+     */
     public void saveTimerValue(String hitoriGameName, String time) {
         try (FileWriter writer = new FileWriter("database/timer/timer_" + hitoriGameName + ".txt")) {
             writer.write(time.replace("Zeit: ", "").replace(" s", ""));
@@ -110,6 +171,12 @@ public class SpeicherSystem {
         }
     }
 
+    /**
+     * Lädt den Timer-Wert für das angegebene Spiel.
+     *
+     * @param gameName Der Name des Spiels.
+     * @return Der Timer-Wert.
+     */
     public String loadTimerValue(String gameName) {
         File file = new File("database/timer/timer_" + gameName + ".txt");
         if (file.exists()) {
@@ -122,10 +189,21 @@ public class SpeicherSystem {
         return null;
     }
 
+    /**
+     * Überprüft, ob ein Timer für das angegebene Spiel existiert.
+     *
+     * @param gameName Der Name des Spiels.
+     * @return true, wenn der Timer existiert, sonst false.
+     */
     public boolean timerExists(String gameName) {
         return new File("database/timer/timer_" + gameName + ".txt").exists();
     }
 
+    /**
+     * Setzt den Timer-Wert für das angegebene Spielfeld zurück.
+     *
+     * @param auswahl Der Index des Spielfelds.
+     */
     public void resetTimerValue(int auswahl) {
         try (FileWriter writer = new FileWriter("database/timer/timer_" + spielfelderNamen[auswahl] + ".txt")) {
             writer.write("0,000");
@@ -134,6 +212,12 @@ public class SpeicherSystem {
         }
     }
 
+    /**
+     * Berechnet den Durchschnitt der Zeiten für das angegebene Spielfeld.
+     *
+     * @param auswahl Der Index des Spielfelds.
+     * @return Der Durchschnitt der Zeiten.
+     */
     public double berechneDurchschnitt(int auswahl) {
         if(auswahl < 0 || auswahl >= spielfelderNamen.length) {
             return 0.0;
@@ -160,6 +244,11 @@ public class SpeicherSystem {
         return count > 0 ? sum / count : 0;
     }
 
+    /**
+     * Sortiert die Bestenliste für das angegebene Spielfeld.
+     *
+     * @param auswahl Der Index des Spielfelds.
+     */
     public void sortiereLeaderboard(int auswahl) {
         File file = new File("database/Siegerliste/" + spielfelderNamen[auswahl] + "_sieger.txt");
         if (file.exists()) {
