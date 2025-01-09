@@ -18,14 +18,14 @@ public class CsvEinlesenTest {
 
     @Test
     public void getSieger_validIndex_returnsSiegerList() throws IOException {
-        String sieger = CsvEinlesen.getSieger(0);
+        String sieger = CsvEinlesen.getGewinner(0);
         assertNotNull(sieger);
         assertFalse(sieger.isEmpty());
     }
 
     @Test
     public void getSieger_invalidIndex_throwsIOException() {
-        assertThrows(IOException.class, () -> CsvEinlesen.getSieger(-1));
+        assertThrows(IOException.class, () -> CsvEinlesen.getGewinner(-1));
     }
 
     @Test
