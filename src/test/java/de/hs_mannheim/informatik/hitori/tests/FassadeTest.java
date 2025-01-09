@@ -20,60 +20,60 @@ public class FassadeTest {
     @Test
     public void undo_withPreviousState_returnsPreviousState() throws UndoRedoNichtMöglichException, IOException {
         int[][] state = {{1, 2}, {3, 4}};
-        fassade.aktuelleButtonsZuständeSpeichern(state, 2, "testFile");
-        int[][] previousState = fassade.undo();
+        fassade.aktuellenSpielzustandSpeichern(state, 2, "testFile");
+        int[][] previousState = fassade.rueckgaengigMachen();
         assertArrayEquals(state, previousState);
     }
 
     @Test
     public void undo_withoutPreviousState_throwsException() {
-        assertThrows(UndoRedoNichtMöglichException.class, () -> fassade.undo());
+        assertThrows(UndoRedoNichtMöglichException.class, () -> fassade.rueckgaengigMachen());
     }
 
     @Test
     public void redo_withNextState_returnsNextState() throws UndoRedoNichtMöglichException, IOException {
         int[][] state = {{1, 2}, {3, 4}};
-        fassade.aktuelleButtonsZuständeSpeichern(state, 2, "testFile");
-        fassade.undo();
-        int[][] nextState = fassade.redo();
+        fassade.aktuellenSpielzustandSpeichern(state, 2, "testFile");
+        fassade.rueckgaengigMachen();
+        int[][] nextState = fassade.wiederholen();
         assertArrayEquals(state, nextState);
     }
 
     @Test
     public void redo_withoutNextState_throwsException() {
-        assertThrows(UndoRedoNichtMöglichException.class, () -> fassade.redo());
+        assertThrows(UndoRedoNichtMöglichException.class, () -> fassade.wiederholen());
     }
 
     @Test
     public void saveGame_validInput_savesGame() throws IOException {
         int[][] state = {{1, 2}, {3, 4}};
-        boolean result = fassade.saveGame(state, "testFile");
+        boolean result = fassade.spielSpeichern(state, "testFile");
         assertTrue(result);
     }
 
     @Test
     public void getDurchschnitt_validInput_returnsFormattedAverage() {
-        String average = fassade.getDurchschnitt(0);
+        String average = fassade.durchschnittsZeitAbrufen(0);
         assertNotNull(average);
         assertTrue(average.contains(" s"));
     }
 
     @Test
     public void getDurchschnitt_invalidInput_returnsFormattedAverage() {
-        String average = fassade.getDurchschnitt(-1);
+        String average = fassade.durchschnittsZeitAbrufen(-1);
         assertNotNull(average);
         assertTrue(average.contains(" s"));
     }
 
     @Test
     public void startTimer_startsTimer() {
-        fassade.startTimer();
-        assertTrue(fassade.getTime().startsWith("Zeit:"));
+        fassade.timerStarten();
+        assertTrue(fassade.zeitAbrufen().startsWith("Zeit:"));
     }
 
     @Test
     public void resetTimerValue_resetsTimer() {
-        fassade.resetTimerValue(0);
-        assertTrue(fassade.getTime().startsWith("Zeit: 0"));
+        fassade.timerWertZuruecksetzen(0);
+        assertTrue(fassade.zeitAbrufen().startsWith("Zeit: 0"));
     }
 }

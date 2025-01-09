@@ -18,42 +18,42 @@ public class StoppUhrTest {
 
     @Test
     public void startStoppUhr_startsTimer() {
-        stoppUhr.startStoppUhr();
-        assertTrue(stoppUhr.isRunning());
+        stoppUhr.starteStoppUhr();
+        assertTrue(stoppUhr.istAmLaufen());
     }
 
     @Test
     public void stopStoppUhr_stopsTimer() {
-        stoppUhr.startStoppUhr();
-        stoppUhr.stopStoppUhr();
-        assertFalse(stoppUhr.isRunning());
+        stoppUhr.starteStoppUhr();
+        stoppUhr.stoppeStoppUhr();
+        assertFalse(stoppUhr.istAmLaufen());
     }
 
     @Test
     public void getFormattedTime_returnsFormattedTime() {
-        stoppUhr.startStoppUhr();
+        stoppUhr.starteStoppUhr();
         try {
             Thread.sleep(1000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        stoppUhr.stopStoppUhr();
-        String formattedTime = stoppUhr.getFormattedTime();
+        stoppUhr.stoppeStoppUhr();
+        String formattedTime = stoppUhr.holeFormatierteZeit();
         assertTrue(formattedTime.startsWith("Zeit: 1,0"));
     }
 
     @Test
     public void setTime_setsCorrectTime() {
-        stoppUhr.setTime("1,500");
-        String formattedTime = stoppUhr.getFormattedTime();
+        stoppUhr.setzeZeit("1,500");
+        String formattedTime = stoppUhr.holeFormatierteZeit();
         assertTrue(formattedTime.startsWith("Zeit: 1,5"));
     }
 
     @Test
     public void startStoppUhr_togglesRunningState() {
-        stoppUhr.startStoppUhr();
-        assertTrue(stoppUhr.isRunning());
-        stoppUhr.startStoppUhr();
-        assertFalse(stoppUhr.isRunning());
+        stoppUhr.starteStoppUhr();
+        assertTrue(stoppUhr.istAmLaufen());
+        stoppUhr.starteStoppUhr();
+        assertFalse(stoppUhr.istAmLaufen());
     }
 }

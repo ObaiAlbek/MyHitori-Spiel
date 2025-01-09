@@ -60,7 +60,7 @@ public class SpeicherSystemTest {
         int auswahl = 0;
 
         speicherSystem.fehlerSpeichern(5, auswahl);
-        speicherSystem.fehlerReset(auswahl);
+        speicherSystem.fehlerZuruecksetzen(auswahl);
 
         File fehlerFile = new File("database/fehler/Hitori4x4_leicht.txt");
         assertTrue(fehlerFile.exists());
@@ -73,6 +73,6 @@ public class SpeicherSystemTest {
     public void fehlerReset_invalidAuswahl_throwsException() {
         int auswahl = -1;
 
-        assertThrows(ArrayIndexOutOfBoundsException.class, () -> speicherSystem.fehlerReset(auswahl));
+        assertThrows(ArrayIndexOutOfBoundsException.class, () -> speicherSystem.fehlerZuruecksetzen(auswahl));
     }
 }
