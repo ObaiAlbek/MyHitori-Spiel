@@ -353,4 +353,4 @@ public class Fassade {
     public void bestenlisteSortieren(int auswahl) {
         speicherSystem.leaderboardSortieren(auswahl);
     }
-}}
+}

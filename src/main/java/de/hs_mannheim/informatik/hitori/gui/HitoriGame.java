@@ -250,7 +250,7 @@ public class HitoriGame extends JFrame {
         zurueck.addActionListener(e -> {
             fensterSchliessen();
             try {
-                menu.zeigeFenster();
+                menu.fensterAnzeigen();
             } catch (IOException ex) {
                 throw new RuntimeException(ex);
             }
@@ -359,7 +359,7 @@ public class HitoriGame extends JFrame {
      * @param hitoriSpielName der Name des Hitori-Spiels
      */
     public void zeitSetzen(String hitoriSpielName) {
-        String zeit = fassade.zeitLaden(hitoriSpielName);
+        String zeit = fassade.timerWertLaden(hitoriSpielName);
         fassade.zeitSetzen(zeit);
     }
 
@@ -389,6 +389,13 @@ public class HitoriGame extends JFrame {
             bestenlistePanel.add(label);
         }
         contentPane.add(bestenlistePanel);
+    }
+    
+    /**
+     * Setzt das Fresh-Start-Flag.
+     */
+    public static void setFreshStart() {
+    	neuerStart = true;
     }
 
     /**

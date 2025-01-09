@@ -262,22 +262,22 @@ public class GuiFassade {
         this.auswahl = auswahl;
         for (int i = 0; i < zustand.length; i++) {
             for (int j = 0; j < zustand[i].length; j++) {
-                hitoriGame.getButton(i, j).setForeground(Color.WHITE);
+                hitoriGame.holeButton(i, j).setForeground(Color.WHITE);
                 switch (zustand[i][j]) {
                     case 2:
-                        hitoriGame.getButton(i, j).setBackground(Color.WHITE);
-                        hitoriGame.getButton(i, j).setForeground(Color.BLACK);
-                        hitoriGame.getButton(i, j).setText("" + fassade.feldWertAbrufen(j, i, auswahl));
+                        hitoriGame.holeButton(i, j).setBackground(Color.WHITE);
+                        hitoriGame.holeButton(i, j).setForeground(Color.BLACK);
+                        hitoriGame.holeButton(i, j).setText("" + fassade.feldWertAbrufen(j, i, auswahl));
                         break;
                     case 1:
-                        hitoriGame.getButton(i, j).setBackground(Color.BLACK);
-                        hitoriGame.getButton(i, j).setForeground(Color.WHITE);
-                        hitoriGame.getButton(i, j).setText("" + fassade.feldWertAbrufen(j, i, auswahl));
+                        hitoriGame.holeButton(i, j).setBackground(Color.BLACK);
+                        hitoriGame.holeButton(i, j).setForeground(Color.WHITE);
+                        hitoriGame.holeButton(i, j).setText("" + fassade.feldWertAbrufen(j, i, auswahl));
                         break;
                     case 0:
-                        hitoriGame.getButton(i, j).setBackground(Color.GRAY);
-                        hitoriGame.getButton(i, j).setForeground(Color.WHITE);
-                        hitoriGame.getButton(i, j).setText("" + fassade.feldWertAbrufen(j, i, auswahl));
+                        hitoriGame.holeButton(i, j).setBackground(Color.GRAY);
+                        hitoriGame.holeButton(i, j).setForeground(Color.WHITE);
+                        hitoriGame.holeButton(i, j).setText("" + fassade.feldWertAbrufen(j, i, auswahl));
                         break;
                     default:
                         throw new IllegalArgumentException("Fehler: " + zustand[i][j]);
