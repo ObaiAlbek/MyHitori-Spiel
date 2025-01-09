@@ -9,9 +9,9 @@ import java.util.Scanner;
 public class CsvEinlesen {
 
     // Array der Spielfeldnamen
-    final private String[] spielfelderNamen = { "Hitori4x4_leicht", "Hitori5x5leicht", "Hitori8x8leicht",
+    final private String[] spielfeldNamen  = { "Hitori4x4_leicht", "Hitori5x5leicht", "Hitori8x8leicht",
             "Hitori8x8medium", "Hitori10x10medium", "Hitori15x15_medium" };
-    final private static String[] spielfelderNamenStatic = { "Hitori4x4_leicht", "Hitori5x5leicht", "Hitori8x8leicht",
+    final private static String[] spielfeldNamenStatic  = { "Hitori4x4_leicht", "Hitori5x5leicht", "Hitori8x8leicht",
             "Hitori8x8medium", "Hitori10x10medium", "Hitori15x15_medium" };
 
     /**
@@ -22,12 +22,12 @@ public class CsvEinlesen {
      * @return Ein String, der die Liste der Sieger enthält.
      * @throws IOException Wenn ein I/O-Fehler auftritt.
      */
-    public static String getSieger(int auswahl) throws IOException {
-        if(auswahl < 0 || auswahl >= spielfelderNamenStatic.length) {
+    public static String getGewinner(int auswahl) throws IOException {
+        if(auswahl < 0 || auswahl >= spielfeldNamenStatic.length) {
             throw new IOException("Ungültiger Index " + auswahl);
         }
 
-        String fileName = "database/siegerliste/" + spielfelderNamenStatic[auswahl] + "_sieger.txt";
+        String fileName = "database/siegerliste/" + spielfeldNamenStatic[auswahl] + "_sieger.txt";
         File file = new File(fileName);
 
         if (!file.exists()) {
@@ -52,12 +52,12 @@ public class CsvEinlesen {
      * @return Eine String-Darstellung des Spielfelds.
      */
     public String getSpielfeld(int auswahl) {
-        if (auswahl < 0 || auswahl >= spielfelderNamen.length) {
+        if (auswahl < 0 || auswahl >= spielfeldNamen.length) {
             return null;
         }
-        String fileName = "database/" + spielfelderNamen[auswahl] + ".csv";
+        String fileName = "database/" + spielfeldNamen[auswahl] + ".csv";
 
-        ArrayList<String> lines = readFile(fileName);
+        ArrayList<String> lines = leseDatei(fileName);
         if (lines == null) {
             return null;
         }
@@ -91,11 +91,11 @@ public class CsvEinlesen {
      * @return Eine String-Darstellung der Lösungen.
      */
     public String getLoesungen(int auswahl) {
-        if (auswahl < 0 || auswahl >= spielfelderNamen.length) {
+        if (auswahl < 0 || auswahl >= spielfeldNamen.length) {
             return null;
         }
-        String fileName = "database/" + spielfelderNamen[auswahl] + ".csv";
-        ArrayList<String> lines = readFile(fileName);
+        String fileName = "database/" + spielfeldNamen[auswahl] + ".csv";
+        ArrayList<String> lines = leseDatei(fileName);
 
         StringBuilder ergebnis = new StringBuilder();
         String[] zwischenspeicher = lines.get(0).split(",");
@@ -127,10 +127,10 @@ public class CsvEinlesen {
      * @param fileName Der Name der Datei, die gelesen werden soll.
      * @return Eine Liste von Strings, die die Zeilen der Datei darstellen.
      */
-    private ArrayList<String> readFile(String fileName) {
+    private ArrayList<String> leseDatei(String dateiname) {
         ArrayList<String> lines = new ArrayList<>();
         ClassLoader classLoader = getClass().getClassLoader();
-        try (InputStream inputStream = classLoader.getResourceAsStream(fileName);
+        try (InputStream inputStream = classLoader.getResourceAsStream(dateiname);
              Scanner scanner = new Scanner(inputStream)) {
             while (scanner.hasNextLine()) {
                 lines.add(scanner.nextLine());
@@ -186,11 +186,11 @@ public class CsvEinlesen {
      * @throws IOException Wenn ein I/O-Fehler auftritt.
      */
     public static String getLoesung(int auswahl) throws IOException {
-        if(auswahl < 0 || auswahl >= spielfelderNamenStatic.length) {
+        if(auswahl < 0 || auswahl >= spielfeldNamenStatic.length) {
             throw new IOException("Ungültiger Index " + auswahl);
         }
         StringBuilder loesungen = new StringBuilder();
-        String fileName = "database/" + spielfelderNamenStatic[auswahl] + ".csv";
+        String fileName = "database/" + spielfeldNamenStatic[auswahl] + ".csv";
         InputStream resource = CsvEinlesen.class.getClassLoader().getResourceAsStream(fileName);
         if (resource == null) {
             return "";

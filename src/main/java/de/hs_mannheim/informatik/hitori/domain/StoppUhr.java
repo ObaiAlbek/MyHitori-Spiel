@@ -4,80 +4,80 @@ package de.hs_mannheim.informatik.hitori.domain;
 import javax.swing.Timer;
 
 /**
- * The StoppUhr class represents a stopwatch that can start, stop, and keep track of elapsed time.
+ * Die StoppUhr-Klasse stellt eine Stoppuhr dar, die gestartet, gestoppt und die vergangene Zeit verfolgt werden kann.
  */
 public class StoppUhr {
     private final Timer timer;
     private long startzeit;
-    private boolean running;
+    private boolean laeuft;
 
     /**
-     * Constructs a new StoppUhr instance.
-     * Initializes the timer with a 10-millisecond delay and an action listener to update the time.
+     * Erstellt eine neue Instanz der StoppUhr.
+     * Initialisiert den Timer mit einer Verzögerung von 10 Millisekunden und einem ActionListener, um die Zeit zu aktualisieren.
      */
     public StoppUhr() {
-        timer = new Timer(10, e -> updateZeit());
+        timer = new Timer(10, e -> aktualisiereZeit());
     }
 
     /**
-     * Starts or stops the stopwatch.
-     * If the stopwatch is running, it stops it. Otherwise, it starts it and records the start time.
+     * Startet oder stoppt die Stoppuhr.
+     * Wenn die Stoppuhr läuft, wird sie gestoppt. Andernfalls wird sie gestartet und die Startzeit aufgezeichnet.
      */
-    public void startStoppUhr() {
-        if (running) {
+    public void starteStoppUhr() {
+        if (laeuft) {
             timer.stop();
-            running = false;
+            laeuft = false;
         } else {
             timer.start();
             startzeit = System.currentTimeMillis();
-            running = true;
+            laeuft = true;
         }
     }
 
     /**
-     * Stops the stopwatch.
+     * Stoppt die Stoppuhr.
      */
-    public void stopStoppUhr() {
+    public void stoppeStoppUhr() {
         timer.stop();
-        running = false;
+        laeuft = false;
     }
 
     /**
-     * Updates the elapsed time.
-     * This method is called by the timer's action listener.
+     * Aktualisiert die vergangene Zeit.
+     * Diese Methode wird vom ActionListener des Timers aufgerufen.
      */
-    private void updateZeit() {
-        // Method to update the elapsed time
+    private void aktualisiereZeit() {
+        // Methode zur Aktualisierung der vergangenen Zeit
     }
 
     /**
-     * Returns the formatted elapsed time as a string.
+     * Gibt die formatierte vergangene Zeit als String zurück.
      *
-     * @return A string representing the elapsed time in the format "Zeit: x.xxx s".
+     * @return Ein String, der die vergangene Zeit im Format "Zeit: x.xxx s" darstellt.
      */
-    public String getFormattedTime() {
-        double elapsed = (System.currentTimeMillis() - startzeit) / 1000.0;
-        return String.format("Zeit: %.3f s", elapsed);
+    public String holeFormatierteZeit() {
+        double vergangen = (System.currentTimeMillis() - startzeit) / 1000.0;
+        return String.format("Zeit: %.3f s", vergangen);
     }
 
     /**
-     * Sets the start time based on the provided formatted time string.
+     * Setzt die Startzeit basierend auf dem bereitgestellten formatierten Zeit-String.
      *
-     * @param time A string representing the time in the format "seconds,milliseconds".
+     * @param zeit Ein String, der die Zeit im Format "Sekunden,Millisekunden" darstellt.
      */
-    public void setTime(String time) {
-        String[] parts = time.split(",");
-        long seconds = Long.parseLong(parts[0]);
-        long milliseconds = Long.parseLong(parts[1]);
-        startzeit = System.currentTimeMillis() - (seconds * 1000 + milliseconds);
+    public void setzeZeit(String zeit) {
+        String[] teile = zeit.split(",");
+        long sekunden = Long.parseLong(teile[0]);
+        long millisekunden = Long.parseLong(teile[1]);
+        startzeit = System.currentTimeMillis() - (sekunden * 1000 + millisekunden);
     }
 
     /**
-     * Checks if the stopwatch is currently running.
+     * Überprüft, ob die Stoppuhr gerade läuft.
      *
-     * @return true if the stopwatch is running, false otherwise.
+     * @return true, wenn die Stoppuhr läuft, andernfalls false.
      */
-    public boolean isRunning() {
-        return running;
+    public boolean istAmLaufen() {
+        return laeuft;
     }
 }

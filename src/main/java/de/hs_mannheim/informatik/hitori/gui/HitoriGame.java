@@ -22,79 +22,76 @@ import javax.swing.border.LineBorder;
  * um den Spielzustand, Benutzerinteraktionen und die Anzeige zu verwalten.
  */
 public class HitoriGame extends JFrame {
-    private JButton saveButton, undoButton, redoButton, resetButton, hilfeButton;
-    private JButton[][] spielfield;
+    private JButton speichernButton, rueckgaengigButton, wiederholenButton, zuruecksetzenButton, hilfeButton;
+    private JButton[][] spielfeld;
     private int dimension;
-    private JPanel contentPane, panel, leaderboardPanel;
+    private JPanel contentPane, panel, bestenlistePanel;
     private GuiFassade guiFassade;
     private Fassade fassade;
     private Menu menu;
     private int auswahl;
     private static Timer timer;
-    private String hitoriGameName;
+    private String hitoriSpielName;
     private GridBagConstraints gbc;
-    private static boolean freshStart;
+    private static boolean neuerStart;
 
     /**
      * Konstruktor für HitoriGame.
      *
      * @param auswahl        die Spielauswahl
      * @param menu           die Menüinstanz
-     * @param hitoriGameName der Name des Hitori-Spiels
+     * @param hitoriSpielName der Name des Hitori-Spiels
      * @param guiFassade     die GUI-Fassade
      * @param fassade        die Fassade
      * @throws IOException wenn ein I/O-Fehler auftritt
      */
-    public HitoriGame(int auswahl, Menu menu, String hitoriGameName, GuiFassade guiFassade, Fassade fassade) throws IOException {
+    public HitoriGame(int auswahl, Menu menu, String hitoriSpielName, GuiFassade guiFassade, Fassade fassade) throws IOException {
         this.menu = menu;
         this.auswahl = auswahl;
-        this.hitoriGameName = hitoriGameName;
+        this.hitoriSpielName = hitoriSpielName;
         this.guiFassade = guiFassade;
         this.fassade = fassade;
 
-        fassade.startTimer();
+        fassade.timerStarten();
 
-        WindowProperties();
-        addButtonsToWindow();
-        pauseTime();
-        addTimeToWindow();
-        gameField();
-        this.guiFassade.getFassade(fassade, dimension);
+        fensterEigenschaftenSetzen();
+        buttonsHinzufuegen();
+        zeitAnzeigen();
+        spielfeldErstellen();
+        this.guiFassade.setFassade(fassade, dimension);
 
-        saveButton.addActionListener(e -> saveGame());
-        resetButton.addActionListener(e -> {
+        speichernButton.addActionListener(e -> spielSpeichern());
+        zuruecksetzenButton.addActionListener(e -> {
             try {
-                spielfieldZurücksetzen();
+                spielfeldZuruecksetzen();
             } catch (IOException ex) {
                 throw new RuntimeException(ex);
             }
         });
-        undoButton.addActionListener(e -> undo());
-        redoButton.addActionListener(e -> redo());
+        rueckgaengigButton.addActionListener(e -> rueckgaengig());
+        wiederholenButton.addActionListener(e -> wiederholen());
         hilfeButton.addActionListener(e -> {
             try {
-                guiFassade.markiereFehlerhafteFelder(spielfield, auswahl, dimension);
-            } catch (FileNotFoundException ex) {
-                throw new RuntimeException(ex);
+                guiFassade.markiereFehlerhafteFelder(spielfeld, auswahl, dimension);
             } catch (IOException ex) {
                 throw new RuntimeException(ex);
             }
         });
 
-        buttonFarbeÄndern();
-        showWindow();
-        showLeaderboard();
+        buttonFarbenAendern();
+        fensterAnzeigen();
+        bestenlisteAnzeigen();
     }
 
     /**
-     * Handhabt die Undo-Aktion.
+     * Handhabt die Rueckgaengig-Aktion.
      */
-    public void undo() {
+    public void rueckgaengig() {
         JButton[][] neuesSpielfeld;
         try {
-            neuesSpielfeld = guiFassade.undo(hitoriGameName);
-            aktualisiereSpielfeld(neuesSpielfeld);
-            updateUndoRedoState();
+            neuesSpielfeld = guiFassade.rueckgaengigMachen(hitoriSpielName);
+            spielfeldAktualisieren(neuesSpielfeld);
+            undoRedoZustandAktualisieren();
         } catch (UndoRedoNichtMöglichException e) {
             JOptionPane.showMessageDialog(this, "Undo ist nicht möglich!");
         } catch (IOException e) {
@@ -103,30 +100,27 @@ public class HitoriGame extends JFrame {
     }
 
     /**
-     * Handhabt die Redo-Aktion.
+     * Handhabt die Wiederholen-Aktion.
      */
-    public void redo() {
+    public void wiederholen() {
         JButton[][] neuesSpielfeld;
         try {
-            neuesSpielfeld = guiFassade.redo(hitoriGameName);
-            aktualisiereSpielfeld(neuesSpielfeld);
+            neuesSpielfeld = guiFassade.wiederholen(hitoriSpielName);
+            spielfeldAktualisieren(neuesSpielfeld);
         } catch (UndoRedoNichtMöglichException e) {
             JOptionPane.showMessageDialog(this, "Redo ist nicht möglich!");
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        updateUndoRedoState();
+        undoRedoZustandAktualisieren();
     }
 
     /**
-     * Aktualisiert den Zustand der Undo- und Redo-Buttons.
+     * Aktualisiert den Zustand der Rueckgaengig- und Wiederholen-Buttons.
      */
-    private void updateUndoRedoState() {
-        boolean undo = (fassade.kannUndo()) ? true : false;
-        undoButton.setEnabled(undo);
-
-        boolean redo = (fassade.kannRedo()) ? true : false;
-        redoButton.setEnabled(redo);
+    private void undoRedoZustandAktualisieren() {
+        rueckgaengigButton.setEnabled(fassade.kannRueckgaengigMachen());
+        wiederholenButton.setEnabled(fassade.kannWiederholen());
     }
 
     /**
@@ -134,28 +128,28 @@ public class HitoriGame extends JFrame {
      *
      * @param neuesSpielfeld der neue Spielfeldzustand
      */
-    private void aktualisiereSpielfeld(JButton[][] neuesSpielfeld) {
+    private void spielfeldAktualisieren(JButton[][] neuesSpielfeld) {
         panel.removeAll();
-        this.spielfield = neuesSpielfeld;
+        this.spielfeld = neuesSpielfeld;
 
-        for (int i = 0; i < spielfield.length; i++) {
-            for (int j = 0; j < spielfield[i].length; j++) {
-                spielfield[i][j].setPreferredSize(new Dimension(50, 50));
+        for (int i = 0; i < spielfeld.length; i++) {
+            for (int j = 0; j < spielfeld[i].length; j++) {
+                spielfeld[i][j].setPreferredSize(new Dimension(50, 50));
                 gbc.gridx = j;
                 gbc.gridy = i;
-                panel.add(spielfield[i][j], gbc);
+                panel.add(spielfeld[i][j], gbc);
             }
         }
         panel.revalidate();
         panel.repaint();
-        buttonFarbeÄndern();
+        buttonFarbenAendern();
     }
 
     /**
      * Initialisiert das Spielfeld.
      */
-    public void gameField() {
-        dimension = fassade.getDimension(auswahl);
+    public void spielfeldErstellen() {
+        dimension = fassade.dimensionAbrufen(auswahl);
         panel = new JPanel();
         panel.setBorder(new LineBorder(new Color(0, 0, 0), 2));
         panel.setBounds(68, 119, 900, 500);
@@ -164,24 +158,24 @@ public class HitoriGame extends JFrame {
         gbc = new GridBagConstraints();
         gbc.fill = GridBagConstraints.BOTH;
         gbc.insets = new Insets(3, 3, 3, 3);
-        spielfield = new JButton[dimension][dimension];
+        spielfeld = new JButton[dimension][dimension];
 
-        knöpfe_Spielfield();
+        spielfeldKnopfeHinzufuegen();
     }
 
     /**
      * Fügt Buttons zum Spielfeld hinzu.
      */
-    public void knöpfe_Spielfield() {
+    public void spielfeldKnopfeHinzufuegen() {
         for (int i = 0; i < dimension; i++) {
             for (int j = 0; j < dimension; j++) {
-                spielfield[i][j] = new JButton(String.valueOf(fassade.getSpielfeldFeld(j, i, auswahl)));
-                spielfield[i][j].setForeground(Color.white);
-                spielfield[i][j].setBackground(Color.GRAY);
-                spielfield[i][j].setPreferredSize(new Dimension(50, 50));
+                spielfeld[i][j] = new JButton(String.valueOf(fassade.feldWertAbrufen(j, i, auswahl)));
+                spielfeld[i][j].setForeground(Color.WHITE);
+                spielfeld[i][j].setBackground(Color.GRAY);
+                spielfeld[i][j].setPreferredSize(new Dimension(50, 50));
                 gbc.gridx = j;
                 gbc.gridy = i;
-                panel.add(spielfield[i][j], gbc);
+                panel.add(spielfeld[i][j], gbc);
             }
         }
     }
@@ -189,14 +183,14 @@ public class HitoriGame extends JFrame {
     /**
      * Ändert die Farbe der Buttons im Spielfeld.
      */
-    public void buttonFarbeÄndern() {
+    public void buttonFarbenAendern() {
         for (int i = 0; i < dimension; i++)
             for (int j = 0; j < dimension; j++) {
                 int x = i;
                 int y = j;
-                spielfield[i][j].addActionListener(e -> {
+                spielfeld[i][j].addActionListener(e -> {
                     try {
-                        guiFassade.buttonFarbeÄndern(spielfield, x, y, hitoriGameName);
+                        guiFassade.buttonFarbeAendern(spielfeld, x, y, hitoriSpielName);
                     } catch (IOException ex) {
                         throw new RuntimeException(ex);
                     }
@@ -207,9 +201,9 @@ public class HitoriGame extends JFrame {
     /**
      * Speichert den aktuellen Spielzustand.
      */
-    public void saveGame() {
+    public void spielSpeichern() {
         try {
-            if (guiFassade.saveGame(spielfield, hitoriGameName))
+            if (guiFassade.spielSpeichern(spielfeld, hitoriSpielName))
                 JOptionPane.showMessageDialog(null, "Spiel gespeichert!");
             else
                 JOptionPane.showMessageDialog(null, "Fehler beim Speichern!");
@@ -223,74 +217,74 @@ public class HitoriGame extends JFrame {
      *
      * @throws IOException wenn ein I/O-Fehler auftritt
      */
-    public void spielfieldZurücksetzen() throws IOException {
-        guiFassade.spielfieldZurücksetzen(spielfield, hitoriGameName);
+    public void spielfeldZuruecksetzen() throws IOException {
+        guiFassade.spielfeldZuruecksetzen(spielfeld, hitoriSpielName);
     }
 
     /**
      * Fügt den Timer zum Fenster hinzu.
      */
-    public void addTimeToWindow() {
-        JLabel timeLabel = new JLabel(fassade.getTime());
-        timeLabel.setFont(new Font("Tahoma", Font.BOLD, 14));
-        timeLabel.setBounds(68, 74, 200, 34);
-        contentPane.add(timeLabel);
-        timer = new Timer(10, e -> timeLabel.setText(fassade.getTime()));
+    public void zeitAnzeigen() {
+        JLabel zeitLabel = new JLabel(fassade.zeitAbrufen());
+        zeitLabel.setFont(new Font("Tahoma", Font.BOLD, 14));
+        zeitLabel.setBounds(68, 74, 200, 34);
+        contentPane.add(zeitLabel);
+        timer = new Timer(10, e -> zeitLabel.setText(fassade.zeitAbrufen()));
         timer.start();
     }
 
     /**
      * Fügt Buttons zum Fenster hinzu.
      */
-    public void addButtonsToWindow() {
+    public void buttonsHinzufuegen() {
         JMenuBar menuBar = new JMenuBar();
-        menuBar.setToolTipText("Menu");
+        menuBar.setToolTipText("Menü");
         setJMenuBar(menuBar);
 
-        JMenu mnNewMenu = new JMenu("Menu");
-        menuBar.add(mnNewMenu);
+        JMenu menue = new JMenu("Menü");
+        menuBar.add(menue);
 
-        JMenuItem exit = new JMenuItem("Exit");
-        mnNewMenu.add(exit);
-        JMenuItem zurück = new JMenuItem("Back to Menu");
-        zurück.addActionListener(e -> {
-            closeWindow();
+        JMenuItem beenden = new JMenuItem("Beenden");
+        menue.add(beenden);
+        JMenuItem zurueck = new JMenuItem("Zurück zum Menü");
+        zurueck.addActionListener(e -> {
+            fensterSchliessen();
             try {
-                menu.showWindow();
+                menu.zeigeFenster();
             } catch (IOException ex) {
                 throw new RuntimeException(ex);
             }
         });
 
-        mnNewMenu.add(zurück);
+        menue.add(zurueck);
         contentPane = new JPanel();
         contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 
         setContentPane(contentPane);
 
-        saveButton = new JButton("save");
-        saveButton.setBounds(68, 11, 75, 34);
+        speichernButton = new JButton("Speichern");
+        speichernButton.setBounds(68, 11, 75, 34);
         contentPane.setLayout(null);
-        saveButton.setFont(new Font("Tahoma", Font.PLAIN, 11));
-        contentPane.add(saveButton);
+        speichernButton.setFont(new Font("Tahoma", Font.PLAIN, 11));
+        contentPane.add(speichernButton);
 
-        undoButton = new JButton("undo");
-        undoButton.setBounds(176, 11, 75, 34);
-        undoButton.setFont(new Font("Tahoma", Font.PLAIN, 11));
-        contentPane.add(undoButton);
+        rueckgaengigButton = new JButton("Rückgängig");
+        rueckgaengigButton.setBounds(176, 11, 100, 34);
+        rueckgaengigButton.setFont(new Font("Tahoma", Font.PLAIN, 11));
+        contentPane.add(rueckgaengigButton);
 
-        redoButton = new JButton("redo");
-        redoButton.setBounds(274, 11, 75, 34);
-        redoButton.setFont(new Font("Tahoma", Font.PLAIN, 11));
-        contentPane.add(redoButton);
+        wiederholenButton = new JButton("Wiederholen");
+        wiederholenButton.setBounds(284, 11, 100, 34);
+        wiederholenButton.setFont(new Font("Tahoma", Font.PLAIN, 11));
+        contentPane.add(wiederholenButton);
 
-        resetButton = new JButton("reset");
-        resetButton.setBounds(379, 11, 75, 34);
-        resetButton.setFont(new Font("Tahoma", Font.PLAIN, 11));
-        contentPane.add(resetButton);
+        zuruecksetzenButton = new JButton("Zurücksetzen");
+        zuruecksetzenButton.setBounds(394, 11, 120, 34);
+        zuruecksetzenButton.setFont(new Font("Tahoma", Font.PLAIN, 11));
+        contentPane.add(zuruecksetzenButton);
 
         hilfeButton = new JButton("Hilfestellung");
-        hilfeButton.setBounds(479, 11, 150, 34);
+        hilfeButton.setBounds(524, 11, 150, 34);
         hilfeButton.setFont(new Font("Tahoma", Font.PLAIN, 11));
         contentPane.add(hilfeButton);
     }
@@ -298,7 +292,7 @@ public class HitoriGame extends JFrame {
     /**
      * Setzt die Eigenschaften des Fensters.
      */
-    public void WindowProperties() {
+    public void fensterEigenschaftenSetzen() {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setBounds(100, 0, 1000, 700);
         setExtendedState(JFrame.MAXIMIZED_BOTH);
@@ -308,7 +302,7 @@ public class HitoriGame extends JFrame {
     /**
      * Pausiert den Timer, wenn das Fenster minimiert wird.
      */
-    public void pauseTime() {
+    public void zeitPausieren() {
         this.addWindowListener(new WindowAdapter() {
             @Override
             public void windowIconified(WindowEvent e) {
@@ -329,44 +323,44 @@ public class HitoriGame extends JFrame {
      * @param y die y-Koordinate
      * @return der Button an den angegebenen Koordinaten
      */
-    public JButton getButton(int x, int y) {
-        return spielfield[x][y];
+    public JButton holeButton(int x, int y) {
+        return spielfeld[x][y];
     }
 
     /**
      * Zeigt das Fenster an.
      */
-    public void showWindow() {
-        if (fassade.timerExists(hitoriGameName)) setTime(hitoriGameName);
+    public void fensterAnzeigen() {
+        if (fassade.timerExistiert(hitoriSpielName)) zeitSetzen(hitoriSpielName);
         this.setVisible(true);
     }
 
     /**
      * Schließt das Fenster.
      */
-    public void closeWindow() {
-        if (!freshStart) {
-            fassade.saveTimerValue(hitoriGameName, fassade.getTime());
+    public void fensterSchliessen() {
+        if (!neuerStart) {
+            fassade.timerWertSpeichern(hitoriSpielName, fassade.zeitAbrufen());
         }
         this.setVisible(false);
-        freshStart = false;
+        neuerStart = false;
     }
 
     /**
      * Stoppt den Timer.
      */
-    public static void stopTimer() {
+    public static void timerStoppen() {
         timer.stop();
     }
 
     /**
      * Setzt die Zeit für das Spiel.
      *
-     * @param hitoriGameName der Name des Hitori-Spiels
+     * @param hitoriSpielName der Name des Hitori-Spiels
      */
-    public void setTime(String hitoriGameName) {
-        String time = fassade.loadTimerValue(hitoriGameName);
-        fassade.setTime(time);
+    public void zeitSetzen(String hitoriSpielName) {
+        String zeit = fassade.zeitLaden(hitoriSpielName);
+        fassade.zeitSetzen(zeit);
     }
 
     /**
@@ -374,53 +368,33 @@ public class HitoriGame extends JFrame {
      *
      * @throws IOException wenn ein I/O-Fehler auftritt
      */
-    private void showLeaderboard() throws IOException {
-        sortiereLeaderboard();
-        String leaderboard = fassade.getSiegerListe(auswahl);
-        leaderboardPanel = new JPanel();
-        leaderboardPanel.setBorder(new LineBorder(new Color(0, 0, 0), 2));
-        leaderboardPanel.setBounds(967, 120, 303, 500);
-        leaderboardPanel.setLayout(new BoxLayout(leaderboardPanel, BoxLayout.Y_AXIS));
+    private void bestenlisteAnzeigen() throws IOException {
+        bestenlisteSortieren();
+        String bestenliste = fassade.siegerListeAbrufen(auswahl);
+        bestenlistePanel = new JPanel();
+        bestenlistePanel.setBorder(new LineBorder(new Color(0, 0, 0), 2));
+        bestenlistePanel.setBounds(967, 120, 303, 500);
+        bestenlistePanel.setLayout(new BoxLayout(bestenlistePanel, BoxLayout.Y_AXIS));
 
-        JLabel title = new JLabel("Bestenliste:");
-        title.setFont(new Font("Tahoma", Font.BOLD, 14));
-        leaderboardPanel.add(title);
-        JLabel averageLabel = new JLabel("Durchschnitt: " + fassade.getDurchschnitt(auswahl));
-        averageLabel.setFont(new Font("Tahoma", Font.BOLD, 12));
-        leaderboardPanel.add(averageLabel);
+        JLabel titel = new JLabel("Bestenliste:");
+        titel.setFont(new Font("Tahoma", Font.BOLD, 14));
+        bestenlistePanel.add(titel);
+        JLabel durchschnittLabel = new JLabel("Durchschnitt: " + fassade.durchschnittsZeitAbrufen(auswahl));
+        durchschnittLabel.setFont(new Font("Tahoma", Font.BOLD, 12));
+        bestenlistePanel.add(durchschnittLabel);
 
-        String[] lines = leaderboard.split("\n");
-        for (String line : lines) {
-            JLabel label = new JLabel(line);
-            leaderboardPanel.add(label);
+        String[] linien = bestenliste.split("\n");
+        for (String linie : linien) {
+            JLabel label = new JLabel(linie);
+            bestenlistePanel.add(label);
         }
-        contentPane.add(leaderboardPanel);
-    }
-
-    /**
-     * Liest die Bestenliste aus einer Datei.
-     *
-     * @param filePath der Pfad zur Datei
-     * @return eine Liste von Strings, die die Bestenliste darstellen
-     * @throws IOException wenn ein I/O-Fehler auftritt
-     */
-    private java.util.List<String> readLeaderboard(String filePath) throws IOException {
-        try (Stream<String> lines = Files.lines(Paths.get(filePath))) {
-            return lines.collect(Collectors.toList());
-        }
-    }
-
-    /**
-     * Setzt das Fresh-Start-Flag.
-     */
-    public static void setFreshStart() {
-        freshStart = true;
+        contentPane.add(bestenlistePanel);
     }
 
     /**
      * Sortiert die Bestenliste.
      */
-    public void sortiereLeaderboard() {
-        fassade.sortiereLeaderboard(auswahl);
+    public void bestenlisteSortieren() {
+        fassade.bestenlisteSortieren(auswahl);
     }
 }

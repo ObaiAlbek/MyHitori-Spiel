@@ -21,7 +21,7 @@ import de.hs_mannheim.informatik.hitori.fassade.Fassade;
  */
 public class Menu extends JFrame {
 
-    private JPanel contentPane, panel, leaderboardPanel;
+    private JPanel contentPane, panel, bestenlistePanel;
     private JButton[] schwierigkeitsButtons;
     private GuiFassade guiFassade;
     private Fassade fassade;
@@ -40,21 +40,21 @@ public class Menu extends JFrame {
     public Menu() throws IOException {
         this.guiFassade = new GuiFassade();
         this.fassade = new Fassade();
-        WindowProperties();
-        difficultyButtons();
-        showWindow();
+        fensterEigenschaftenSetzen();
+        schwierigkeitsButtonsErstellen();
+        fensterAnzeigen();
     }
 
     /**
      * Initialisiert die Schwierigkeitsbuttons.
      */
-    private void difficultyButtons() {
+    private void schwierigkeitsButtonsErstellen() {
         schwierigkeitsButtons = new JButton[6];
         for (int i = 0; i < schwierigkeitsButtons.length; i++) {
             schwierigkeitsButtons[i] = new JButton(spielfelderNamen[i]);
             schwierigkeitsButtons[i].setBounds(50, 50 + (50 * i), 200, 40);
             schwierigkeitsButtons[i].setActionCommand(i + "");
-            schwierigkeitsButtons[i].addActionListener(new DifficultyButtonListener());
+            schwierigkeitsButtons[i].addActionListener(new SchwierigkeitsButtonListener());
             panel.add(schwierigkeitsButtons[i]);
         }
     }
@@ -62,7 +62,7 @@ public class Menu extends JFrame {
     /**
      * ActionListener für die Schwierigkeitsbuttons.
      */
-    private class DifficultyButtonListener implements ActionListener {
+    private class SchwierigkeitsButtonListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
             spielAuswahl = Integer.parseInt(e.getActionCommand());
@@ -70,9 +70,9 @@ public class Menu extends JFrame {
             try {
                 HitoriGame hitoriGame = new HitoriGame(spielAuswahl, Menu.this, spielNameAuswahl, guiFassade, fassade);
                 guiFassade.spielWiederherstellen(spielfelderNamen[spielAuswahl], hitoriGame, spielAuswahl);
-                closeWindow();
+                fensterSchliessen();
             } catch (IOException ex) {
-                ex.toString();
+                ex.printStackTrace();
             }
         }
     }
@@ -80,8 +80,8 @@ public class Menu extends JFrame {
     /**
      * Setzt die Eigenschaften des Fensters.
      */
-    private void WindowProperties() {
-        setTitle("Menu");
+    private void fensterEigenschaftenSetzen() {
+        setTitle("Menü");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setBounds(500, 100, 400, 500);
         contentPane = new JPanel();
@@ -93,7 +93,7 @@ public class Menu extends JFrame {
         panel.setBounds(51, 24, 303, 372);
         contentPane.add(panel);
         panel.setLayout(null);
-        JLabel willkommenNachricht = new JLabel("Willkommen in Hitori Game");
+        JLabel willkommenNachricht = new JLabel("Willkommen im Hitori-Spiel");
         willkommenNachricht.setFont(new Font("Tahoma", Font.BOLD, 14));
         willkommenNachricht.setBounds(50, 15, 200, 25);
         panel.add(willkommenNachricht);
@@ -104,7 +104,7 @@ public class Menu extends JFrame {
      *
      * @throws IOException wenn ein I/O-Fehler auftritt
      */
-    public void showWindow() throws IOException {
+    public void fensterAnzeigen() throws IOException {
         this.setVisible(true);
     }
 
@@ -113,26 +113,26 @@ public class Menu extends JFrame {
      *
      * @throws IOException wenn ein I/O-Fehler auftritt
      */
-    private void aktualisiereLeaderboard() throws IOException {
-        leaderboardPanel.removeAll();
-        JLabel title = new JLabel("Bestenliste:");
-        title.setFont(new Font("Tahoma", Font.BOLD, 14));
-        leaderboardPanel.add(title);
+    private void bestenlisteAktualisieren() throws IOException {
+        bestenlistePanel.removeAll();
+        JLabel titel = new JLabel("Bestenliste:");
+        titel.setFont(new Font("Tahoma", Font.BOLD, 14));
+        bestenlistePanel.add(titel);
 
-        String[] lines = fassade.getSiegerListe(spielAuswahl).split("\n");
-        for (String line : lines) {
-            JLabel label = new JLabel(line);
-            leaderboardPanel.add(label);
+        String[] linien = fassade.siegerListeAbrufen(spielAuswahl).split("\n");
+        for (String linie : linien) {
+            JLabel label = new JLabel(linie);
+            bestenlistePanel.add(label);
         }
 
-        leaderboardPanel.revalidate();
-        leaderboardPanel.repaint();
+        bestenlistePanel.revalidate();
+        bestenlistePanel.repaint();
     }
 
     /**
      * Schließt das Fenster.
      */
-    public void closeWindow() {
+    public void fensterSchliessen() {
         this.setVisible(false);
     }
 }

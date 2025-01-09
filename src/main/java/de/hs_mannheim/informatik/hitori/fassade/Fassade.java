@@ -17,19 +17,19 @@ import de.hs_mannheim.informatik.hitori.gui.HitoriGame;
  */
 public class Fassade {
     private final StoppUhr stoppUhr;
-    private SpeicherSystem spielSpeichern;
-    private Stack<int[][]> undoStack, redoStack;
-    private CsvEinlesen files;
+    private SpeicherSystem speicherSystem;
+    private Stack<int[][]> rueckgaengigStapel, wiederholenStapel;
+    private CsvEinlesen dateien;
 
     /**
      * Konstruktor für eine neue Fassade-Instanz und Initialisierung der notwendigen Komponenten.
      */
     public Fassade() {
         this.stoppUhr = new StoppUhr();
-        this.spielSpeichern = new SpeicherSystem();
-        this.undoStack = new Stack<>();
-        this.redoStack = new Stack<>();
-        this.files = new CsvEinlesen();
+        this.speicherSystem = new SpeicherSystem();
+        this.rueckgaengigStapel = new Stack<>();
+        this.wiederholenStapel = new Stack<>();
+        this.dateien = new CsvEinlesen();
     }
 
     /**
@@ -38,11 +38,11 @@ public class Fassade {
      * @return Der vorherige Spielzustand.
      * @throws UndoRedoNichtMöglichException Wenn ein Undo nicht möglich ist.
      */
-    public int[][] undo() throws UndoRedoNichtMöglichException {
-        if (!undoStack.isEmpty()) {
-            int[][] tempStaten = undoStack.pop();
-            redoStack.push(tempStaten);
-            return tempStaten;
+    public int[][] rueckgaengigMachen() throws UndoRedoNichtMöglichException {
+        if (!rueckgaengigStapel.isEmpty()) {
+            int[][] zustand = rueckgaengigStapel.pop();
+            wiederholenStapel.push(zustand);
+            return zustand;
         }
         throw new UndoRedoNichtMöglichException("Undo ist nicht möglich!");
     }
@@ -53,79 +53,79 @@ public class Fassade {
      * @return Der nächste Spielzustand.
      * @throws UndoRedoNichtMöglichException Wenn ein Redo nicht möglich ist.
      */
-    public int[][] redo() throws UndoRedoNichtMöglichException {
-        if (!redoStack.isEmpty()) {
-            int[][] tempStaten = redoStack.pop();
-            undoStack.push(tempStaten);
-            return tempStaten;
+    public int[][] wiederholen() throws UndoRedoNichtMöglichException {
+        if (!wiederholenStapel.isEmpty()) {
+            int[][] zustand = wiederholenStapel.pop();
+            rueckgaengigStapel.push(zustand);
+            return zustand;
         }
         throw new UndoRedoNichtMöglichException("Redo ist nicht möglich!");
     }
 
     /**
-     * Speichert den aktuellen Spielzustand und leert den Redo-Stack.
+     * Speichert den aktuellen Spielzustand und leert den Redo-Stapel.
      *
-     * @param staten Der aktuelle Spielzustand.
+     * @param zustand Der aktuelle Spielzustand.
      * @param dimension Die Dimension des Spielfelds.
-     * @param fileName Der Name der Datei, in der der Spielzustand gespeichert werden soll.
+     * @param dateiName Der Name der Datei, in der der Spielzustand gespeichert werden soll.
      * @throws IOException Wenn ein I/O-Fehler auftritt.
      */
-    public void aktuelleButtonsZuständeSpeichern(int[][] staten, int dimension, String fileName) throws IOException {
-        int[][] tempStaten = new int[dimension][dimension];
-        for (int i = 0; i < staten.length; i++)
-            for (int j = 0; j < staten[i].length; j++)
-                tempStaten[i][j] = staten[i][j];
+    public void aktuellenSpielzustandSpeichern(int[][] zustand, int dimension, String dateiName) throws IOException {
+        int[][] kopieZustand = new int[dimension][dimension];
+        for (int i = 0; i < zustand.length; i++)
+            for (int j = 0; j < zustand[i].length; j++)
+                kopieZustand[i][j] = zustand[i][j];
 
-        undoStack.push(tempStaten);
-        redoStack.clear();
-        saveGame(staten, fileName);
+        rueckgaengigStapel.push(kopieZustand);
+        wiederholenStapel.clear();
+        spielSpeichern(zustand, dateiName);
     }
 
     /**
      * Stellt den Spielzustand aus der angegebenen Datei wieder her.
      *
-     * @param fileName Der Name der Datei, aus der der Spielzustand wiederhergestellt werden soll.
+     * @param dateiName Der Name der Datei, aus der der Spielzustand wiederhergestellt werden soll.
      * @return Der wiederhergestellte Spielzustand.
      * @throws IOException Wenn ein I/O-Fehler auftritt.
      */
-    public int[][] spielWiederherstellen(String fileName) throws IOException {
-        int[][] staten = spielSpeichern.spielWiederherstellen(fileName);
-        if (staten == null || staten.length == 0 || staten[0].length == 0)
-            throw new IOException("SystemFehler!");
-        return staten;
+    public int[][] spielWiederherstellen(String dateiName) throws IOException {
+        int[][] zustand = speicherSystem.spielWiederherstellen(dateiName);
+        if (zustand == null || zustand.length == 0 || zustand[0].length == 0)
+            throw new IOException("Systemfehler!");
+        return zustand;
     }
 
     /**
      * Startet den Timer.
      */
-    public void startTimer() {
-        stoppUhr.startStoppUhr();
+    public void timerStarten() {
+        stoppUhr.starteStoppUhr();
     }
 
     /**
      * Setzt das Spielfeld auf seinen Anfangszustand zurück.
      *
-     * @param staten Der aktuelle Spielzustand.
+     * @param zustand Der aktuelle Spielzustand.
      * @return Der zurückgesetzte Spielzustand.
      */
-    public int[][] spielfieldZurücksetzen(int[][] staten) {
-        for (int i = 0; i < staten.length; i++)
-            for (int j = 0; j < staten[i].length; j++)
-                staten[i][j] = 1;
-        return staten;
+    public int[][] spielfeldZuruecksetzen(int[][] zustand) {
+        for (int i = 0; i < zustand.length; i++)
+            for (int j = 0; j < zustand[i].length; j++)
+                zustand[i][j] = 1;
+        return zustand;
     }
 
     /**
      * Speichert den aktuellen Spielzustand in einer Datei.
      *
-     * @param staten Der aktuelle Spielzustand.
-     * @param fileName Der Name der Datei, in der der Spielzustand gespeichert werden soll.
+     * @param zustand Der aktuelle Spielzustand.
+     * @param dateiName Der Name der Datei, in der der Spielzustand gespeichert werden soll.
      * @return true, wenn der Spielzustand erfolgreich gespeichert wurde, sonst false.
      * @throws IOException Wenn ein I/O-Fehler auftritt.
      */
-    public boolean saveGame(int[][] staten, String fileName) throws IOException {
-        saveTimerValue(fileName, stoppUhr.getFormattedTime());
-        return spielSpeichern.spielSpeichern(fileName, staten);
+    public boolean spielSpeichern(int[][] zustand, String dateiName) throws IOException {
+        timerWertSpeichern(dateiName, stoppUhr.holeFormatierteZeit());
+        return speicherSystem.spielSpeichern(dateiName, zustand);
     }
 
     /**
@@ -136,9 +136,8 @@ public class Fassade {
      * @return Die Lösung für das Spielfeld.
      * @throws IOException Wenn ein I/O-Fehler auftritt.
      */
-    public String getLoesung(int auswahl, int dimension) throws IOException {
-        String loesung = CsvEinlesen.getLoesung(auswahl);
-        return loesung;
+    public String loesungAbrufen(int auswahl, int dimension) throws IOException {
+        return CsvEinlesen.getLoesung(auswahl);
     }
 
     /**
@@ -146,8 +145,8 @@ public class Fassade {
      *
      * @return Die formatierte verstrichene Zeit.
      */
-    public String getTime() {
-        return stoppUhr.getFormattedTime();
+    public String zeitAbrufen() {
+        return stoppUhr.holeFormatierteZeit();
     }
 
     /**
@@ -156,8 +155,8 @@ public class Fassade {
      * @param auswahl Der Index des Spielfelds.
      * @return Die Spielfeld-Daten.
      */
-    public String getSpielfeld(int auswahl) {
-        return files.getSpielfeld(auswahl);
+    public String spielfeldAbrufen(int auswahl) {
+        return dateien.getSpielfeld(auswahl);
     }
 
     /**
@@ -166,8 +165,8 @@ public class Fassade {
      * @param auswahl Der Index des Spielfelds.
      * @return Die Lösungen für das Spielfeld.
      */
-    public String getLoesung(int auswahl) {
-        return files.getLoesungen(auswahl);
+    public String loesungenAbrufen(int auswahl) {
+        return dateien.getLoesungen(auswahl);
     }
 
     /**
@@ -176,8 +175,8 @@ public class Fassade {
      * @param auswahl Der Index des Spielfelds.
      * @return Die Dimension des Spielfelds.
      */
-    public int getDimension(int auswahl) {
-        return files.getDimension(getSpielfeld(auswahl));
+    public int dimensionAbrufen(int auswahl) {
+        return dateien.getDimension(spielfeldAbrufen(auswahl));
     }
 
     /**
@@ -185,8 +184,8 @@ public class Fassade {
      *
      * @return Die SpeicherSystem-Instanz.
      */
-    public SpeicherSystem getSpeicherSystem() {
-        return spielSpeichern;
+    public SpeicherSystem speicherSystemAbrufen() {
+        return speicherSystem;
     }
 
     /**
@@ -194,8 +193,8 @@ public class Fassade {
      *
      * @return true, wenn ein Undo möglich ist, sonst false.
      */
-    public boolean kannUndo() {
-        return !undoStack.isEmpty();
+    public boolean kannRueckgaengigMachen() {
+        return !rueckgaengigStapel.isEmpty();
     }
 
     /**
@@ -203,8 +202,8 @@ public class Fassade {
      *
      * @return true, wenn ein Redo möglich ist, sonst false.
      */
-    public boolean kannRedo() {
-        return !redoStack.isEmpty();
+    public boolean kannWiederholen() {
+        return !wiederholenStapel.isEmpty();
     }
 
     /**
@@ -215,8 +214,8 @@ public class Fassade {
      * @param auswahl Der Index des Spielfelds.
      * @return Der Wert des angegebenen Feldes.
      */
-    public int getSpielfeldFeld(int x, int y, int auswahl) {
-        return files.getFeld(x, y, auswahl);
+    public int feldWertAbrufen(int x, int y, int auswahl) {
+        return dateien.getFeld(x, y, auswahl);
     }
 
     /**
@@ -226,8 +225,8 @@ public class Fassade {
      * @param zeit Die benötigte Zeit.
      * @param auswahl Der Index des Spielfelds.
      */
-    public void spielGeloest(String name, String zeit, int auswahl) {
-        spielSpeichern.spielGeloest(name, zeit, auswahl);
+    public void spielAlsGeloestSpeichern(String name, String zeit, int auswahl) {
+        speicherSystem.spielGeloest(name, zeit, auswahl);
     }
 
     /**
@@ -237,18 +236,18 @@ public class Fassade {
      * @return Die Liste der Sieger.
      * @throws IOException Wenn ein I/O-Fehler auftritt.
      */
-    public String getSiegerListe(int auswahl) throws IOException {
-        return CsvEinlesen.getSieger(auswahl);
+    public String siegerListeAbrufen(int auswahl) throws IOException {
+        return CsvEinlesen.getGewinner(auswahl);
     }
 
     /**
      * Speichert die Anzahl der Fehler für den angegebenen Spielfeld-Index.
      *
-     * @param fehlercounter Die Anzahl der Fehler.
+     * @param fehlerAnzahl Die Anzahl der Fehler.
      * @param auswahl Der Index des Spielfelds.
      */
-    public void fehlerSpeichern(int fehlercounter, int auswahl) {
-        spielSpeichern.fehlerSpeichern(fehlercounter, auswahl);
+    public void fehlerSpeichern(int fehlerAnzahl, int auswahl) {
+        speicherSystem.fehlerSpeichern(fehlerAnzahl, auswahl);
     }
 
     /**
@@ -256,8 +255,8 @@ public class Fassade {
      *
      * @param auswahl Der Index des Spielfelds.
      */
-    public void fehlerReset(int auswahl) {
-        spielSpeichern.fehlerReset(auswahl);
+    public void fehlerZuruecksetzen(int auswahl) {
+        speicherSystem.fehlerZuruecksetzen(auswahl);
     }
 
     /**
@@ -266,47 +265,47 @@ public class Fassade {
      * @param auswahl Der Index des Spielfelds.
      * @return Die Anzahl der Fehler.
      */
-    public int fehlercounterWeitergeben(int auswahl) {
-        return spielSpeichern.fehlercounterWeitergeben(auswahl);
+    public int fehlerAnzahlAbrufen(int auswahl) {
+        return speicherSystem.fehlerZaehlerAbrufen(auswahl);
     }
 
     /**
      * Speichert den Timer-Wert für das angegebene Spiel.
      *
-     * @param hitoriGameName Der Name des Hitori-Spiels.
-     * @param time Der Timer-Wert.
+     * @param spielName Der Name des Hitori-Spiels.
+     * @param zeit Der Timer-Wert.
      */
-    public void saveTimerValue(String hitoriGameName, String time) {
-        spielSpeichern.saveTimerValue(hitoriGameName, time);
+    public void timerWertSpeichern(String spielName, String zeit) {
+        speicherSystem.timerWertSpeichern(spielName, zeit);
     }
 
     /**
      * Lädt den Timer-Wert für das angegebene Spiel.
      *
-     * @param gameName Der Name des Spiels.
+     * @param spielName Der Name des Spiels.
      * @return Der Timer-Wert.
      */
-    public String loadTimerValue(String gameName) {
-        return spielSpeichern.loadTimerValue(gameName);
+    public String timerWertLaden(String spielName) {
+        return speicherSystem.timerWertLaden(spielName);
     }
 
     /**
      * Setzt den Timer-Wert basierend auf dem angegebenen formatierten Zeit-String.
      *
-     * @param time Ein String, der die Zeit im Format "Sekunden,Millisekunden" darstellt.
+     * @param zeit Ein String, der die Zeit im Format "Sekunden,Millisekunden" darstellt.
      */
-    public void setTime(String time) {
-        stoppUhr.setTime(time);
+    public void zeitSetzen(String zeit) {
+        stoppUhr.setzeZeit(zeit);
     }
 
     /**
      * Überprüft, ob ein Timer für das angegebene Spiel existiert.
      *
-     * @param gameName Der Name des Spiels.
+     * @param spielName Der Name des Spiels.
      * @return true, wenn der Timer existiert, sonst false.
      */
-    public boolean timerExists(String gameName) {
-        return spielSpeichern.timerExists(gameName);
+    public boolean timerExistiert(String spielName) {
+        return speicherSystem.timerExistiert(spielName);
     }
 
     /**
@@ -314,17 +313,17 @@ public class Fassade {
      *
      * @param auswahl Der Index des Spielfelds.
      */
-    public void resetTimerValue(int auswahl) {
-        spielSpeichern.resetTimerValue(auswahl);
-        stoppUhr.setTime("0,0");
-        stoppUhr.stopStoppUhr();
-        setFreshstart();
+    public void timerWertZuruecksetzen(int auswahl) {
+        speicherSystem.timerWertZuruecksetzen(auswahl);
+        stoppUhr.setzeZeit("0,0");
+        stoppUhr.stoppeStoppUhr();
+        spielZuruecksetzen();
     }
 
     /**
      * Setzt das Spiel in den Zustand eines Neustarts.
      */
-    public void setFreshstart() {
+    public void spielZuruecksetzen() {
         HitoriGame.setFreshStart();
     }
 
@@ -334,11 +333,11 @@ public class Fassade {
      * @param auswahl Der Index des Spielfelds.
      * @return Die durchschnittliche Zeit.
      */
-    public String getDurchschnitt(int auswahl) {
-        String durchschnitt = String.valueOf(spielSpeichern.berechneDurchschnitt(auswahl));
-        int decimalIndex = durchschnitt.indexOf(".");
-        if (decimalIndex != -1 && decimalIndex + 4 <= durchschnitt.length()) {
-            durchschnitt = durchschnitt.substring(0, decimalIndex + 4).replace(".", ",") + " s";
+    public String durchschnittsZeitAbrufen(int auswahl) {
+        String durchschnitt = String.valueOf(speicherSystem.durchschnittBerechnen(auswahl));
+        int dezimalIndex = durchschnitt.indexOf(".");
+        if (dezimalIndex != -1 && dezimalIndex + 4 <= durchschnitt.length()) {
+            durchschnitt = durchschnitt.substring(0, dezimalIndex + 4).replace(".", ",") + " s";
         } else {
             durchschnitt = durchschnitt.replace(".", ",") + " s";
         }
@@ -351,7 +350,7 @@ public class Fassade {
      *
      * @param auswahl Der Index des Spielfelds.
      */
-    public void sortiereLeaderboard(int auswahl) {
-        spielSpeichern.sortiereLeaderboard(auswahl);
+    public void bestenlisteSortieren(int auswahl) {
+        speicherSystem.leaderboardSortieren(auswahl);
     }
-}
+}}

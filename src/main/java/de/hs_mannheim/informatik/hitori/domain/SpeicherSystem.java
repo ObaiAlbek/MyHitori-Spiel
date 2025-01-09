@@ -6,13 +6,13 @@ import java.util.*;
 public class SpeicherSystem {
 
     // Pfad zu den Speicherdateien
-    private final String filePfad = "database/speicherDateien/";
+    private final String dateiPfad = "database/speicherDateien/";
     // Map zur Speicherung der Spielfelder
     private final Map<String, int[][]> spielfelder = new HashMap<>();
     // Array der Spielfeldnamen
-    private final String[] spielfelderNamen = {
+    private final String[] spielfeldNamen = {
         "Hitori4x4_leicht", "Hitori5x5leicht", "Hitori8x8leicht",
-        "Hitori8x8medium", "Hitori10x10medium", "Hitori15x15_medium"
+        "Hitori8x8mittel", "Hitori10x10mittel", "Hitori15x15_mittel"
     };
 
     /**
@@ -25,26 +25,26 @@ public class SpeicherSystem {
      */
     public boolean spielSpeichern(String name, int[][] feld) throws IOException {
         spielfelder.put(name, feld);
-        return createFile(name);
+        return dateiErstellen(name);
     }
 
     /**
      * Erstellt eine Datei mit dem angegebenen Namen.
      *
-     * @param fileName Der Name der Datei.
+     * @param dateiName Der Name der Datei.
      * @return true, wenn die Datei erfolgreich erstellt wurde, sonst false.
      * @throws IOException Wenn ein I/O-Fehler auftritt.
      */
-    public boolean createFile(String fileName) throws IOException {
-        File file = new File(filePfad + fileName + ".csv");
-        if (!file.exists()) {
-            file.getParentFile().mkdirs();
-            file.createNewFile();
+    public boolean dateiErstellen(String dateiName) throws IOException {
+        File datei = new File(dateiPfad + dateiName + ".csv");
+        if (!datei.exists()) {
+            datei.getParentFile().mkdirs();
+            datei.createNewFile();
         }
-        try (FileWriter writer = new FileWriter(file)) {
-            for (int[] zeilen : spielfelder.get(fileName)) {
-                for (int state : zeilen) writer.write(state + " ");
-                writer.write("\n");
+        try (FileWriter schreiber = new FileWriter(datei)) {
+            for (int[] zeilen : spielfelder.get(dateiName)) {
+                for (int zustand : zeilen) schreiber.write(zustand + " ");
+                schreiber.write("\n");
             }
         }
         return true;
@@ -53,43 +53,43 @@ public class SpeicherSystem {
     /**
      * Stellt das Spiel mit dem angegebenen Dateinamen wieder her.
      *
-     * @param fileName Der Name der Datei.
+     * @param dateiName Der Name der Datei.
      * @return Das wiederhergestellte Spielfeld.
      * @throws IOException Wenn ein I/O-Fehler auftritt.
      */
-    public int[][] spielWiederherstellen(String fileName) throws IOException {
-        File file = new File(filePfad + fileName + ".csv");
-        if (!file.exists()) {
-            int[][] defaultStaten = getDefaultHitoriState(fileName);
-            spielfelder.put(fileName, defaultStaten);
-            createFile(fileName);
+    public int[][] spielWiederherstellen(String dateiName) throws IOException {
+        File datei = new File(dateiPfad + dateiName + ".csv");
+        if (!datei.exists()) {
+            int[][] standardZustand = holeStandardHitoriZustand(dateiName);
+            spielfelder.put(dateiName, standardZustand);
+            dateiErstellen(dateiName);
         }
-        List<int[]> lines = new ArrayList<>();
-        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
-            String line;
-            while ((line = reader.readLine()) != null) {
-                lines.add(Arrays.stream(line.trim().split(" "))
+        List<int[]> zeilen = new ArrayList<>();
+        try (BufferedReader leser = new BufferedReader(new FileReader(datei))) {
+            String zeile;
+            while ((zeile = leser.readLine()) != null) {
+                zeilen.add(Arrays.stream(zeile.trim().split(" "))
                         .mapToInt(Integer::parseInt).toArray());
             }
         }
-        if (lines.isEmpty()) throw new IOException("Die Datei ist leer " + file.getPath());
-        return lines.toArray(new int[0][]);
+        if (zeilen.isEmpty()) throw new IOException("Die Datei ist leer " + datei.getPath());
+        return zeilen.toArray(new int[0][]);
     }
 
     /**
      * Gibt den Standardzustand des Hitori-Spielfelds für den angegebenen Dateinamen zurück.
      *
-     * @param fileName Der Name der Datei.
+     * @param dateiName Der Name der Datei.
      * @return Der Standardzustand des Spielfelds.
      */
-    private int[][] getDefaultHitoriState(String fileName) {
-        switch (fileName) {
+    private int[][] holeStandardHitoriZustand(String dateiName) {
+        switch (dateiName) {
             case "Hitori4x4_leicht": return new int[4][4];
             case "Hitori5x5leicht": return new int[5][5];
             case "Hitori8x8leicht": return new int[8][8];
-            case "Hitori8x8medium": return new int[8][8];
-            case "Hitori10x10medium": return new int[10][10];
-            case "Hitori15x15medium": return new int[15][15];
+            case "Hitori8x8mittel": return new int[8][8];
+            case "Hitori10x10mittel": return new int[10][10];
+            case "Hitori15x15mittel": return new int[15][15];
             default: return null;
         }
     }
@@ -102,14 +102,14 @@ public class SpeicherSystem {
      * @param auswahl Der Index des Spielfelds.
      */
     public void spielGeloest(String name, String zeit, int auswahl) {
-        int fehlercounter = 0;
-        try (Scanner sc = new Scanner(new File("database/fehler/" + spielfelderNamen[auswahl] + ".txt"))) {
-            fehlercounter = sc.nextInt();
+        int fehlerZaehler = 0;
+        try (Scanner sc = new Scanner(new File("database/fehler/" + spielfeldNamen[auswahl] + ".txt"))) {
+            fehlerZaehler = sc.nextInt();
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
-        try (FileWriter writer = new FileWriter("database/siegerliste/" + spielfelderNamen[auswahl] + "_sieger.txt", true)) {
-            writer.write(name + ", " + zeit + ", Fehleranzahl: " + fehlercounter + " \n");
+        try (FileWriter schreiber = new FileWriter("database/siegerliste/" + spielfeldNamen[auswahl] + "_sieger.txt", true)) {
+            schreiber.write(name + ", " + zeit + ", Fehleranzahl: " + fehlerZaehler + " \n");
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -118,12 +118,12 @@ public class SpeicherSystem {
     /**
      * Speichert die Anzahl der Fehler für das angegebene Spielfeld.
      *
-     * @param fehlercounter Die Anzahl der Fehler.
+     * @param fehlerZaehler Die Anzahl der Fehler.
      * @param auswahl Der Index des Spielfelds.
      */
-    public void fehlerSpeichern(int fehlercounter, int auswahl) {
-        try (FileWriter writer = new FileWriter("database/fehler/" + spielfelderNamen[auswahl] + ".txt")) {
-            writer.write(fehlercounter + " \n");
+    public void fehlerSpeichern(int fehlerZaehler, int auswahl) {
+        try (FileWriter schreiber = new FileWriter("database/fehler/" + spielfeldNamen[auswahl] + ".txt")) {
+            schreiber.write(fehlerZaehler + " \n");
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -134,9 +134,9 @@ public class SpeicherSystem {
      *
      * @param auswahl Der Index des Spielfelds.
      */
-    public void fehlerReset(int auswahl) {
-        try (FileWriter writer = new FileWriter("database/fehler/" + spielfelderNamen[auswahl] + ".txt")) {
-            writer.write("0 \n");
+    public void fehlerZuruecksetzen(int auswahl) {
+        try (FileWriter schreiber = new FileWriter("database/fehler/" + spielfeldNamen[auswahl] + ".txt")) {
+            schreiber.write("0 \n");
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -148,8 +148,8 @@ public class SpeicherSystem {
      * @param auswahl Der Index des Spielfelds.
      * @return Die Anzahl der Fehler.
      */
-    public int fehlercounterWeitergeben(int auswahl) {
-        try (Scanner sc = new Scanner(new File("database/fehler/" + spielfelderNamen[auswahl] + ".txt"))) {
+    public int fehlerZaehlerAbrufen(int auswahl) {
+        try (Scanner sc = new Scanner(new File("database/fehler/" + spielfeldNamen[auswahl] + ".txt"))) {
             return sc.nextInt();
         } catch (FileNotFoundException e) {
             e.printStackTrace();
@@ -160,12 +160,12 @@ public class SpeicherSystem {
     /**
      * Speichert den Timer-Wert für das angegebene Spiel.
      *
-     * @param hitoriGameName Der Name des Hitori-Spiels.
-     * @param time Der Timer-Wert.
+     * @param hitoriSpielName Der Name des Hitori-Spiels.
+     * @param zeit Der Timer-Wert.
      */
-    public void saveTimerValue(String hitoriGameName, String time) {
-        try (FileWriter writer = new FileWriter("database/timer/timer_" + hitoriGameName + ".txt")) {
-            writer.write(time.replace("Zeit: ", "").replace(" s", ""));
+    public void timerWertSpeichern(String hitoriSpielName, String zeit) {
+        try (FileWriter schreiber = new FileWriter("database/timer/timer_" + hitoriSpielName + ".txt")) {
+            schreiber.write(zeit.replace("Zeit: ", "").replace(" s", ""));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -174,13 +174,13 @@ public class SpeicherSystem {
     /**
      * Lädt den Timer-Wert für das angegebene Spiel.
      *
-     * @param gameName Der Name des Spiels.
+     * @param spielName Der Name des Spiels.
      * @return Der Timer-Wert.
      */
-    public String loadTimerValue(String gameName) {
-        File file = new File("database/timer/timer_" + gameName + ".txt");
-        if (file.exists()) {
-            try (Scanner sc = new Scanner(file)) {
+    public String timerWertLaden(String spielName) {
+        File datei = new File("database/timer/timer_" + spielName + ".txt");
+        if (datei.exists()) {
+            try (Scanner sc = new Scanner(datei)) {
                 return sc.nextLine();
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
@@ -192,11 +192,11 @@ public class SpeicherSystem {
     /**
      * Überprüft, ob ein Timer für das angegebene Spiel existiert.
      *
-     * @param gameName Der Name des Spiels.
+     * @param spielName Der Name des Spiels.
      * @return true, wenn der Timer existiert, sonst false.
      */
-    public boolean timerExists(String gameName) {
-        return new File("database/timer/timer_" + gameName + ".txt").exists();
+    public boolean timerExistiert(String spielName) {
+        return new File("database/timer/timer_" + spielName + ".txt").exists();
     }
 
     /**
@@ -204,9 +204,9 @@ public class SpeicherSystem {
      *
      * @param auswahl Der Index des Spielfelds.
      */
-    public void resetTimerValue(int auswahl) {
-        try (FileWriter writer = new FileWriter("database/timer/timer_" + spielfelderNamen[auswahl] + ".txt")) {
-            writer.write("0,000");
+    public void timerWertZuruecksetzen(int auswahl) {
+        try (FileWriter schreiber = new FileWriter("database/timer/timer_" + spielfeldNamen[auswahl] + ".txt")) {
+            schreiber.write("0,000");
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -218,22 +218,22 @@ public class SpeicherSystem {
      * @param auswahl Der Index des Spielfelds.
      * @return Der Durchschnitt der Zeiten.
      */
-    public double berechneDurchschnitt(int auswahl) {
-        if(auswahl < 0 || auswahl >= spielfelderNamen.length) {
+    public double durchschnittBerechnen(int auswahl) {
+        if (auswahl < 0 || auswahl >= spielfeldNamen.length) {
             return 0.0;
         }
-        double sum = 0.0;
-        int count = 0;
-        File file = new File("database/Siegerliste/" + spielfelderNamen[auswahl] + "_sieger.txt");
-        if (file.exists()) {
-            try (Scanner sc = new Scanner(file)) {
+        double summe = 0.0;
+        int anzahl = 0;
+        File datei = new File("database/Siegerliste/" + spielfeldNamen[auswahl] + "_sieger.txt");
+        if (datei.exists()) {
+            try (Scanner sc = new Scanner(datei)) {
                 while (sc.hasNextLine()) {
-                    String[] parts = sc.nextLine().split(", ");
-                    if (parts.length > 1) {
-                        String[] time = parts[1].split(" ");
-                        if (time.length > 1) {
-                            sum += Double.parseDouble(time[1].replace(",", "."));
-                            count++;
+                    String[] teile = sc.nextLine().split(", ");
+                    if (teile.length > 1) {
+                        String[] zeit = teile[1].split(" ");
+                        if (zeit.length > 1) {
+                            summe += Double.parseDouble(zeit[1].replace(",", "."));
+                            anzahl++;
                         }
                     }
                 }
@@ -241,7 +241,7 @@ public class SpeicherSystem {
                 e.printStackTrace();
             }
         }
-        return count > 0 ? sum / count : 0;
+        return anzahl > 0 ? summe / anzahl : 0;
     }
 
     /**
@@ -249,29 +249,29 @@ public class SpeicherSystem {
      *
      * @param auswahl Der Index des Spielfelds.
      */
-    public void sortiereLeaderboard(int auswahl) {
-        File file = new File("database/Siegerliste/" + spielfelderNamen[auswahl] + "_sieger.txt");
-        if (file.exists()) {
+    public void leaderboardSortieren(int auswahl) {
+        File datei = new File("database/Siegerliste/" + spielfeldNamen[auswahl] + "_sieger.txt");
+        if (datei.exists()) {
             try {
-                List<String> lines = new ArrayList<>();
-                try (Scanner sc = new Scanner(file)) {
+                List<String> zeilen = new ArrayList<>();
+                try (Scanner sc = new Scanner(datei)) {
                     while (sc.hasNextLine()) {
-                        lines.add(sc.nextLine());
+                        zeilen.add(sc.nextLine());
                     }
                 }
-                lines.sort(Comparator.comparingDouble(o -> {
-                    String[] parts = o.split(", ");
-                    if (parts.length > 1) {
-                        String[] time = parts[1].split(" ");
-                        if (time.length > 1) {
-                            return Double.parseDouble(time[1].replace(",", "."));
+                zeilen.sort(Comparator.comparingDouble(o -> {
+                    String[] teile = o.split(", ");
+                    if (teile.length > 1) {
+                        String[] zeit = teile[1].split(" ");
+                        if (zeit.length > 1) {
+                            return Double.parseDouble(zeit[1].replace(",", "."));
                         }
                     }
                     return Double.MAX_VALUE;
                 }));
-                try (FileWriter writer = new FileWriter(file)) {
-                    for (String line : lines) {
-                        writer.write(line + "\n");
+                try (FileWriter schreiber = new FileWriter(datei)) {
+                    for (String zeile : zeilen) {
+                        schreiber.write(zeile + "\n");
                     }
                 }
             } catch (IOException e) {
