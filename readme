@@ -1,5 +1,24 @@
-Obai Albek 3009594:
--Speichersystem, GUI, Reset Knopf, redo knopf
+# Hitori Game (Java)
 
-Eric Paci 3014947:
-Speichersystem, Lösung
+## Überblick
+Dieses Projekt implementiert das japanische Logikspiel **Hitori** in Java.  
+Ziel des Spiels ist es, bestimmte Zellen eines Zahlenrasters zu schwärzen, sodass:
+- in keiner Zeile und keiner Spalte doppelte Zahlen vorhanden sind,  
+- keine zwei schwarzen Felder nebeneinanderliegen,  
+- alle nicht geschwärzten Felder zusammenhängend bleiben.  
+
+## Features
+- Umsetzung der Spiellogik in Java  
+- GUI-Unterstützung zur visuellen Darstellung des Spielfelds  
+- Validierung der Spielregeln in Echtzeit  
+- Möglichkeit, das Spiel zu lösen oder eigene Rätsel zu spielen  
+
+## Projektstruktur
+- `src/` – enthält den Java-Quellcode  
+- `Hitori.java` – Hauptklasse mit Spiellogik und GUI  
+- `resources/` – evtl. Grafiken oder Konfigurationsdateien  
+
+## Voraussetzungen
+- Java 8 oder höher  
+- IDE wie IntelliJ IDEA oder VS Code (optional)  
+
