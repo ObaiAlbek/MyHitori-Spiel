@@ -1,5 +1,5 @@
 # Hitori Game (Java)
-
+ 
 ## Überblick
 Dieses Projekt implementiert das japanische Logikspiel **Hitori** in Java.  
 Ziel des Spiels ist es, bestimmte Zellen eines Zahlenrasters zu schwärzen, sodass:
