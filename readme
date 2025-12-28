@@ -9,6 +9,11 @@ Dieses Projekt kombiniert eine robuste Spiellogik mit einer interaktiven grafisc
 
 ---
 
+## 📸 Vorschau
+
+*(Hier kannst du später noch einen Screenshot einfügen, wenn du magst)*
+---
+
 ## 🎮 Spielregeln
 
 Das Ziel ist es, Zellen so zu schwärzen, dass am Ende nur noch gültige Zahlen übrig bleiben. Dabei gelten drei goldene Regeln:
@@ -32,7 +37,7 @@ Das Ziel ist es, Zellen so zu schwärzen, dass am Ende nur noch gültige Zahlen 
 ## 🛠️ Tech Stack
 
 * **Sprache:** Java JDK 21
-* **GUI:** JavaFX / Swing (je nachdem, was du genutzt hast)
+* **GUI:** JavaFX
 * **Build Tool:** Maven
 
 ---
@@ -44,7 +49,7 @@ Hitori-Game/
 ├── src/
 │   ├── main/
 │   │   ├── java/
-│   │   │   └── de/deinname/hitori/
+│   │   │   └── de/obaialbek/hitori/
 │   │   │       ├── logic/       # Die Spielregeln (Model)
 │   │   │       ├── gui/         # Die Oberfläche (View/Controller)
 │   │   │       └── Hitori.java  # Hauptklasse (Main)
@@ -52,26 +57,3 @@ Hitori-Game/
 ├── target/                      # Kompilierte Dateien
 ├── README.md                    # Diese Datei
 └── pom.xml                      # Maven Konfiguration
-
-```
-
-## 📦 Installation & Start
-
-1. **Repository klonen:**
-```bash
-git clone [https://github.com/DEIN-USER/hitori-java.git](https://github.com/DEIN-USER/hitori-java.git)
-
-```
-
-
-2. **Projekt bauen:**
-```bash
-mvn clean install
-
-```
-
-
-3. **Starten:**
-Führe die `Hitori.java` in deiner IDE aus oder nutze die generierte JAR.
-
----
