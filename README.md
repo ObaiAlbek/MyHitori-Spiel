@@ -57,3 +57,26 @@ Hitori-Game/
 ├── target/                      # Kompilierte Dateien
 ├── README.md                    # Diese Datei
 └── pom.xml                      # Maven Konfiguration
+
+```
+
+## 📦 Installation & Start
+
+1. **Repository klonen:**
+```bash
+git clone [https://github.com/ObaiAlbek/hitori-game.git](https://github.com/ObaiAlbek/hitori-game.git)
+
+```
+
+
+2. **Projekt bauen:**
+```bash
+mvn clean install
+
+```
+
+
+3. **Starten:**
+Führe die `Hitori.java` in deiner IDE aus oder nutze die generierte JAR.
+
+---
