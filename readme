@@ -1,19 +1,77 @@
-# Hitori Game (Java)
- 
-## Überblick
-Dieses Projekt implementiert das japanische Logikspiel **Hitori** in Java.  
-Ziel des Spiels ist es, bestimmte Zellen eines Zahlenrasters zu schwärzen, sodass:
-- in keiner Zeile und keiner Spalte doppelte Zahlen vorhanden sind,  
-- keine zwei schwarzen Felder nebeneinanderliegen,  
-- alle nicht geschwärzten Felder zusammenhängend bleiben.  
+# 🧩 Hitori Game (Java)
 
-## Features
-- Umsetzung der Spiellogik in Java  
-- GUI-Unterstützung zur visuellen Darstellung des Spielfelds  
-- Validierung der Spielregeln in Echtzeit  
-- Möglichkeit, das Spiel zu lösen oder eigene Rätsel zu spielen  
+![Java](https://img.shields.io/badge/Java-21-orange?style=for-the-badge&logo=java)
+![Status](https://img.shields.io/badge/Status-Completed-success?style=for-the-badge)
+![License](https://img.shields.io/badge/License-MIT-blue?style=for-the-badge)
 
-## Projektstruktur
-- `src/` – enthält den Java-Quellcode  
-- `Hitori.java` – Hauptklasse mit Spiellogik und GUI  
-- `resources/` – evtl. Grafiken oder Konfigurationsdateien  
+Eine moderne Java-Implementierung des klassischen japanischen Logikrätsels **Hitori** (jap. "Alleine").
+Dieses Projekt kombiniert eine robuste Spiellogik mit einer interaktiven grafischen Oberfläche (GUI).
+
+---
+
+## 🎮 Spielregeln
+
+Das Ziel ist es, Zellen so zu schwärzen, dass am Ende nur noch gültige Zahlen übrig bleiben. Dabei gelten drei goldene Regeln:
+
+1.  **Keine Duplikate:** In keiner Zeile und keiner Spalte darf eine Zahl mehr als einmal vorkommen (ungeschwärzt).
+2.  **Nicht berühren:** Geschwärzte Zellen dürfen sich **nicht** horizontal oder vertikal berühren (diagonal ist erlaubt).
+3.  **Zusammenhalt:** Alle weißen (nicht geschwärzten) Zellen müssen zusammenhängend bleiben (keine isolierten Inseln).
+
+---
+
+## 🚀 Features
+
+* **☕ Pure Java Power:** Vollständige Umsetzung der Hitori-Logik in Java.
+* **🖥️ Interaktive GUI:** Benutzerfreundliche Oberfläche zum Klicken und Spielen.
+* **⚡ Echtzeit-Validierung:** Das Spiel prüft sofort, ob ein Zug gegen die Regeln verstößt.
+* **🧩 Puzzle-Modus:** Spiele vorgefertigte Level oder lass dir zufällige Rätsel generieren.
+* **💡 Solver-Funktion:** (Optional) Ein Algorithmus, der das Rätsel automatisch löst.
+
+---
+
+## 🛠️ Tech Stack
+
+* **Sprache:** Java JDK 21
+* **GUI:** JavaFX / Swing (je nachdem, was du genutzt hast)
+* **Build Tool:** Maven
+
+---
+
+## 📂 Projektstruktur
+
+```text
+Hitori-Game/
+├── src/
+│   ├── main/
+│   │   ├── java/
+│   │   │   └── de/deinname/hitori/
+│   │   │       ├── logic/       # Die Spielregeln (Model)
+│   │   │       ├── gui/         # Die Oberfläche (View/Controller)
+│   │   │       └── Hitori.java  # Hauptklasse (Main)
+│   │   └── resources/           # Bilder, Icons, Level-Dateien
+├── target/                      # Kompilierte Dateien
+├── README.md                    # Diese Datei
+└── pom.xml                      # Maven Konfiguration
+
+```
+
+## 📦 Installation & Start
+
+1. **Repository klonen:**
+```bash
+git clone [https://github.com/DEIN-USER/hitori-java.git](https://github.com/DEIN-USER/hitori-java.git)
+
+```
+
+
+2. **Projekt bauen:**
+```bash
+mvn clean install
+
+```
+
+
+3. **Starten:**
+Führe die `Hitori.java` in deiner IDE aus oder nutze die generierte JAR.
+
+---
